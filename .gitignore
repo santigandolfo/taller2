@@ -2,6 +2,7 @@
 .vagrant
 .DS_Store
 .vscode
+.cache
 tests/__pycache__
 
 # compiled files
