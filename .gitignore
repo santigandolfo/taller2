@@ -1,0 +1,8 @@
+# common files
+.vagrant
+.DS_Store
+.vscode
+tests/__pycache__
+
+# compiled files
+**/*.pyc
