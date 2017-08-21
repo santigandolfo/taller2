@@ -11,4 +11,8 @@ notifications:
      on_failure: always 
      on_success: change
 install: "pip install -r requirements.txt"
-script: pytest
+script: 
+  coverage run --source src/ -m py.test
+  coverage report
+after_success:
+  coveralls
