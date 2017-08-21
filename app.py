@@ -1,5 +1,6 @@
-from flask import Flask
+from flask import Flask,jsonify
 from src.controllers import AppController
+
 
 application = Flask(__name__)
 
@@ -10,8 +11,8 @@ def index():
 @application.route("/api/post", methods=['GET'])
 def api_post():
     data = []    
-    data.append( { "mensaje":"Buenas buenas, la app se comunica con el server."} )
-    return "Buenas buenas, la app se comunica con el server.\n"
+    data.append( { "message":"Buenas buenas, la app se comunica con el server."} )
+    return jsonify(data)
 
 
 
