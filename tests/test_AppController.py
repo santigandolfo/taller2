@@ -1,6 +1,7 @@
 import sys
-sys.path.append('..')
-from src.controllers import AppController
+import os
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
+from controllers import AppController
 import re
 def test_1():
   ret_value = "value"
@@ -13,5 +14,5 @@ def test_2():
 #Check if it is a html header
 def test_dummy():
 
-  assert re.match("<h(\d)>[\s\w\d\s]*<\/h\1>",AppControler.index())
+  assert re.match("<h1 style='text-align: center; color:blue;'>App running!</h1>",AppController.index())
   
