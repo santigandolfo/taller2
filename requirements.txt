@@ -1,5 +1,5 @@
 gunicorn==19.7.1
 Flask==0.12.2
 pytest==3.2.1
-coveralls
-pytest-cov
+coveralls==1.2.0
+pytest-cov==2.5.1
