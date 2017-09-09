@@ -5,8 +5,8 @@ import os
 application = Flask(__name__)
 
 
-DB_USER = os.environ["DB_USER"]
-DB_PWD = os.environ["DB_PWD"]
+DB_URL = os.environ["DB_URL"]
+
 @application.route("/")
 def index():
     return AppController.index()
@@ -19,10 +19,9 @@ def api_post():
 
 @application.route("/test/users")
 def get_db_users():
-    client = MongoClient("mongodb://"+DB_USER+":"+DB_PWD+"@ds131854.mlab.com:31854/fiuberdb")
+    client = MongoClient(DB_URL)
     users = client.fiuberdb.users.find({},{"name": 1, "_id":0})
     data = []
-
     while users.alive:
         data.append(users.next()["name"])
     return jsonify(data)
