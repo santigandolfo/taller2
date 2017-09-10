@@ -2,6 +2,11 @@ from flask import Flask,jsonify
 from src.controllers import AppController
 from pymongo import MongoClient
 import os
+import logging
+from logging import StreamHandler
+import sys
+
+
 application = Flask(__name__)
 
 
@@ -26,5 +31,30 @@ def get_db_users():
         data.append(users.next()["name"])
     return jsonify(data)
 
+@application.route("/test/log")
+def log_test():
+
+    application.logger.warning('Log test (%d st line)', 1)
+    application.logger.error('No error occurred,just testing')
+    application.logger.info('Info test')
+    application.logger.debug('debut info')
+    return "Done"
+
+
+@application.before_first_request
+def initialize_log():
+    formatter = logging.Formatter(
+        "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
+    handler = StreamHandler(sys.stdout)
+    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(formatter)
+    application.logger.addHandler(handler)
+    application.logger.setLevel(logging.DEBUG)
+
+
 if __name__ == "__main__":
+    
     application.run(debug=True, host='0.0.0.0')
+
+
+
