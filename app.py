@@ -45,7 +45,7 @@ def log_test():
 def initialize_log():
     formatter = logging.Formatter(
         "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
-    handler = StreamHandler(sys.stderr)
+    handler = StreamHandler(sys.stdout)
     handler.setLevel(logging.DEBUG)
     handler.setFormatter(formatter)
     application.logger.addHandler(handler)
