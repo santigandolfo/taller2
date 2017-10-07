@@ -1,10 +1,13 @@
-from flask import Flask,jsonify
-from src.controllers import AppController
-from pymongo import MongoClient
 import os
 import logging
-from logging import StreamHandler
 import sys
+from flask import Flask, jsonify
+from pymongo import MongoClient
+from flask_bcrypt import Bcrypt
+from logging import StreamHandler
+
+from src.controllers import AppController
+
 
 
 application = Flask(__name__)
@@ -41,17 +44,19 @@ def log_test():
     return "Done"
 
 
-@application.before_first_request
-def initialize_log():
-    formatter = logging.Formatter(
-        "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
-    handler = StreamHandler(sys.stdout)
-    handler.setLevel(logging.DEBUG)
-    handler.setFormatter(formatter)
-    application.logger.addHandler(handler)
-    application.logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter(
+    "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
+handler = StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
+handler.setFormatter(formatter)
+application.logger.addHandler(handler)
+application.logger.setLevel(logging.DEBUG)
 
+bcrypt = Bcrypt(application)
+db = MongoClient(DB_URL).fiuberdb
+from src.handlers.RegisterHandler import registration_blueprint
 
+application.register_blueprint(registration_blueprint)
 if __name__ == "__main__":
     
     application.run(debug=True, host='0.0.0.0')
