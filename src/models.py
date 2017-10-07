@@ -36,15 +36,11 @@ class User(object):
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
-                'iat': datetime.datetime.utcnow(),
                 'sub': self.email
             }
-            return jwt.generate_jwt(
-                payload,
-                SECRET_KEY,
-                algorithm='HS256'
-            )
+            g = jwt.generate_jwt(payload,SECRET_KEY,algorithm='HS256',lifetime=datetime.timedelta(days=0, seconds=5))
+            application.logger.info(isinstance(g,unicode))
+            return g
         except Exception as e:
             return e
 
