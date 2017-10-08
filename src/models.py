@@ -18,14 +18,13 @@ class User(object):
 
     def __init__(self, email, password):
         self.email = email
-        self.salt = unicode(os.urandom(SALT_LENGTH),errors='replace')
         self.password = bcrypt.generate_password_hash(
-            password+self.salt, BCRYPT_ROUNDS
+            password, BCRYPT_ROUNDS
         )
         
     def check_pw(self, password):
         return bcrypt.check_password_hash(
-                self.password, password+self.salt)
+                self.password, password)
             
 
 
