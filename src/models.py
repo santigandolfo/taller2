@@ -51,14 +51,9 @@ class User(object):
         :param auth_token:
         :return: integer|string
         """
-        try:
-            header,payload = jwt.verify_jwt(auth_token, SECRET_KEY,allowed_algs=['HS256'])
-            application.logger.debug('Verified token .Info: {}'.format(payload['sub']))
-            return payload['sub']
-        except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.'
-        except jwt.InvalidTokenError:
-            return 'Invalid token. Please log in again.'
+        header,payload = jwt.verify_jwt(auth_token, SECRET_KEY,allowed_algs=['HS256'])
+        application.logger.debug('Verified token .Info: {}'.format(payload['sub']))
+        return payload['sub']
 
 
 class BlacklistToken(object):

@@ -4,6 +4,7 @@ from flask.views import MethodView
 from app import bcrypt, db, application
 from logging import StreamHandler
 from src.models import  User
+import python_jwt as jwt
 
 
 registration_blueprint = Blueprint('users', __name__)
@@ -82,6 +83,7 @@ class RegisterAPI(MethodView):
                             'message': 'no_user_found'
                         }
                         return make_response(jsonify(response)), 404
+                    
                     application.logger.debug('User found')
                     db.users.delete_one({'email':email_user})    
                     response = {
@@ -91,10 +93,23 @@ class RegisterAPI(MethodView):
                     return make_response(jsonify(response)), 200
             response = {
                 'status': 'fail',
+                'message': 'missing_token'
+            }
+            return make_response(jsonify(response)), 401
+        except jwt.jws.exceptions.SignatureError:
+            response = {
+                'status': 'fail',
                 'message': 'invalid_token'
             }
             return make_response(jsonify(response)), 401
         except Exception as exc:
+            if exc.message == 'expired':
+                response = {
+                    'status': 'fail',
+                    'message': 'expired_token'
+                }
+                return make_response(jsonify(response)),401
+            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
             response = {
                 'status': 'fail',
                 'message': 'internal_error'
