@@ -52,7 +52,8 @@ class User(object):
         :return: integer|string
         """
         try:
-            payload = jwt.decode(auth_token, SECRET_KEY)
+            header,payload = jwt.verify_jwt(auth_token, SECRET_KEY,allowed_algs=['HS256'])
+            application.logger.debug('Verified token .Info: {}'.format(payload['sub']))
             return payload['sub']
         except jwt.ExpiredSignatureError:
             return 'Signature expired. Please log in again.'

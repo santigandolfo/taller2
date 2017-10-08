@@ -30,6 +30,7 @@ class RegisterAPI(MethodView):
                     'message': 'missing_password'
                 }
                 return make_response(jsonify(response)), 400
+            application.logger.debug(type(email))
             search_pattern = {'email' : email}
             if db.users.count(search_pattern) > 0:
                 response = {
@@ -62,31 +63,37 @@ class RegisterAPI(MethodView):
             return make_response(jsonify(response)), 500
     
     def delete(self):
-        data = request.get_json()
-        email = data.get('email')
-        password = data.get('password')
-        search_pattern = {'email' : email}
-        response = {
-                'status': 'fail',
-                'message': 'user_email_already_exists'
-            }
-        return make_response(jsonify(data)), 200
-        if db.users.find({},search_pattern).count > 0:
-            response = {
-                'status': 'fail',
-                'message': 'user_email_already_exists'
-            }
-            return make_response(jsonify(response)), 409
-
-
         try:
-            db.users.insert_one({'email': email, 'password': password})
+            auth_header = request.headers.get('Authorization')
+            if auth_header:
+                auth_token = auth_header.split(" ")[1]
+            else:
+                auth_token = ''
+            application.logger.info("Removing user. Auth: {}".format(auth_token))
+            if auth_token:
+                email_user = User.decode_auth_token(auth_token)
+                application.logger.info("User to remove {}".format(email_user))
+                application.logger.debug(type(email_user))
+                if isinstance(email_user, str) or isinstance(email_user, unicode):
+                    if db.users.count({'email':email_user}) != 1:
+                        application.logger.debug('User not found')
+                        response = {
+                            'status': 'fail',
+                            'message': 'no_user_found'
+                        }
+                        return make_response(jsonify(response)), 404
+                    application.logger.debug('User found')
+                    db.users.delete_one({'email':email_user})    
+                    response = {
+                        'status': 'success',
+                        'message': 'user_deleted'
+                    }
+                    return make_response(jsonify(response)), 200
             response = {
-                'status': 'succes',
-                'message': 'user_registered',
-                'auth_token': 'TODO'
+                'status': 'fail',
+                'message': 'invalid_token'
             }
-            return make_response(jsonify(response)),200
+            return make_response(jsonify(response)), 401
         except Exception as exc:
             response = {
                 'status': 'fail',
