@@ -12,8 +12,20 @@ from src.controllers import AppController
 
 application = Flask(__name__)
 
-
 DB_URL = os.environ["DB_URL"]
+DB_NAME = os.environ["DB_NAME"]
+LOG_LEVEL = os.environ["LOG_LEVEL"]
+
+def get_log_level(log_level):
+    if log_level == "INFO":
+        return logging.INFO
+    elif log_level == "DEBUG":
+        return logging.DEBUG
+    elif log_level == "WARN":
+        return logging.WARN
+    elif log_level == "ERROR":
+        return logging.ERROR
+    return logging.info
 
 @application.route("/")
 def index():
@@ -47,13 +59,13 @@ def log_test():
 formatter = logging.Formatter(
     "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
 handler = StreamHandler(sys.stdout)
-handler.setLevel(logging.DEBUG)
+handler.setLevel(get_log_level(LOG_LEVEL))
 handler.setFormatter(formatter)
 application.logger.addHandler(handler)
-application.logger.setLevel(logging.DEBUG)
+application.logger.setLevel(get_log_level(LOG_LEVEL))
 
 bcrypt = Bcrypt(application)
-db = MongoClient(DB_URL).fiuberdb
+db = MongoClient(DB_URL)[DB_NAME]
 from src.handlers.RegisterHandler import registration_blueprint
 
 application.register_blueprint(registration_blueprint)
