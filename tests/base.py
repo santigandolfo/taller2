@@ -12,6 +12,10 @@ class BaseTestCase(TestCase):
         return application
 
     def setUp(self):
+        try:
+            db.users.drop()
+        except Exception:
+            pass
         db.create_collection('users')
 
     def tearDown(self):
