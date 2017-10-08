@@ -15,7 +15,7 @@ notifications:
      on_success: change
 install: "pip install -r requirements.txt"
 script: 
-  py.test --cov=src tests
+  python manage.py cov
 
 after_success:
   coveralls
