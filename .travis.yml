@@ -3,7 +3,6 @@ python:
   - "2.7"
 env: 
   - PORT=5000
-  - DB_URL=mongodb://$DBUSER:$DBPWD@ds111565.mlab.com:11565/fiuberdb-test
 notifications:
   email:  
      recipients:
