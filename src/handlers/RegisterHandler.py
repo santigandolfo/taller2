@@ -42,14 +42,14 @@ class RegisterAPI(MethodView):
             auth_token = user.encode_auth_token()
             application.logger.info(isinstance(auth_token,unicode))
             response = {
-                'status': 'succes',
+                'status': 'success',
                 'message': 'user_registered',
                 'auth_token': auth_token
             }
             application.logger.debug('Generated json correctly')
-            return make_response(jsonify(response)), 200
+            return make_response(jsonify(response)), 201
         except Exception as exc:
-            application.logger.error("Error ocurred. Message: "+exc.message+ ".Other things"+ exc.__doc__)
+            application.logger.error("Error ocurred. Message: "+exc.message+ ".Doc: "+ exc.__doc__)
             response = {
                 'status': 'fail',
                 'message': 'internal_error',
