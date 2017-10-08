@@ -16,16 +16,20 @@ class RegisterAPI(MethodView):
         try:
             data = request.get_json()
             email = data.get('email')
+            if not email:
+                response = {
+                    'status': 'fail',
+                    'message': 'invalid_email'
+                }
+                return make_response(jsonify(response)), 400
             application.logger.info("Registration: {}".format(email))
             password = data.get('password')
-        except Exception as exc:
-            response = {
-                'status': 'fail',
-                'message': 'bad_request'
-            }
-            return make_response(jsonify(response)), 400
-    
-        try:
+            if not password:
+                response = {
+                    'status': 'fail',
+                    'message': 'missing_password'
+                }
+                return make_response(jsonify(response)), 400
             search_pattern = {'email' : email}
             if db.users.count(search_pattern) > 0:
                 response = {
