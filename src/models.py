@@ -6,7 +6,6 @@ import json
 
 BCRYPT_ROUNDS = int(os.environ["BCRYPT_ROUNDS"])
 SECRET_KEY = os.environ.get("SECRET_KEY","key")
-SALT_LENGTH = 16
 
 
 class User(object):
@@ -14,7 +13,6 @@ class User(object):
 
     email = ''
     password = ''
-    salt = ''
 
     def __init__(self, email, password):
         self.email = email

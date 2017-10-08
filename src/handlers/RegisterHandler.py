@@ -2,7 +2,6 @@
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from app import bcrypt, db, application
-from logging import StreamHandler
 from src.models import  User
 import python_jwt as jwt
 
