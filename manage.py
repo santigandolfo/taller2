@@ -1,12 +1,5 @@
 # manage.py
-
-
-import os
-import unittest
 import coverage
-from app import application
-from flask_script import Manager
-
 
 COV = coverage.coverage(
     branch=True,
@@ -16,6 +9,14 @@ COV = coverage.coverage(
     ]
 )
 COV.start()
+
+import os
+import unittest
+from app import application
+from flask_script import Manager
+
+
+
 
 manager = Manager(application)
 

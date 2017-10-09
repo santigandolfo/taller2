@@ -6,8 +6,6 @@ from pymongo import MongoClient
 from flask_bcrypt import Bcrypt
 from logging import StreamHandler
 
-from src.controllers import AppController
-
 
 
 application = Flask(__name__)
@@ -29,7 +27,7 @@ def get_log_level(log_level):
 
 @application.route("/")
 def index():
-    return AppController.index()
+    return "Hello world!"
 
 @application.route("/api/post", methods=['GET'])
 def api_post():
