@@ -19,12 +19,6 @@ class User(object):
         self.password = bcrypt.generate_password_hash(
             password, BCRYPT_ROUNDS
         )
-        
-    def check_pw(self, password):
-        return bcrypt.check_password_hash(
-                self.password, password)
-            
-
 
     def encode_auth_token(self):
         """
@@ -59,11 +53,10 @@ class BlacklistToken(object):
     Token Model for storing invalid JWT
     """
 
-    
+
     def __init__(self, token):
         self.token = token
         self.blacklisted_on = datetime.datetime.now()
 
     def __repr__(self):
         return '<id: token: {}'.format(self.token)
-

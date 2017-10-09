@@ -33,7 +33,7 @@ def index():
 
 @application.route("/api/post", methods=['GET'])
 def api_post():
-    data = []    
+    data = []
     data.append( { "message":"Buenas buenas, la app se comunica con el server."} )
     return jsonify(data)
 
@@ -67,11 +67,10 @@ application.logger.setLevel(get_log_level(LOG_LEVEL))
 bcrypt = Bcrypt(application)
 db = MongoClient(DB_URL)[DB_NAME]
 from src.handlers.RegisterHandler import registration_blueprint
+from src.handlers.LoginHandler import login_blueprint
 
 application.register_blueprint(registration_blueprint)
+application.register_blueprint(login_blueprint)
 if __name__ == "__main__":
-    
+
     application.run(debug=True, host='0.0.0.0')
-
-
-
