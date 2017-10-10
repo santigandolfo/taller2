@@ -61,7 +61,7 @@ class RegisterAPI(MethodView):
                 'error_de': exc.message
             }
             return make_response(jsonify(response)), 500
-    
+
     def delete(self):
         try:
             auth_header = request.headers.get('Authorization')
@@ -82,9 +82,9 @@ class RegisterAPI(MethodView):
                             'message': 'no_user_found'
                         }
                         return make_response(jsonify(response)), 404
-                    
+
                     application.logger.debug('User found')
-                    db.users.delete_one({'email':email_user})    
+                    db.users.delete_one({'email':email_user})
                     response = {
                         'status': 'success',
                         'message': 'user_deleted'
@@ -114,7 +114,7 @@ class RegisterAPI(MethodView):
                 'message': 'internal_error'
             }
             return make_response(jsonify(response)),500
-    
+
 #define the API resources
 registration_view = RegisterAPI.as_view('registration_api')
 

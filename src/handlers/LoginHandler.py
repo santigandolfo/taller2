@@ -1,15 +1,15 @@
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from app import bcrypt, db, application
-from src.models import  User
+from src.models import  User, BlacklistToken
 import python_jwt as jwt
 
 
-login_blueprint = Blueprint('security', __name__)
+security_blueprint = Blueprint('security', __name__)
 
-class LoginAPI(MethodView):
-    """Handler for login related API"""
-
+class SecurityAPI(MethodView):
+    """Handler for login/logout related API"""
+    # LOGIN
     def post(self):
 
         try:
@@ -18,7 +18,7 @@ class LoginAPI(MethodView):
             if not email:
                 response = {
                     'status': 'fail',
-                    'message': 'invalid_email'
+                    'message': 'missing_email'
                 }
                 return make_response(jsonify(response)), 400
             application.logger.info("Login: {}".format(email))
@@ -35,7 +35,7 @@ class LoginAPI(MethodView):
             if not user:
                 response = {
                     'status': 'fail',
-                    'message': 'user_email_doesnt_exist'
+                    'message': 'unregistered_user'
                 }
                 return make_response(jsonify(response)), 409
             application.logger.info("Login: user exists")
@@ -65,15 +65,59 @@ class LoginAPI(MethodView):
                 'error_de': exc.message
             }
             return make_response(jsonify(response)), 500
+    # LOGOUT
+    def delete(self):
+        try:
+            auth_header = request.headers.get('Authorization')
+            if auth_header:
+                auth_token = auth_header.split(" ")[1]
+            else:
+                auth_token = ''
+            application.logger.info("Log Out: {}".format(auth_token))
+            if auth_token:
+                try:
+                    email_user = User.decode_auth_token(auth_token)
+                except Exception as exc:
+                    if exc.message == 'expired':
+                        response = {
+                            'status': 'fail',
+                            'message': 'expired_token'
+                        }
+                        return make_response(jsonify(response)),401
+                    response = {
+                        'status': 'fail',
+                        'message': 'invalid_token'
+                    }
+                    return make_response(jsonify(response)),401
 
-
+                application.logger.info("Log Out: {}".format(email_user))
+                
+                blacklist_token = BlacklistToken(token=auth_token)
+                responseObject = {
+                    'status': 'success',
+                    'message': 'logout_succesful'
+                }
+                return make_response(jsonify(responseObject)), 200
+            else:
+                responseObject = {
+                    'status': 'fail',
+                    'message': 'missing_token'
+                }
+                return make_response(jsonify(responseObject)), 400
+        except Exception as exc:
+            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
+            response = {
+                'status': 'fail',
+                'message': 'internal_error'
+            }
+            return make_response(jsonify(response)),500
 
 #define the API resources
-login_view = LoginAPI.as_view('login_api')
+security_view = SecurityAPI.as_view('security_api')
 
 #add Rules for API Endpoints
-login_blueprint.add_url_rule(
+security_blueprint.add_url_rule(
     '/security',
-    view_func=login_view,
-    methods=['POST']
+    view_func=security_view,
+    methods=['POST', 'DELETE']
 )

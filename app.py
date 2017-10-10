@@ -67,10 +67,10 @@ application.logger.setLevel(get_log_level(LOG_LEVEL))
 bcrypt = Bcrypt(application)
 db = MongoClient(DB_URL)[DB_NAME]
 from src.handlers.RegisterHandler import registration_blueprint
-from src.handlers.LoginHandler import login_blueprint
+from src.handlers.LoginHandler import security_blueprint
 
 application.register_blueprint(registration_blueprint)
-application.register_blueprint(login_blueprint)
+application.register_blueprint(security_blueprint)
 if __name__ == "__main__":
 
     application.run(debug=True, host='0.0.0.0')
