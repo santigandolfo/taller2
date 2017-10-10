@@ -202,7 +202,7 @@ class TestDelete(BaseTestCase):
 
 
     def test_delete_already_deleted_user(self):
-        """ Test for trying to delete user with invalid token """
+        """ Test for trying to delete user which was already deleted """
         with self.client:
             response = self.client.post(
                 '/users',
