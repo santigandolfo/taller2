@@ -1,24 +1,37 @@
-from flask import Flask,jsonify
-from src.controllers import AppController
-from pymongo import MongoClient
 import os
 import logging
-from logging import StreamHandler
 import sys
+from flask import Flask, jsonify
+from pymongo import MongoClient
+from flask_bcrypt import Bcrypt
+from logging import StreamHandler
+
 
 
 application = Flask(__name__)
 
-
 DB_URL = os.environ["DB_URL"]
+DB_NAME = os.environ["DB_NAME"]
+LOG_LEVEL = os.environ["LOG_LEVEL"]
+
+def get_log_level(log_level):
+    if log_level == "INFO":
+        return logging.INFO
+    elif log_level == "DEBUG":
+        return logging.DEBUG
+    elif log_level == "WARN":
+        return logging.WARN
+    elif log_level == "ERROR":
+        return logging.ERROR
+    return logging.info
 
 @application.route("/")
 def index():
-    return AppController.index()
+    return "Hello world!"
 
 @application.route("/api/post", methods=['GET'])
 def api_post():
-    data = []    
+    data = []
     data.append( { "message":"Buenas buenas, la app se comunica con el server."} )
     return jsonify(data)
 
@@ -41,20 +54,21 @@ def log_test():
     return "Done"
 
 
-@application.before_first_request
-def initialize_log():
-    formatter = logging.Formatter(
-        "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
-    handler = StreamHandler(sys.stdout)
-    handler.setLevel(logging.DEBUG)
-    handler.setFormatter(formatter)
-    application.logger.addHandler(handler)
-    application.logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter(
+    "[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
+handler = StreamHandler(sys.stdout)
+handler.setLevel(get_log_level(LOG_LEVEL))
+handler.setFormatter(formatter)
+application.logger.addHandler(handler)
+application.logger.setLevel(get_log_level(LOG_LEVEL))
 
+bcrypt = Bcrypt(application)
+db = MongoClient(DB_URL)[DB_NAME]
+from src.handlers.RegisterHandler import registration_blueprint
+from src.handlers.SecurityHandler import security_blueprint
 
+application.register_blueprint(registration_blueprint)
+application.register_blueprint(security_blueprint)
 if __name__ == "__main__":
-    
+
     application.run(debug=True, host='0.0.0.0')
-
-
-
