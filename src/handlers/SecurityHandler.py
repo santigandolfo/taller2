@@ -73,7 +73,7 @@ class SecurityAPI(MethodView):
                 auth_token = auth_header.split(" ")[1]
             else:
                 auth_token = ''
-            application.logger.info("Log Out: {}".format(auth_token))
+            application.logger.debug("Log Out: {}".format(auth_token))
             if auth_token:
                 try:
                     email_user = User.decode_auth_token(auth_token)
@@ -91,8 +91,10 @@ class SecurityAPI(MethodView):
                     return make_response(jsonify(response)),401
 
                 application.logger.info("Log Out: {}".format(email_user))
-                
                 blacklist_token = BlacklistToken(token=auth_token)
+                application.logger.debug("blacklistToken created")
+                db.blacklistedTokens.insert_one(blacklist_token.__dict__)
+                application.logger.debug("blacklistToken inserted")
                 responseObject = {
                     'status': 'success',
                     'message': 'logout_succesful'
