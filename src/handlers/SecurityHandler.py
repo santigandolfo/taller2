@@ -57,7 +57,7 @@ class SecurityAPI(MethodView):
             application.logger.debug('Generated json correctly')
             return make_response(jsonify(response)), 201
 
-        except Exception as exc:
+        except Exception as exc: #pragma: no cover
             application.logger.error("Error ocurred. Message: "+exc.message+ ".Doc: "+ exc.__doc__)
             response = {
                 'status': 'fail',

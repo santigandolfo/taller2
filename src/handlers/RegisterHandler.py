@@ -53,14 +53,14 @@ class RegisterAPI(MethodView):
             }
             application.logger.debug('Generated json correctly')
             return make_response(jsonify(response)), 201
-        except Exception as exc:
+        except Exception as exc: #pragma: no cover
             application.logger.error("Error ocurred. Message: "+exc.message+ ".Doc: "+ exc.__doc__)
-            response = {
+            response = { 
                 'status': 'fail',
                 'message': 'internal_error',
                 'error_de': exc.message
             }
-            return make_response(jsonify(response)), 500
+            return make_response(jsonify(response)), 500 
 
     def delete(self):
         try:
@@ -108,7 +108,7 @@ class RegisterAPI(MethodView):
                     'message': 'expired_token'
                 }
                 return make_response(jsonify(response)),401
-            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
+            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__)) #pragma: no cover
             response = { #pragma: no cover
                 'status': 'fail',
                 'message': 'internal_error'

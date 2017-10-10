@@ -32,7 +32,7 @@ class User(object):
             g = jwt.generate_jwt(payload,SECRET_KEY,algorithm='HS256',lifetime=datetime.timedelta(days=0, seconds=TOKEN_DURATION))
             application.logger.info(isinstance(g,unicode))
             return g
-        except Exception as e:
+        except Exception as e: #pragma: no cover
             return e
 
 
