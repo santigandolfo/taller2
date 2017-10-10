@@ -1,13 +1,5 @@
 # manage.py
-
-import logging
-import os
-import unittest
 import coverage
-from app import application
-from flask_script import Manager
-
-LOG_LEVEL = os.environ["LOG_LEVEL"]
 
 COV = coverage.coverage(
     branch=True,
@@ -17,6 +9,15 @@ COV = coverage.coverage(
     ]
 )
 COV.start()
+
+import logging
+import os
+import unittest
+from app import application
+from flask_script import Manager
+
+LOG_LEVEL = os.environ["LOG_LEVEL"]
+
 
 manager = Manager(application)
 logging.disable(LOG_LEVEL) #Salida mas limpia por pantalla
