@@ -109,11 +109,11 @@ class RegisterAPI(MethodView):
                 }
                 return make_response(jsonify(response)),401
             application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
-            response = {
+            response = { #pragma: no cover
                 'status': 'fail',
                 'message': 'internal_error'
             }
-            return make_response(jsonify(response)),500
+            return make_response(jsonify(response)),500 #pragma: no cover
 
 #define the API resources
 registration_view = RegisterAPI.as_view('registration_api')
