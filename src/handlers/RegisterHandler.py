@@ -3,6 +3,7 @@ from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from app import bcrypt, db, application
 from src.models import  User
+from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, InvalidTokenException
 import python_jwt as jwt
 
 
@@ -53,9 +54,9 @@ class RegisterAPI(MethodView):
             }
             application.logger.debug('Generated json correctly')
             return make_response(jsonify(response)), 201
-        except Exception as exc: #pragma: no cover
-            application.logger.error("Error ocurred. Message: "+exc.message+ ".Doc: "+ exc.__doc__)
-            response = { 
+        except Exception as exc:
+            application.logger.error("Error ocurred. Message: {} .Doc: {}".format(exc.message, exc.__doc__))
+            response = {
                 'status': 'fail',
                 'message': 'internal_error',
                 'error_de': exc.message
@@ -95,21 +96,24 @@ class RegisterAPI(MethodView):
                 'message': 'missing_token'
             }
             return make_response(jsonify(response)), 401
-        except jwt.jws.exceptions.SignatureError:
+        except ExpiredTokenException as exc:
+            application.logger.error("Expired token")
+            response = {
+                'status': 'fail',
+                'message': 'expired_token'
+            }
+            return make_response(jsonify(response)), 401
+        except InvalidTokenException as exc:
+            application.logger.error("Invalid token")
             response = {
                 'status': 'fail',
                 'message': 'invalid_token'
             }
             return make_response(jsonify(response)), 401
         except Exception as exc:
-            if exc.message == 'expired':
-                response = {
-                    'status': 'fail',
-                    'message': 'expired_token'
-                }
-                return make_response(jsonify(response)),401
-            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__)) #pragma: no cover
-            response = { #pragma: no cover
+            
+            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
+            response = {
                 'status': 'fail',
                 'message': 'internal_error'
             }

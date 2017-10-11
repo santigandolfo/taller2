@@ -15,7 +15,6 @@ DB_NAME = os.environ["DB_NAME"]
 LOG_LEVEL = os.environ["LOG_LEVEL"]
 TOKEN_DURATION = int(os.environ["TOKEN_DURATION"])
 
-
 def get_log_level(log_level):
     if log_level == "INFO":
         return logging.INFO
