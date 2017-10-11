@@ -1,6 +1,6 @@
 import datetime
 import os
-from app import db, bcrypt, application
+from app import db, bcrypt, application, TOKEN_DURATION
 import python_jwt as jwt
 import json
 
@@ -29,10 +29,10 @@ class User(object):
             payload = {
                 'sub': self.email
             }
-            g = jwt.generate_jwt(payload,SECRET_KEY,algorithm='HS256',lifetime=datetime.timedelta(days=0, seconds=5))
+            g = jwt.generate_jwt(payload,SECRET_KEY,algorithm='HS256',lifetime=datetime.timedelta(days=0, seconds=TOKEN_DURATION))
             application.logger.info(isinstance(g,unicode))
             return g
-        except Exception as e:
+        except Exception as e: #pragma: no cover
             return e
 
 

@@ -5,7 +5,7 @@ import json
 import time
 from src.models import User
 from tests.base import BaseTestCase
-from app import application
+from app import application, TOKEN_DURATION
 
 class TestRegistration(BaseTestCase):
     def test_registration(self):
@@ -139,11 +139,6 @@ class TestDelete(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertTrue(data['status'] == 'success')
-            self.assertTrue(data['message'] == 'user_registered')
-            self.assertTrue(data['auth_token'])
-            self.assertTrue(response.content_type == 'application/json')
-            self.assertEqual(response.status_code, 201)
             response = self.client.delete(
                 '/users',
                 content_type='application/json'
@@ -166,12 +161,7 @@ class TestDelete(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertTrue(data['status'] == 'success')
-            self.assertTrue(data['message'] == 'user_registered')
-            self.assertTrue(data['auth_token'])
-            self.assertTrue(response.content_type == 'application/json')
-            self.assertEqual(response.status_code, 201)
-            time.sleep(6)
+            time.sleep(TOKEN_DURATION+1)
             response = self.client.delete(
                 '/users',
                 headers=dict(
@@ -196,11 +186,6 @@ class TestDelete(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertTrue(data['status'] == 'success')
-            self.assertTrue(data['message'] == 'user_registered')
-            self.assertTrue(data['auth_token'])
-            self.assertTrue(response.content_type == 'application/json')
-            self.assertEqual(response.status_code, 201)
 
             response = self.client.delete(
                 '/users',
@@ -215,5 +200,39 @@ class TestDelete(BaseTestCase):
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 401)
 
+
+    def test_delete_already_deleted_user(self):
+        """ Test for trying to delete user which was already deleted """
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    email='joe@gmail.com',
+                    password='123456'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            response = self.client.delete(
+                '/users',
+                headers=dict(
+                    Authorization='Bearer ' + auth_token
+                ),
+                content_type='application/json'
+            )
+            response = self.client.delete(
+                '/users',
+                headers=dict(
+                    Authorization='Bearer ' + auth_token
+                ),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'fail')
+            self.assertTrue(data['message'] == 'no_user_found')
+            self.assertTrue(response.content_type == 'application/json')
+            self.assertEqual(response.status_code, 404)
+  
 if __name__ == '__main__':
     unittest.main()
