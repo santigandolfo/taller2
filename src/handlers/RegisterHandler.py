@@ -1,9 +1,8 @@
-
+import python_jwt as jwt
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
-from app import bcrypt, db, application
+from app import db, application
 from src.models import  User
-import python_jwt as jwt
 
 
 registration_blueprint = Blueprint('users', __name__)
@@ -15,14 +14,14 @@ class RegisterAPI(MethodView):
 
         try:
             data = request.get_json()
-            email = data.get('email')
-            if not email:
+            username = data.get('username')
+            if not username:
                 response = {
                     'status': 'fail',
-                    'message': 'invalid_email'
+                    'message': 'invalid_username'
                 }
                 return make_response(jsonify(response)), 400
-            application.logger.info("Registration: {}".format(email))
+            application.logger.info("Registration: {}".format(username))
             password = data.get('password')
             if not password:
                 response = {
@@ -30,17 +29,17 @@ class RegisterAPI(MethodView):
                     'message': 'missing_password'
                 }
                 return make_response(jsonify(response)), 400
-            application.logger.debug(type(email))
-            search_pattern = {'email' : email}
+            application.logger.debug(type(username))
+            search_pattern = {'username' : username}
             if db.users.count(search_pattern) > 0:
                 response = {
                     'status': 'fail',
-                    'message': 'user_email_already_exists'
+                    'message': 'user_username_already_exists'
                 }
                 return make_response(jsonify(response)), 409
 
             application.logger.debug('User not found while registering.OK')
-            user = User(email=email,password=password)
+            user = User(username=username,password=password)
             application.logger.debug('User created')
             db.users.insert_one(user.__dict__)
             application.logger.debug('User inserted')
@@ -71,11 +70,11 @@ class RegisterAPI(MethodView):
                 auth_token = ''
             application.logger.info("Removing user. Auth: {}".format(auth_token))
             if auth_token:
-                email_user = User.decode_auth_token(auth_token)
-                application.logger.info("User to remove {}".format(email_user))
-                application.logger.debug(type(email_user))
-                if isinstance(email_user, str) or isinstance(email_user, unicode):
-                    if db.users.count({'email':email_user}) != 1:
+                username_user = User.decode_auth_token(auth_token)
+                application.logger.info("User to remove {}".format(username_user))
+                application.logger.debug(type(username_user))
+                if isinstance(username_user, str) or isinstance(username_user, unicode):
+                    if db.users.count({'username':username_user}) != 1:
                         application.logger.debug('User not found')
                         response = {
                             'status': 'fail',
@@ -84,7 +83,7 @@ class RegisterAPI(MethodView):
                         return make_response(jsonify(response)), 404
 
                     application.logger.debug('User found')
-                    db.users.delete_one({'email':email_user})
+                    db.users.delete_one({'username':username_user})
                     response = {
                         'status': 'success',
                         'message': 'user_deleted'

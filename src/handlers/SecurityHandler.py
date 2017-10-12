@@ -14,14 +14,14 @@ class SecurityAPI(MethodView):
 
         try:
             data = request.get_json()
-            email = data.get('email')
-            if not email:
+            username = data.get('username')
+            if not username:
                 response = {
                     'status': 'fail',
-                    'message': 'missing_email'
+                    'message': 'missing_username'
                 }
                 return make_response(jsonify(response)), 400
-            application.logger.info("Login: {}".format(email))
+            application.logger.info("Login: {}".format(username))
             password = data.get('password')
             if not password:
                 response = {
@@ -29,8 +29,8 @@ class SecurityAPI(MethodView):
                     'message': 'missing_password'
                 }
                 return make_response(jsonify(response)), 400
-            application.logger.debug(type(email))
-            search_pattern = {'email' : email}
+            application.logger.debug(type(username))
+            search_pattern = {'username' : username}
             user = db.users.find_one(search_pattern)
             if not user:
                 response = {
@@ -46,7 +46,7 @@ class SecurityAPI(MethodView):
                 }
                 return make_response(jsonify(response)), 401
             application.logger.info("Login: password OK")
-            user = User(email,password)
+            user = User(username,password)
             auth_token = user.encode_auth_token()
             application.logger.info(isinstance(auth_token,unicode))
             response = {
@@ -76,7 +76,7 @@ class SecurityAPI(MethodView):
             application.logger.debug("Log Out: {}".format(auth_token))
             if auth_token:
                 try:
-                    email_user = User.decode_auth_token(auth_token)
+                    username_user = User.decode_auth_token(auth_token)
                 except Exception as exc:
                     if exc.message == 'expired':
                         response = {
@@ -90,7 +90,7 @@ class SecurityAPI(MethodView):
                     }
                     return make_response(jsonify(response)),401
 
-                application.logger.info("Log Out: {}".format(email_user))
+                application.logger.info("Log Out: {}".format(username_user))
                 blacklist_token = BlacklistToken(token=auth_token)
                 application.logger.debug("blacklistToken created")
                 db.blacklistedTokens.insert_one(blacklist_token.__dict__)

@@ -8,39 +8,39 @@ from app import application
 TOKEN_TIME = 5 #TODO: Setear segun duracion token
 
 class TestLogin(BaseTestCase):
-    def test_login_empty_email(self):
-        """ Test login with empty email"""
+    def test_login_empty_username(self):
+        """ Test login with empty username"""
         with self.client:
 
             response = self.client.post(
                 '/security',
                 data=json.dumps(dict(
-                    email='',
+                    username='',
                     password='123456'
                 )),
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'fail')
-            self.assertTrue(data['message'] == 'missing_email')
+            self.assertTrue(data['message'] == 'missing_username')
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 400)
 
-    def test_login_missing_email(self):
-        """ Test login without email"""
+    def test_login_missing_username(self):
+        """ Test login without username"""
         with self.client:
 
             response = self.client.post(
                 '/security',
                 data=json.dumps(dict(
-                    email='',
+                    username='',
                     password='123456'
                 )),
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'fail')
-            self.assertTrue(data['message'] == 'missing_email')
+            self.assertTrue(data['message'] == 'missing_username')
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 400)
 
@@ -52,7 +52,7 @@ class TestLogin(BaseTestCase):
             response = self.client.post(
                 '/security',
                 data=json.dumps(dict(
-                    email='joe@gmail.com',
+                    username='joe_smith',
                     password=''
                 )),
                 content_type='application/json'
@@ -71,7 +71,7 @@ class TestLogin(BaseTestCase):
             response = self.client.post(
                 '/security',
                 data=json.dumps(dict(
-                    email='unregistered@gmail.com',
+                    username='unregistered',
                     password='54321'
                 )),
                 content_type='application/json'
@@ -90,7 +90,7 @@ class TestLogin(BaseTestCase):
             self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='juan@gmail.com',
+                    username='juan_perez',
                     password='perez20'
                 )),
                 content_type='application/json'
@@ -98,7 +98,7 @@ class TestLogin(BaseTestCase):
             response = self.client.post(
                 '/security',
                 data=json.dumps(dict(
-                    email='juan@gmail.com',
+                    username='juan_perez',
                     password='perez21'
                 )),
                 content_type='application/json'
@@ -117,7 +117,7 @@ class TestLogin(BaseTestCase):
             self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='juan@gmail.com',
+                    username='juan_perez',
                     password='perez20'
                 )),
                 content_type='application/json'
@@ -125,7 +125,7 @@ class TestLogin(BaseTestCase):
             response = self.client.post(
                 '/security',
                 data=json.dumps(dict(
-                    email='juan@gmail.com',
+                    username='juan_perez',
                     password='perez20'
                 )),
                 content_type='application/json'
@@ -148,7 +148,7 @@ class TestLogout(BaseTestCase):
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='pedro@gmail.com',
+                    username='pedro_gomez',
                     password='peritomoreno'
                 )),
                 content_type='application/json'
@@ -174,7 +174,7 @@ class TestLogout(BaseTestCase):
             self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='pedro@gmail.com',
+                    username='pedro_gomez',
                     password='peritomoreno'
                 )),
                 content_type='application/json'
@@ -182,7 +182,7 @@ class TestLogout(BaseTestCase):
             response = self.client.post(
                 '/security',
                 data=json.dumps(dict(
-                    email='pedro@gmail.com',
+                    username='pedro_gomez',
                     password='peritomoreno'
                 )),
                 content_type='application/json'
@@ -209,7 +209,7 @@ class TestLogout(BaseTestCase):
             response = self.client.delete(
                 '/security',
                 data=json.dumps(dict(
-                    email='juan@gmail.com',
+                    username='juan_perez',
                     password='perez20'
                 )),
                 content_type='application/json'
@@ -264,7 +264,7 @@ class TestLogout(BaseTestCase):
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='pedro@gmail.com',
+                    username='pedro_gomez',
                     password='peritomoreno'
                 )),
                 content_type='application/json'

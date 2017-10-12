@@ -11,14 +11,15 @@ SECRET_KEY = os.environ.get("SECRET_KEY","key")
 class User(object):
     """Generical User representation """
 
-    email = ''
+    username = ''
     password = ''
 
-    def __init__(self, email, password):
-        self.email = email
+    def __init__(self, username, password):
+        self.username = username
         self.password = bcrypt.generate_password_hash(
             password, BCRYPT_ROUNDS
         )
+        
 
     def encode_auth_token(self):
         """
@@ -27,7 +28,7 @@ class User(object):
         """
         try:
             payload = {
-                'sub': self.email
+                'sub': self.username
             }
             g = jwt.generate_jwt(payload,SECRET_KEY,algorithm='HS256',lifetime=datetime.timedelta(days=0, seconds=TOKEN_DURATION))
             application.logger.info(isinstance(g,unicode))

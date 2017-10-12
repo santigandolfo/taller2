@@ -14,7 +14,7 @@ class TestRegistration(BaseTestCase):
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='joe@gmail.com',
+                    username='joe_smith',
                     password='123456'
                 )),
                 content_type='application/json'
@@ -28,12 +28,12 @@ class TestRegistration(BaseTestCase):
 
 
     def test_registered_with_already_registered_user(self):
-        """ Test registration with already registered email"""
+        """ Test registration with already registered username"""
         with self.client:
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='joe@gmail.com',
+                    username='joe_smith',
                     password='123456'
                 )),
                 content_type='application/json'
@@ -41,7 +41,7 @@ class TestRegistration(BaseTestCase):
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='joe@gmail.com',
+                    username='joe_smith',
                     password='123456'
                 )),
                 content_type='application/json'
@@ -49,19 +49,19 @@ class TestRegistration(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'fail')
             self.assertTrue(
-                data['message'] == 'user_email_already_exists')
+                data['message'] == 'user_username_already_exists')
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 409)
 
-    def test_register_with_missing_email(self):
-        """ Test registration without an email"""
+    def test_register_with_missing_username(self):
+        """ Test registration without an username"""
         
         with self.client:
             
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    emal='joe@gmail.com',
+                    emal='joe_smith',
                     password='123456'
                 )),
                 content_type='application/json'
@@ -69,7 +69,7 @@ class TestRegistration(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'fail')
             self.assertTrue(
-                data['message'] == 'invalid_email')
+                data['message'] == 'invalid_username')
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 400)
     
@@ -81,7 +81,7 @@ class TestRegistration(BaseTestCase):
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='joe@gmail.com',
+                    username='joe_smith',
                     pssword='123456'
                 )),
                 content_type='application/json'
@@ -103,7 +103,7 @@ class TestDelete(BaseTestCase):
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='joe@gmail.com',
+                    username='joe_smith',
                     password='123456'
                 )),
                 content_type='application/json'
@@ -133,7 +133,7 @@ class TestDelete(BaseTestCase):
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='joe@gmail.com',
+                    username='joe_smith',
                     password='123456'
                 )),
                 content_type='application/json'
@@ -155,7 +155,7 @@ class TestDelete(BaseTestCase):
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='joe@gmail.com',
+                    username='joe_smith',
                     password='123456'
                 )),
                 content_type='application/json'
@@ -180,7 +180,7 @@ class TestDelete(BaseTestCase):
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='joe@gmail.com',
+                    username='joe_smith',
                     password='123456'
                 )),
                 content_type='application/json'
@@ -207,7 +207,7 @@ class TestDelete(BaseTestCase):
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
-                    email='joe@gmail.com',
+                    username='joe_smith',
                     password='123456'
                 )),
                 content_type='application/json'
