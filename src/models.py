@@ -3,6 +3,7 @@ import os
 from app import db, bcrypt, application, TOKEN_DURATION
 import python_jwt as jwt
 import json
+from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, InvalidTokenException
 
 BCRYPT_ROUNDS = int(os.environ["BCRYPT_ROUNDS"])
 SECRET_KEY = os.environ.get("SECRET_KEY","key")
@@ -44,7 +45,17 @@ class User(object):
         :param auth_token:
         :return: integer|string
         """
-        header,payload = jwt.verify_jwt(auth_token, SECRET_KEY,allowed_algs=['HS256'])
+        try:
+            header, payload = jwt.verify_jwt(auth_token, SECRET_KEY,allowed_algs=['HS256'])
+        except jwt.jws.exceptions.SignatureError as exc:
+            raise SignatureException(auth_token)
+        except Exception as exc:
+            if (exc.message == 'expired'):
+                raise ExpiredTokenException(auth_token)
+            raise InvalidTokenException(auth_token)
+        if (BlacklistToken.is_blacklisted(auth_token)):
+            raise BlacklistedTokenException(auth_token)
+
         application.logger.debug('Verified token .Info: {}'.format(payload['sub']))
         return payload['sub']
 
@@ -61,3 +72,9 @@ class BlacklistToken(object):
 
     def __repr__(self):
         return '<id: token: {}'.format(self.token)
+    
+    @staticmethod
+    def is_blacklisted(token):
+        return db.blacklistedTokens.count({'token': token}) > 0
+        
+

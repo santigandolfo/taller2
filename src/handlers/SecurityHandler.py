@@ -2,6 +2,7 @@ from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from app import bcrypt, db, application
 from src.models import  User, BlacklistToken
+from src.exceptions import ExpiredTokenException, SignatureException, BlacklistedTokenException, InvalidTokenException
 import python_jwt as jwt
 
 
@@ -77,13 +78,13 @@ class SecurityAPI(MethodView):
             if auth_token:
                 try:
                     username_user = User.decode_auth_token(auth_token)
-                except Exception as exc:
-                    if exc.message == 'expired':
-                        response = {
+                except ExpiredTokenException as exc:
+                    response = {
                             'status': 'fail',
                             'message': 'expired_token'
                         }
-                        return make_response(jsonify(response)),401
+                    return make_response(jsonify(response)),401
+                except InvalidTokenException as exc:
                     response = {
                         'status': 'fail',
                         'message': 'invalid_token'
@@ -106,7 +107,7 @@ class SecurityAPI(MethodView):
                     'message': 'missing_token'
                 }
                 return make_response(jsonify(responseObject)), 400
-        except Exception as exc:
+        except Exception as exc: #pragma: no cover
             application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
             response = {
                 'status': 'fail',

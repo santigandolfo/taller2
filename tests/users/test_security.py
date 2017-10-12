@@ -3,9 +3,8 @@ import json
 import time
 from src.models import User
 from tests.base import BaseTestCase
-from app import application
+from app import application, TOKEN_DURATION
 
-TOKEN_TIME = 5 #TODO: Setear segun duracion token
 
 class TestLogin(BaseTestCase):
     def test_login_empty_username(self):
@@ -270,7 +269,7 @@ class TestLogout(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            time.sleep(1.2*TOKEN_TIME)
+            time.sleep(1+TOKEN_DURATION)
             response = self.client.delete(
                 '/security',
                 headers=dict(
