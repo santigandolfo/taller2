@@ -4,7 +4,7 @@ from flask.views import MethodView
 from app import db, application
 from src.models import  User
 from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, InvalidTokenException
-
+from src.services.shared_server import register_user
 
 registration_blueprint = Blueprint('users', __name__)
 
@@ -38,21 +38,23 @@ class RegisterAPI(MethodView):
                     'message': 'user_username_already_exists'
                 }
                 return make_response(jsonify(response)), 409
-
-            application.logger.debug('User not found while registering.OK')
-            user = User(username=username,password=password)
-            application.logger.debug('User created')
-            db.users.insert_one(user.__dict__)
-            application.logger.debug('User inserted')
-            auth_token = user.encode_auth_token()
-            application.logger.info(isinstance(auth_token,unicode))
-            response = {
-                'status': 'success',
-                'message': 'user_registered',
-                'auth_token': auth_token
-            }
-            application.logger.debug('Generated json correctly')
-            return make_response(jsonify(response)), 201
+            resp = register_user(data)
+            if resp.ok:
+                application.logger.info('User registered')
+                user = User(username=username,ss_token=resp.json()['auth_token'])
+                db.users.insert_one(user.__dict__)
+                auth_token = user.encode_auth_token()
+                application.logger.debug(isinstance(auth_token,unicode))
+                response = {
+                    'status': 'success',
+                    'message': 'user_registered',
+                    'auth_token': auth_token,
+                    'info': resp.json().get('user')
+                }
+                application.logger.debug('Generated json correctly')
+                return make_response(jsonify(response)), 201
+            else:
+                return make_response(jsonify(resp.json())), resp.status_code
         except Exception as exc:
             application.logger.error("Error ocurred. Message: {} .Doc: {}".format(exc.message, exc.__doc__))
             response = {

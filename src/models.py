@@ -13,13 +13,11 @@ class User(object):
     """Generical User representation """
 
     username = ''
-    password = ''
+    ss_token = ''
 
-    def __init__(self, username, password):
+    def __init__(self, username, ss_token):
         self.username = username
-        self.password = bcrypt.generate_password_hash(
-            password, BCRYPT_ROUNDS
-        )
+        self.ss_token = ss_token
         
 
     def encode_auth_token(self):

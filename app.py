@@ -14,11 +14,11 @@ DB_URL = os.environ["DB_URL"]
 DB_NAME = os.environ["DB_NAME"]
 LOG_LEVEL = os.environ["LOG_LEVEL"]
 TOKEN_DURATION = int(os.environ["TOKEN_DURATION"])
-SHARED_SERVER_URL = "taller2-fiuber-shared-server.herokuapp.com"
+SHARED_SERVER_URL = os.environ.get('SS_URL','')
 
 def get_log_level(log_level):
     if log_level == "INFO":
-        return logging.INFO
+        return logging.INFO 
     elif log_level == "DEBUG":
         return logging.DEBUG
     elif log_level == "WARN":
