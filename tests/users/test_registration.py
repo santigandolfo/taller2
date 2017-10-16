@@ -125,7 +125,7 @@ class TestDelete(BaseTestCase):
             self.assertTrue(data['status'] == 'success')
             self.assertTrue(data['message'] == 'user_deleted')
             self.assertTrue(response.content_type == 'application/json')
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 203)
 
     def test_delete_without_token(self):
         """ Test for trying to delete user without loging in """

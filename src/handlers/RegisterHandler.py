@@ -74,7 +74,7 @@ class RegisterAPI(MethodView):
                 username_user = User.decode_auth_token(auth_token)
                 application.logger.info("User to remove {}".format(username_user))
                 application.logger.debug(type(username_user))
-                if isinstance(username_user, str) or isinstance(username_user, unicode):
+                if  isinstance(username_user, unicode):
                     if db.users.count({'username':username_user}) != 1:
                         application.logger.debug('User not found')
                         response = {
@@ -89,7 +89,7 @@ class RegisterAPI(MethodView):
                         'status': 'success',
                         'message': 'user_deleted'
                     }
-                    return make_response(jsonify(response)), 200
+                    return make_response(jsonify(response)), 203
             response = {
                 'status': 'fail',
                 'message': 'missing_token'
