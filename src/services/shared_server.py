@@ -17,3 +17,6 @@ def update_user_data(user_id,auth_token,data):
 
 def validate_user(username, password):
     return requests.post(urljoin(SHARED_SERVER_URL,'users/validate'), data={'username': username, 'password': password})
+
+def get_data(user_id):
+    return requests.get(urljoin(SHARED_SERVER_URL, 'users/{}'.format(user_id))).json()

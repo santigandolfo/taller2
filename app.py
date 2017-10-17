@@ -68,9 +68,10 @@ bcrypt = Bcrypt(application)
 db = MongoClient(DB_URL)[DB_NAME]
 from src.handlers.RegisterHandler import registration_blueprint
 from src.handlers.SecurityHandler import security_blueprint
-
+from src.handlers.DriversHandler import drivers_blueprint
 application.register_blueprint(registration_blueprint)
 application.register_blueprint(security_blueprint)
+application.register_blueprint(drivers_blueprint)
 if __name__ == "__main__":
 
     application.run(debug=True, host='0.0.0.0')
