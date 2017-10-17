@@ -4,7 +4,7 @@ from flask.views import MethodView
 from app import db, application
 from src.models import  User
 from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, InvalidTokenException
-from src.services.shared_server import register_user
+from src.services.shared_server import register_user, remove_user
 
 registration_blueprint = Blueprint('users', __name__)
 
@@ -41,7 +41,7 @@ class RegisterAPI(MethodView):
             resp = register_user(data)
             if resp.ok:
                 application.logger.info('User registered')
-                user = User(username=username,ss_token=resp.json()['auth_token'])
+                user = User(username=username,uid=resp.json()['user'].get('id'),ss_token=resp.json()['auth_token'])
                 db.users.insert_one(user.__dict__)
                 auth_token = user.encode_auth_token()
                 application.logger.debug(isinstance(auth_token,unicode))
@@ -60,7 +60,7 @@ class RegisterAPI(MethodView):
             response = {
                 'status': 'fail',
                 'message': 'internal_error',
-                'error_de': exc.message
+                'error_description': exc.message
             }
             return make_response(jsonify(response)), 500 
 
@@ -76,22 +76,20 @@ class RegisterAPI(MethodView):
                 username_user = User.decode_auth_token(auth_token)
                 application.logger.info("User to remove {}".format(username_user))
                 application.logger.debug(type(username_user))
+                user = User.get_user_by_username(username_user)
                 if  isinstance(username_user, unicode):
-                    if db.users.count({'username':username_user}) != 1:
-                        application.logger.debug('User not found')
-                        response = {
-                            'status': 'fail',
-                            'message': 'no_user_found'
-                        }
-                        return make_response(jsonify(response)), 404
-
+                    
                     application.logger.debug('User found')
-                    db.users.delete_one({'username':username_user})
-                    response = {
-                        'status': 'success',
-                        'message': 'user_deleted'
-                    }
-                    return make_response(jsonify(response)), 203
+                    resp = remove_user(user.uid,user.ss_token)
+                    if resp.ok:
+                        response = {
+                            'status': 'success',
+                            'message': 'user_deleted'
+                        }
+                        user.remove_from_db()
+                        return make_response(jsonify(response)), 203
+                    else:
+                        return make_response(jsonify(resp.json())), resp.status_code
             response = {
                 'status': 'fail',
                 'message': 'missing_token'
@@ -116,7 +114,8 @@ class RegisterAPI(MethodView):
             application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
             response = {
                 'status': 'fail',
-                'message': 'internal_error'
+                'message': 'internal_error',
+                'error_description': exc.message
             }
             return make_response(jsonify(response)),500 #pragma: no cover
 

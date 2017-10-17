@@ -14,10 +14,12 @@ class User(object):
 
     username = ''
     ss_token = ''
+    uid = ''
 
-    def __init__(self, username, ss_token):
+    def __init__(self, username, ss_token, uid):
         self.username = username
         self.ss_token = ss_token
+        self.uid = uid
         
 
     def encode_auth_token(self):
@@ -35,6 +37,16 @@ class User(object):
         except Exception as e: #pragma: no cover
             return e
 
+    def remove_from_db(self):
+        """
+        Removes itself from the db
+        """
+        db.users.delete_one({'uid':self.uid})
+
+    @staticmethod
+    def get_user_by_username(username):
+        user_dict = db.users.find_one({'username':username})
+        return User(username=user_dict['username'],ss_token=user_dict['ss_token'],uid=user_dict['uid'])
 
     @staticmethod
     def decode_auth_token(auth_token):

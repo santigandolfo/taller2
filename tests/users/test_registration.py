@@ -226,143 +226,136 @@ class TestRegistration(BaseTestCase):
 
 
 
-# class TestDelete(BaseTestCase):
-#     def test_delete_user_correctly(self):
-#         """ Test for user delete, correct case """
-#         with self.client:
-#             response = self.client.post(
-#                 '/users',
-#                 data=json.dumps(dict(
-#                     username='joe_smith',
-#                     password='123456'
-#                 )),
-#                 content_type='application/json'
-#             )
-#             data = json.loads(response.data.decode())
-#             self.assertTrue(data['status'] == 'success')
-#             self.assertTrue(data['message'] == 'user_registered')
-#             self.assertTrue(data['auth_token'])
-#             self.assertTrue(response.content_type == 'application/json')
-#             self.assertEqual(response.status_code, 201)
-#             response = self.client.delete(
-#                 '/users',
-#                 headers=dict(
-#                     Authorization='Bearer ' + data['auth_token']
-#                 ),
-#                 content_type='application/json'
-#             )
-#             data = json.loads(response.data.decode())
-#             self.assertTrue(data['status'] == 'success')
-#             self.assertTrue(data['message'] == 'user_deleted')
-#             self.assertTrue(response.content_type == 'application/json')
-#             self.assertEqual(response.status_code, 203)
+class TestDelete(BaseTestCase):
+    @patch('requests.post')
+    @patch('requests.delete')
+    def test_delete_user_correctly(self, mock_delete, mock_post):
+        """ Test for user delete, correct case """
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'hghghg', "user":{"username":"joe_smith","id":"123"}}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
 
-#     def test_delete_without_token(self):
-#         """ Test for trying to delete user without loging in """
-#         with self.client:
-#             response = self.client.post(
-#                 '/users',
-#                 data=json.dumps(dict(
-#                     username='joe_smith',
-#                     password='123456'
-#                 )),
-#                 content_type='application/json'
-#             )
-#             data = json.loads(response.data.decode())
-#             response = self.client.delete(
-#                 '/users',
-#                 content_type='application/json'
-#             )
-#             data = json.loads(response.data.decode())
-#             self.assertTrue(data['status'] == 'fail')
-#             self.assertTrue(data['message'] == 'missing_token')
-#             self.assertTrue(response.content_type == 'application/json')
-#             self.assertEqual(response.status_code, 401)
+        mock_delete.return_value = Mock()
+        mock_delete.return_value.json.return_value = {'status':'success','message':'user_removed'}
+        mock_delete.return_value.ok = True
+        mock_delete.return_value.status_code = 203
+        with self.client:
+            
+            
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='joe_smith',
+                    password='123456'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
 
-#     def test_delete_with_expired_token(self):
-#         """ Test for trying to delete user with expired token """
-#         with self.client:
-#             response = self.client.post(
-#                 '/users',
-#                 data=json.dumps(dict(
-#                     username='joe_smith',
-#                     password='123456'
-#                 )),
-#                 content_type='application/json'
-#             )
-#             data = json.loads(response.data.decode())
-#             time.sleep(TOKEN_DURATION+1)
-#             response = self.client.delete(
-#                 '/users',
-#                 headers=dict(
-#                     Authorization='Bearer ' + data['auth_token']
-#                 ),
-#                 content_type='application/json'
-#             )
-#             data = json.loads(response.data.decode())
-#             self.assertTrue(data['status'] == 'fail')
-#             self.assertTrue(data['message'] == 'expired_token')
-#             self.assertTrue(response.content_type == 'application/json')
-#             self.assertEqual(response.status_code, 401)
-#     def test_delete_with_invalid_token(self):
-#         """ Test for trying to delete user with invalid token """
-#         with self.client:
-#             response = self.client.post(
-#                 '/users',
-#                 data=json.dumps(dict(
-#                     username='joe_smith',
-#                     password='123456'
-#                 )),
-#                 content_type='application/json'
-#             )
-#             data = json.loads(response.data.decode())
+            self.assertEqual(data['status'], 'success')
+            self.assertEqual(data['message'], 'user_registered')
+            self.assertTrue(data['auth_token'])
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 201)
 
-#             response = self.client.delete(
-#                 '/users',
-#                 headers=dict(
-#                     Authorization='Bearer ' + u'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dnZWRJbkFzIjoiYWRtaW4iLCJpYXQiOjE0MjI3Nzk2Mzh9.gzSraSYS8EXBxLN_oWnFSRgCzcmJmMjLiuyu5CSpyHI'
-#                 ),
-#                 content_type='application/json'
-#             )
-#             data = json.loads(response.data.decode())
-#             self.assertTrue(data['status'] == 'fail')
-#             self.assertTrue(data['message'] == 'invalid_token')
-#             self.assertTrue(response.content_type == 'application/json')
-#             self.assertEqual(response.status_code, 401)
+            
+            response = self.client.delete(
+                '/users',
+                headers=dict(
+                    Authorization='Bearer ' + data['auth_token']
+                ),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'], 'success')
+            self.assertEqual(data['message'], 'user_deleted')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 203)
+    @patch('requests.get')
+    def test_delete_without_token(self,mock_post):
+        """ Test for trying to delete user without loging in """
 
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'hghghg', "user":{"username":"joe_smith"}}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='joe_smith',
+                    password='123456'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            response = self.client.delete(
+                '/users',
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'missing_token')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 401)
+    @patch('requests.post')
+    def test_delete_with_expired_token(self,mock_post):
+        """ Test for trying to delete user with expired token """
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'hghghg', "user":{"username":"joe_smith"}}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='joe_smith',
+                    password='123456'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            time.sleep(TOKEN_DURATION+1)
+            response = self.client.delete(
+                '/users',
+                headers=dict(
+                    Authorization='Bearer ' + data['auth_token']
+                ),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'expired_token')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 401)
+    def test_delete_with_invalid_token(self):
+        """ Test for trying to delete user with invalid token """
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='joe_smith',
+                    password='123456'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
 
-#     def test_delete_already_deleted_user(self):
-#         """ Test for trying to delete user which was already deleted """
-#         with self.client:
-#             response = self.client.post(
-#                 '/users',
-#                 data=json.dumps(dict(
-#                     username='joe_smith',
-#                     password='123456'
-#                 )),
-#                 content_type='application/json'
-#             )
-#             data = json.loads(response.data.decode())
-#             auth_token = data['auth_token']
-#             response = self.client.delete(
-#                 '/users',
-#                 headers=dict(
-#                     Authorization='Bearer ' + auth_token
-#                 ),
-#                 content_type='application/json'
-#             )
-#             response = self.client.delete(
-#                 '/users',
-#                 headers=dict(
-#                     Authorization='Bearer ' + auth_token
-#                 ),
-#                 content_type='application/json'
-#             )
-#             data = json.loads(response.data.decode())
-#             self.assertTrue(data['status'] == 'fail')
-#             self.assertTrue(data['message'] == 'no_user_found')
-#             self.assertTrue(response.content_type == 'application/json')
-#             self.assertEqual(response.status_code, 404)
+            response = self.client.delete(
+                '/users',
+                headers=dict(
+                    Authorization='Bearer ' + u'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dnZWRJbkFzIjoiYWRtaW4iLCJpYXQiOjE0MjI3Nzk2Mzh9.gzSraSYS8EXBxLN_oWnFSRgCzcmJmMjLiuyu5CSpyHI'
+                ),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'invalid_token')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 401)
+
   
 if __name__ == '__main__':
     unittest.main()
