@@ -37,6 +37,11 @@ class User(object):
         except Exception as e: #pragma: no cover
             return e
 
+    def update_ss_token(self,new_sstoken):
+        """
+        Updates the token used for operations with this user in the shared server
+        """
+        db.users.update_one({'uid':self.uid},{'$set':{'ss_token':new_sstoken}})
     def remove_from_db(self):
         """
         Removes itself from the db
@@ -46,6 +51,8 @@ class User(object):
     @staticmethod
     def get_user_by_username(username):
         user_dict = db.users.find_one({'username':username})
+        if not user_dict:
+            return None
         return User(username=user_dict['username'],ss_token=user_dict['ss_token'],uid=user_dict['uid'])
 
     @staticmethod

@@ -4,6 +4,7 @@ from app import bcrypt, db, application
 from src.models import  User, BlacklistToken
 from src.exceptions import ExpiredTokenException, SignatureException, BlacklistedTokenException, InvalidTokenException
 import python_jwt as jwt
+from src.services.shared_server import validate_user
 
 
 security_blueprint = Blueprint('security', __name__)
@@ -31,8 +32,7 @@ class SecurityAPI(MethodView):
                 }
                 return make_response(jsonify(response)), 400
             application.logger.debug(type(username))
-            search_pattern = {'username' : username}
-            user = db.users.find_one(search_pattern)
+            user = User.get_user_by_username(username)
             if not user:
                 response = {
                     'status': 'fail',
@@ -40,23 +40,26 @@ class SecurityAPI(MethodView):
                 }
                 return make_response(jsonify(response)), 409
             application.logger.info("Login: user exists")
-            if not bcrypt.check_password_hash(user['password'], password):
+            resp = validate_user(username,password)
+            if resp.ok:
+                user = User.get_user_by_username(username)
+                user.update_ss_token(resp.json()['auth_token'])
+                application.logger.info("Login: password OK")
+                auth_token = user.encode_auth_token()
+                application.logger.info(isinstance(auth_token,unicode))
+                response = {
+                    'status': 'success',
+                    'message': 'login_succesful',
+                    'auth_token': auth_token
+                }
+                application.logger.debug('Generated json correctly')
+                return make_response(jsonify(response)), 200
+            else:
                 response = {
                     'status': 'fail',
                     'message': 'wrong_password'
                 }
                 return make_response(jsonify(response)), 401
-            application.logger.info("Login: password OK")
-            user = User(username,password)
-            auth_token = user.encode_auth_token()
-            application.logger.info(isinstance(auth_token,unicode))
-            response = {
-                'status': 'success',
-                'message': 'login_succesful',
-                'auth_token': auth_token
-            }
-            application.logger.debug('Generated json correctly')
-            return make_response(jsonify(response)), 201
 
         except Exception as exc: #pragma: no cover
             application.logger.error("Error ocurred. Message: "+exc.message+ ".Doc: "+ exc.__doc__)
