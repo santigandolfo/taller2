@@ -4,7 +4,7 @@ from flask.views import MethodView
 from app import db, application
 from src.models import  User
 from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, InvalidTokenException
-from src.services.shared_server import register_user, remove_user
+from src.services.shared_server import register_user, remove_user, update_user_data
 
 registration_blueprint = Blueprint('users', __name__)
 
@@ -109,7 +109,7 @@ class RegisterAPI(MethodView):
                 'message': 'invalid_token'
             }
             return make_response(jsonify(response)), 401
-        except Exception as exc:
+        except Exception as exc: #pragma: no cover
             
             application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
             response = {
@@ -117,7 +117,62 @@ class RegisterAPI(MethodView):
                 'message': 'internal_error',
                 'error_description': exc.message
             }
-            return make_response(jsonify(response)),500 #pragma: no cover
+            return make_response(jsonify(response)),500 
+
+    def put(self):
+        try:
+            data = request.get_json()
+            auth_header = request.headers.get('Authorization')
+            if auth_header:
+                auth_token = auth_header.split(" ")[1]
+            else:
+                auth_token = ''
+            application.logger.info("Removing user. Auth: {}".format(auth_token))
+            if auth_token:
+                username_user = User.decode_auth_token(auth_token)
+                user = User.get_user_by_username(username_user)
+                if not user:
+                    response = {
+                        'status': 'fail',
+                        'message': 'no_such_user'
+                    }
+                    return make_response(jsonify(response)),404
+                resp = update_user_data(user.uid,user.ss_token,data)
+                if resp.ok:
+                    response = {
+                        'status': 'success',
+                        'message': 'data_changed_succesfully'
+                    }
+                    return make_response(jsonify(response)), 200
+                else:
+                    return make_response(jsonify(resp.json())), resp.status_code
+            response = {
+                'status': 'fail',
+                'message': 'missing_token'
+            }
+            return make_response(jsonify(response)), 401
+        except ExpiredTokenException as exc:
+            application.logger.error("Expired token")
+            response = {
+                'status': 'fail',
+                'message': 'expired_token'
+            }
+            return make_response(jsonify(response)), 401
+        except InvalidTokenException as exc:
+            application.logger.error("Invalid token")
+            response = {
+                'status': 'fail',
+                'message': 'invalid_token'
+            }
+            return make_response(jsonify(response)), 401
+        except Exception as exc: #pragma: no cover
+            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
+            response = {
+                'status': 'fail',
+                'message': 'internal_error',
+                'error_description': exc.message
+            }
+            return make_response(jsonify(response)),500 
 
 #define the API resources
 registration_view = RegisterAPI.as_view('registration_api')
@@ -126,5 +181,5 @@ registration_view = RegisterAPI.as_view('registration_api')
 registration_blueprint.add_url_rule(
     '/users',
     view_func=registration_view,
-    methods=['POST', 'DELETE']
+    methods=['POST', 'DELETE', 'PUT']
 )

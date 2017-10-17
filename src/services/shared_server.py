@@ -12,8 +12,8 @@ def register_user(userdata):
 def remove_user(user_id, auth_token):
     return requests.delete(urljoin(SHARED_SERVER_URL, 'users/{}'.format(user_id)),header={"Authentication":auth_token})
 
-def get_user_data(user):
-    return requests.get(urljoin(SHARED_SERVER_URL,'users/{}'.format(user.id)))
+def update_user_data(user_id,auth_token,data):
+    return requests.put(urljoin(SHARED_SERVER_URL, 'users/{}'.format(user_id)),header={"Authentication":auth_token})    
 
 def validate_user(username, password):
     return requests.post(urljoin(SHARED_SERVER_URL,'users/validate'), data={'username': username, 'password': password})
