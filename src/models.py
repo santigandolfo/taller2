@@ -54,6 +54,12 @@ class User(object):
         if not user_dict:
             return None
         return User(username=user_dict['username'],ss_token=user_dict['ss_token'],uid=user_dict['uid'])
+    @staticmethod
+    def get_user_by_uid(uid):
+        user_dict = db.users.find_one({'uid':uid})
+        if not user_dict:
+            return None
+        return User(username=user_dict['username'],ss_token=user_dict['ss_token'],uid=user_dict['uid'])
 
     @staticmethod
     def decode_auth_token(auth_token):
