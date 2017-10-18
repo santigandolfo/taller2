@@ -4,7 +4,7 @@ from flask.views import MethodView
 from app import db, application
 from src.models import  User
 from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, InvalidTokenException
-from src.services.shared_server import register_user, remove_user, update_user_data
+from src.services.shared_server import register_user, remove_user, update_user_data, get_data
 
 registration_blueprint = Blueprint('users', __name__)
 
@@ -174,6 +174,34 @@ class RegisterAPI(MethodView):
             }
             return make_response(jsonify(response)),500 
 
+    def get(self):
+        try:
+            user =  User.get_user_by_username(request.args.get('username'))
+            if not user:
+                response = {
+                    'status': 'fail',
+                    'message': 'user_not_found'
+                }
+                return make_response(jsonify(response)), 404
+            resp = get_data(user.uid)
+            if resp.ok:
+                response = {
+                    'status': 'success',
+                    'message': 'data_retrieved',
+                    'info': resp.json()
+                }
+                return make_response(jsonify(response)), 200 
+            else:
+                return make_response(jsonify(resp.json())), resp.status_code
+        except Exception as exc: #pragma: no cover
+            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
+            response = {
+                'status': 'fail',
+                'message': 'internal_error',
+                'error_description': exc.message
+            }
+            return make_response(jsonify(response)),500 
+
 #define the API resources
 registration_view = RegisterAPI.as_view('registration_api')
 
@@ -181,5 +209,5 @@ registration_view = RegisterAPI.as_view('registration_api')
 registration_blueprint.add_url_rule(
     '/users',
     view_func=registration_view,
-    methods=['POST', 'DELETE', 'PUT']
+    methods=['POST', 'DELETE', 'PUT','GET']
 )
