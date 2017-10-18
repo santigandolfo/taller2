@@ -1,6 +1,8 @@
 language: python
 python:
   - "2.7"
+env: 
+  - PORT=5000
 notifications:
   email:  
      recipients:
@@ -12,7 +14,7 @@ notifications:
      on_success: change
 install: "pip install -r requirements.txt"
 script: 
-  py.test --cov=src tests
+  python manage.py cov
 
 after_success:
   coveralls

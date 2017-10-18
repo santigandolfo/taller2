@@ -14,6 +14,5 @@ RUN pip install -r requirements.txt
 
 EXPOSE  5000
 
-CMD ["/app/start.sh"] 
-
-
+CMD ["/app/start.sh"]
+#CMD ["python", "/app/manage.py", "test"]
