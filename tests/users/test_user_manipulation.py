@@ -192,16 +192,17 @@ class TestBasic(BaseTestCase):
                 self.assertEqual(data['message'],'invalid_token')
                 self.assertEqual(response.content_type,'application/json')
                 self.assertEqual(response.status_code,401)
-    
-    def test_get_data(self):
-        """Get data correctly"""
+    def test_get_data_invalid_user(self):
+        """Get data with an unregistered username"""
+
         with self.client:
             with patch('requests.get') as mock_get:
+                data = {
+                    'username': 'joe_smith'
+                }
                 response = self.client.get(
                     '/users',
-                    data=json.dumps(dict(
-                        username='joe_smith'
-                    ))
+                    query_string=data
                 )
                 data = json.loads(response.data.decode())
                 self.assertEqual(data['status'],'fail')
@@ -209,8 +210,8 @@ class TestBasic(BaseTestCase):
                 self.assertEqual(response.content_type,'application/json')
                 self.assertEqual(response.status_code,404)
 
-    def test_get_data_invalid_user(self):
-        """Get data with an unregistered username"""
+    def test_get_data(self):
+        """Get data correctly"""
         with self.client:
             
             with patch('requests.post') as mock_post:
@@ -229,15 +230,17 @@ class TestBasic(BaseTestCase):
 
             with patch('requests.get') as mock_get:
                 mock_get.return_value = Mock()
-                mock_post.return_value.json.return_value =  {'username':'joe_smith','birthday':'30-3-2000'}
-                mock_post.return_value.ok = True
-                mock_post.return_value.status_code = 201
+                mock_get.return_value.json.return_value =  {'username':'joe_smith','birthday':'30-3-2000'}
+                mock_get.return_value.ok = True
+                mock_get.return_value.status_code = 200
+                data = {
+                    'username': 'joe_smith'
+                }
                 response = self.client.get(
                     '/users',
-                    data=json.dumps(dict(
-                        username='joe_smith'
-                    ))
+                    query_string=data
                 )
+
                 data = json.loads(response.data.decode())
                 self.assertEqual(data['status'],'success')
                 self.assertEqual(data['message'],'data_retrieved')

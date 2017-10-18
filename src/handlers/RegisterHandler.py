@@ -176,7 +176,7 @@ class RegisterAPI(MethodView):
 
     def get(self):
         try:
-            user =  User.get_user_by_username(request.get_json().get('username'))
+            user =  User.get_user_by_username(request.args.get('username'))
             if not user:
                 response = {
                     'status': 'fail',
@@ -190,6 +190,7 @@ class RegisterAPI(MethodView):
                     'message': 'data_retrieved',
                     'info': resp.json()
                 }
+                return make_response(jsonify(response)), 200 
             else:
                 return make_response(jsonify(resp.json())), resp.status_code
         except Exception as exc: #pragma: no cover

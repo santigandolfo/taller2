@@ -83,7 +83,7 @@ class AvailableEndpoint(MethodView):
         try:
             result = []
             for driver in db.activedrivers.find():
-                result.append(get_data(driver['uid']))
+                result.append(get_data(driver['uid']).json())
             return make_response(jsonify(result)),200
         except Exception as exc: #pragma: no cover
             response = {
