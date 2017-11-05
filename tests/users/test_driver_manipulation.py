@@ -37,13 +37,14 @@ class TestDriverManipulation(BaseTestCase):
                 content_type='application/json'
 
                 )
-            
+
             data = json.loads(response.data.decode())
 
             self.assertEqual(data['status'],'success')
             self.assertEqual(data['message'],'changed_availability')
             self.assertEqual(response.content_type,'application/json')
             self.assertEqual(response.status_code,200)
+
     @patch('requests.post')
     @patch('requests.get')
     def test_one_driver_available(self, mock_get, mock_post):
@@ -86,8 +87,8 @@ class TestDriverManipulation(BaseTestCase):
             self.assertTrue(isinstance(drivers,list))
             self.assertEqual(len(drivers), 1)
             self.assertEqual(drivers[0]['username'],'carlos')
-    
-    
+
+
     @patch('requests.post')
     @patch('requests.get')
     def test_one_driver_not_availabe(self, mock_get, mock_post):
@@ -144,6 +145,6 @@ class TestDriverManipulation(BaseTestCase):
             self.assertEqual(len(drivers), 0)
 
 
-  
+
 if __name__ == '__main__':
     unittest.main()
