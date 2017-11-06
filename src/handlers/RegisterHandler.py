@@ -64,22 +64,30 @@ class RegisterAPI(MethodView):
             }
             return make_response(jsonify(response)), 500
 
-    def delete(self):
+    def delete(self,username):
         try:
+            application.logger.info("Asked to remove user: {}".format(username))
+            user = User.get_user_by_username(username)
+            if not user:
+                response = {
+                    'status': 'fail',
+                    'message': 'user_not_found'
+                }
+                return make_response(jsonify(response)),404
+            application.logger.info("user {} exists".format(username))
             auth_header = request.headers.get('Authorization')
             if auth_header:
                 auth_token = auth_header.split(" ")[1]
             else:
                 auth_token = ''
-            application.logger.info("Removing user. Auth: {}".format(auth_token))
             if auth_token:
+                application.logger.info("Removing user w/ Auth: {}".format(auth_token))
                 username_user = User.decode_auth_token(auth_token)
-                application.logger.info("User to remove {}".format(username_user))
-                application.logger.debug(type(username_user))
-                user = User.get_user_by_username(username_user)
-                if  isinstance(username_user, unicode):
-
-                    application.logger.debug('User found')
+                application.logger.info("Deletion was requested by: {}".format(username_user))
+                if username_user == username:
+                    application.logger.info("Permission granted")
+                    application.logger.info("User to remove {}".format(username_user))
+                    application.logger.debug(type(username_user))
                     resp = remove_user(user.uid)
                     if resp.ok:
                         response = {
@@ -90,6 +98,13 @@ class RegisterAPI(MethodView):
                         return make_response(jsonify(response)), 203
                     else:
                         return make_response(jsonify(resp.json())), resp.status_code
+                else:
+                    response = {
+                        'status': 'fail',
+                        'message': 'unauthorized_deletion'
+                    }
+                    return make_response(jsonify(response)), 401
+
             response = {
                 'status': 'fail',
                 'message': 'missing_token'
@@ -119,33 +134,46 @@ class RegisterAPI(MethodView):
             }
             return make_response(jsonify(response)),500
 
-    def put(self):
+    def put(self,username):
         try:
-            data = request.get_json()
+            application.logger.info("Asked to update user: {}".format(username))
+            user = User.get_user_by_username(username)
+            if not user:
+                response = {
+                    'status': 'fail',
+                    'message': 'user_not_found'
+                }
+                return make_response(jsonify(response)),404
+            application.logger.info("user {} exists".format(username))
             auth_header = request.headers.get('Authorization')
             if auth_header:
                 auth_token = auth_header.split(" ")[1]
             else:
                 auth_token = ''
-            application.logger.info("Removing user. Auth: {}".format(auth_token))
             if auth_token:
+                application.logger.info("Updating user w/ Auth: {}".format(auth_token))
                 username_user = User.decode_auth_token(auth_token)
-                user = User.get_user_by_username(username_user)
-                if not user:
+                application.logger.info("Update was requested by: {}".format(username_user))
+                if username_user == username:
+                    application.logger.info("Permission granted")
+                    application.logger.info("User to update {}".format(username_user))
+                    application.logger.debug(type(username_user))
+                    data = request.get_json()
+                    resp = update_user_data(user.uid,data)
+                    if resp.ok:
+                        response = {
+                            'status': 'success',
+                            'message': 'data_changed_succesfully'
+                        }
+                        return make_response(jsonify(response)), 200
+                    else:
+                        return make_response(jsonify(resp.json())), resp.status_code
+                else:
                     response = {
                         'status': 'fail',
-                        'message': 'no_such_user'
+                        'message': 'unauthorized_update'
                     }
-                    return make_response(jsonify(response)),404
-                resp = update_user_data(user.uid,data)
-                if resp.ok:
-                    response = {
-                        'status': 'success',
-                        'message': 'data_changed_succesfully'
-                    }
-                    return make_response(jsonify(response)), 200
-                else:
-                    return make_response(jsonify(resp.json())), resp.status_code
+                    return make_response(jsonify(response)), 401
             response = {
                 'status': 'fail',
                 'message': 'missing_token'
@@ -174,9 +202,9 @@ class RegisterAPI(MethodView):
             }
             return make_response(jsonify(response)),500
 
-    def get(self):
+    def get(self,username):
         try:
-            user =  User.get_user_by_username(request.args.get('username'))
+            user =  User.get_user_by_username(username)
             if not user:
                 response = {
                     'status': 'fail',
@@ -209,5 +237,11 @@ registration_view = RegisterAPI.as_view('registration_api')
 registration_blueprint.add_url_rule(
     '/users',
     view_func=registration_view,
-    methods=['POST', 'DELETE', 'PUT','GET']
+    methods=['POST']
+)
+
+registration_blueprint.add_url_rule(
+    '/users/<username>',
+    view_func=registration_view,
+    methods=['DELETE', 'PUT','GET']
 )

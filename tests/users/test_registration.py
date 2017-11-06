@@ -104,8 +104,7 @@ class TestRegistration(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(data['status'], 'fail')
-            self.assertEqual(
-                data['message'], 'invalid_username')
+            self.assertEqual(data['message'],'invalid_username')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 400)
 
@@ -167,7 +166,7 @@ class TestDelete(BaseTestCase):
 
 
             response = self.client.delete(
-                '/users',
+                '/users/joe_smith',
                 headers=dict(
                     Authorization='Bearer ' + data['auth_token']
                 ),
@@ -178,12 +177,13 @@ class TestDelete(BaseTestCase):
             self.assertEqual(data['message'], 'user_deleted')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 203)
-    @patch('requests.get')
+
+    @patch('requests.post')
     def test_delete_without_token(self,mock_post):
         """ Test for trying to delete user without loging in """
 
         mock_post.return_value = Mock()
-        mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'hghghg', "user":{"username":"joe_smith"}}
+        mock_post.return_value.json.return_value = {'id':"1"}
         mock_post.return_value.ok = True
         mock_post.return_value.status_code = 201
         with self.client:
@@ -198,7 +198,7 @@ class TestDelete(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             response = self.client.delete(
-                '/users',
+                '/users/joe_smith',
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
@@ -206,6 +206,7 @@ class TestDelete(BaseTestCase):
             self.assertEqual(data['message'], 'missing_token')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 401)
+
     @patch('requests.post')
     def test_delete_with_expired_token(self,mock_post):
         """ Test for trying to delete user with expired token """
@@ -225,7 +226,7 @@ class TestDelete(BaseTestCase):
             data = json.loads(response.data.decode())
             time.sleep(TOKEN_DURATION+1)
             response = self.client.delete(
-                '/users',
+                '/users/joe_smith',
                 headers=dict(
                     Authorization='Bearer ' + data['auth_token']
                 ),
@@ -236,8 +237,14 @@ class TestDelete(BaseTestCase):
             self.assertEqual(data['message'], 'expired_token')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 401)
-    def test_delete_with_invalid_token(self):
+
+    @patch('requests.post')
+    def test_delete_with_invalid_token(self,mock_post):
         """ Test for trying to delete user with invalid token """
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
         with self.client:
             response = self.client.post(
                 '/users',
@@ -250,7 +257,7 @@ class TestDelete(BaseTestCase):
             data = json.loads(response.data.decode())
 
             response = self.client.delete(
-                '/users',
+                '/users/joe_smith',
                 headers=dict(
                     Authorization='Bearer ' + u'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dnZWRJbkFzIjoiYWRtaW4iLCJpYXQiOjE0MjI3Nzk2Mzh9.gzSraSYS8EXBxLN_oWnFSRgCzcmJmMjLiuyu5CSpyHI'
                 ),

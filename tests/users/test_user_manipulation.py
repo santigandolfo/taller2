@@ -32,7 +32,7 @@ class TestBasic(BaseTestCase):
             data = json.loads(response.data.decode())
             auth_token = data['auth_token']
             response = self.client.put(
-                '/users',
+                '/users/joe_smith',
                 data=json.dumps(dict(
                     data=1
                 )),
@@ -75,7 +75,7 @@ class TestBasic(BaseTestCase):
                 mock_put.return_value.ok = False
                 mock_put.return_value.status_code = 400
                 response = self.client.put(
-                    '/users',
+                    '/users/joe_smith',
                     data=json.dumps(dict(
                         data=1
                     )),
@@ -114,7 +114,7 @@ class TestBasic(BaseTestCase):
                 auth_token = data['auth_token']
             with patch('requests.put') as mock_put:
                 response = self.client.put(
-                    '/users',
+                    '/users/joe_smith',
                     data=json.dumps(dict(
                         data=1
                     )),
@@ -152,7 +152,7 @@ class TestBasic(BaseTestCase):
             time.sleep(TOKEN_DURATION+1)
             with patch('requests.put') as mock_put:
                 response = self.client.put(
-                    '/users',
+                    '/users/joe_smith',
                     data=json.dumps(dict(
                         data=1
                     )),
@@ -173,10 +173,23 @@ class TestBasic(BaseTestCase):
         """ Test case for a failing data update because of invalid token"""
 
         with self.client:
-
+            auth_token = ''
+            with patch('requests.post') as mock_post:
+                mock_post.return_value = Mock()
+                mock_post.return_value.json.return_value = {'id':"1"}
+                mock_post.return_value.ok = True
+                mock_post.return_value.status_code = 201
+                response = self.client.post(
+                    '/users',
+                    data=json.dumps(dict(
+                        username='joe_smith',
+                        password='123456'
+                    )),
+                    content_type='application/json'
+                )
             with patch('requests.put') as mock_put:
                 response = self.client.put(
-                    '/users',
+                    '/users/joe_smith',
                     data=json.dumps(dict(
                         data=1
                     )),
@@ -197,13 +210,7 @@ class TestBasic(BaseTestCase):
 
         with self.client:
             with patch('requests.get') as mock_get:
-                data = {
-                    'username': 'joe_smith'
-                }
-                response = self.client.get(
-                    '/users',
-                    query_string=data
-                )
+                response = self.client.get('/users/joe_smith')
                 data = json.loads(response.data.decode())
                 self.assertEqual(data['status'],'fail')
                 self.assertEqual(data['message'],'user_not_found')
@@ -233,14 +240,7 @@ class TestBasic(BaseTestCase):
                 mock_get.return_value.json.return_value =  {'username':'joe_smith','birthday':'30-3-2000'}
                 mock_get.return_value.ok = True
                 mock_get.return_value.status_code = 200
-                data = {
-                    'username': 'joe_smith'
-                }
-                response = self.client.get(
-                    '/users',
-                    query_string=data
-                )
-
+                response = self.client.get('/users/joe_smith')
                 data = json.loads(response.data.decode())
                 self.assertEqual(data['status'],'success')
                 self.assertEqual(data['message'],'data_retrieved')
