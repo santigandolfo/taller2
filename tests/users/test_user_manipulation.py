@@ -13,7 +13,7 @@ class TestBasic(BaseTestCase):
     def test_simple_data_update(self, mock_put,mock_post):
         """ Test case for a simple data update"""
         mock_post.return_value = Mock()
-        mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd', "user":{"username":"joe_smith"}}
+        mock_post.return_value.json.return_value = {'id':"1"}
         mock_post.return_value.ok = True
         mock_post.return_value.status_code = 201
         mock_put.return_value = Mock()
@@ -51,12 +51,12 @@ class TestBasic(BaseTestCase):
 
     def test_simple_invalid_data_update(self):
         """ Test case for a failing data update"""
-        
+
         with self.client:
             auth_token = ''
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd', "user":{"username":"joe_smith"}}
+                mock_post.return_value.json.return_value = {'id':"1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(
@@ -94,12 +94,12 @@ class TestBasic(BaseTestCase):
 
     def test_data_update_missing_token(self):
         """ Test case for a failing data update because missing token"""
-        
+
         with self.client:
             auth_token = ''
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd', "user":{"username":"joe_smith"}}
+                mock_post.return_value.json.return_value = {'id':"1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(
@@ -131,12 +131,12 @@ class TestBasic(BaseTestCase):
 
     def test_data_update_with_expired_token(self):
         """ Test case for a failing data update because of expired token"""
-        
+
         with self.client:
             auth_token = ''
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd', "user":{"username":"joe_smith"}}
+                mock_post.return_value.json.return_value = {'id':"1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(
@@ -171,9 +171,9 @@ class TestBasic(BaseTestCase):
 
     def test_data_update_with_invalid_token(self):
         """ Test case for a failing data update because of invalid token"""
-        
+
         with self.client:
-            
+
             with patch('requests.put') as mock_put:
                 response = self.client.put(
                     '/users',
@@ -213,10 +213,10 @@ class TestBasic(BaseTestCase):
     def test_get_data(self):
         """Get data correctly"""
         with self.client:
-            
+
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd', "user":{"username":"joe_smith",'id':'1'}}
+                mock_post.return_value.json.return_value = {'id':"1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(
@@ -250,6 +250,6 @@ class TestBasic(BaseTestCase):
                 self.assertEqual(data['info']['birthday'],'30-3-2000')
 
 
-  
+
 if __name__ == '__main__':
     unittest.main()

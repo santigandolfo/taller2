@@ -43,7 +43,6 @@ class SecurityAPI(MethodView):
             resp = validate_user(username,password)
             if resp.ok:
                 user = User.get_user_by_username(username)
-                user.update_ss_token(resp.json()['auth_token'])
                 application.logger.info("Login: password OK")
                 auth_token = user.encode_auth_token()
                 application.logger.info(isinstance(auth_token,unicode))

@@ -12,7 +12,7 @@ class TestDriverManipulation(BaseTestCase):
     def test_simple_data_update(self, mock_post):
         """ Test case for a simple availability change"""
         mock_post.return_value = Mock()
-        mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd', "user":{"username":"joe_smith"}}
+        mock_post.return_value.json.return_value = {'id':"1"}
         mock_post.return_value.ok = True
         mock_post.return_value.status_code = 201
         with self.client:
@@ -37,19 +37,20 @@ class TestDriverManipulation(BaseTestCase):
                 content_type='application/json'
 
                 )
-            
+
             data = json.loads(response.data.decode())
 
             self.assertEqual(data['status'],'success')
             self.assertEqual(data['message'],'changed_availability')
             self.assertEqual(response.content_type,'application/json')
             self.assertEqual(response.status_code,200)
+
     @patch('requests.post')
     @patch('requests.get')
     def test_one_driver_available(self, mock_get, mock_post):
         """Make a driver available, request of available drivers should display it"""
         mock_post.return_value = Mock()
-        mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd', "user":{"username":"joe_smith"}}
+        mock_post.return_value.json.return_value = {'id':"1"}
         mock_post.return_value.ok = True
         mock_post.return_value.status_code = 201
         mock_get.return_value = Mock()
@@ -86,14 +87,14 @@ class TestDriverManipulation(BaseTestCase):
             self.assertTrue(isinstance(drivers,list))
             self.assertEqual(len(drivers), 1)
             self.assertEqual(drivers[0]['username'],'carlos')
-    
-    
+
+
     @patch('requests.post')
     @patch('requests.get')
     def test_one_driver_not_availabe(self, mock_get, mock_post):
         """Make a driver available, then make it unavailable, request of available drivers should not display it"""
         mock_post.return_value = Mock()
-        mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd', "user":{"username":"joe_smith"}}
+        mock_post.return_value.json.return_value = {'id':"1"}
         mock_post.return_value.ok = True
         mock_post.return_value.status_code = 201
         mock_get.return_value = Mock()
@@ -144,6 +145,6 @@ class TestDriverManipulation(BaseTestCase):
             self.assertEqual(len(drivers), 0)
 
 
-  
+
 if __name__ == '__main__':
     unittest.main()
