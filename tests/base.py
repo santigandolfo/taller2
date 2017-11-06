@@ -27,9 +27,14 @@ class BaseTestCase(TestCase):
         except Exception:
             pass
         db.create_collection('blacklistedTokens')
+        try:
+            db.positions.drop()
+        except Exception:
+            pass
+        db.create_collection('positions')
 
     def tearDown(self):
         db.drop_collection('users')
         db.drop_collection('blacklistedTokens')
         db.drop_collection('activedrivers')
-        
+        db.drop_collection('positions')
