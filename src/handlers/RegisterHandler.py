@@ -41,7 +41,7 @@ class RegisterAPI(MethodView):
             resp = register_user(data)
             if resp.ok:
                 application.logger.info('User registered')
-                user = User(username=username,uid=resp.json()['user'].get('id'),ss_token=resp.json()['auth_token'])
+                user = User(username=username,uid=resp.json()['id'])
                 db.users.insert_one(user.__dict__)
                 auth_token = user.encode_auth_token()
                 application.logger.debug(isinstance(auth_token,unicode))
@@ -49,7 +49,7 @@ class RegisterAPI(MethodView):
                     'status': 'success',
                     'message': 'user_registered',
                     'auth_token': auth_token,
-                    'info': resp.json().get('user')
+                    'id': resp.json().get('id')
                 }
                 application.logger.debug('Generated json correctly')
                 return make_response(jsonify(response)), 201
@@ -62,7 +62,7 @@ class RegisterAPI(MethodView):
                 'message': 'internal_error',
                 'error_description': exc.message
             }
-            return make_response(jsonify(response)), 500 
+            return make_response(jsonify(response)), 500
 
     def delete(self):
         try:
@@ -78,9 +78,9 @@ class RegisterAPI(MethodView):
                 application.logger.debug(type(username_user))
                 user = User.get_user_by_username(username_user)
                 if  isinstance(username_user, unicode):
-                    
+
                     application.logger.debug('User found')
-                    resp = remove_user(user.uid,user.ss_token)
+                    resp = remove_user(user.uid)
                     if resp.ok:
                         response = {
                             'status': 'success',
@@ -110,14 +110,14 @@ class RegisterAPI(MethodView):
             }
             return make_response(jsonify(response)), 401
         except Exception as exc: #pragma: no cover
-            
+
             application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
             response = {
                 'status': 'fail',
                 'message': 'internal_error',
                 'error_description': exc.message
             }
-            return make_response(jsonify(response)),500 
+            return make_response(jsonify(response)),500
 
     def put(self):
         try:
@@ -137,7 +137,7 @@ class RegisterAPI(MethodView):
                         'message': 'no_such_user'
                     }
                     return make_response(jsonify(response)),404
-                resp = update_user_data(user.uid,user.ss_token,data)
+                resp = update_user_data(user.uid,data)
                 if resp.ok:
                     response = {
                         'status': 'success',
@@ -172,7 +172,7 @@ class RegisterAPI(MethodView):
                 'message': 'internal_error',
                 'error_description': exc.message
             }
-            return make_response(jsonify(response)),500 
+            return make_response(jsonify(response)),500
 
     def get(self):
         try:
@@ -190,7 +190,7 @@ class RegisterAPI(MethodView):
                     'message': 'data_retrieved',
                     'info': resp.json()
                 }
-                return make_response(jsonify(response)), 200 
+                return make_response(jsonify(response)), 200
             else:
                 return make_response(jsonify(resp.json())), resp.status_code
         except Exception as exc: #pragma: no cover
@@ -200,7 +200,7 @@ class RegisterAPI(MethodView):
                 'message': 'internal_error',
                 'error_description': exc.message
             }
-            return make_response(jsonify(response)),500 
+            return make_response(jsonify(response)),500
 
 #define the API resources
 registration_view = RegisterAPI.as_view('registration_api')

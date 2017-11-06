@@ -88,7 +88,7 @@ class TestLogin(BaseTestCase):
         with self.client:
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd', "user":{"username":"joe_smith"}}
+                mock_post.return_value.json.return_value = {'id':"1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 self.client.post(
@@ -125,7 +125,7 @@ class TestLogin(BaseTestCase):
         with self.client:
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd', "user":{"username":"joe_smith"}}
+                mock_post.return_value.json.return_value = {'id':"1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 self.client.post(
@@ -158,14 +158,14 @@ class TestLogin(BaseTestCase):
 
 
 class TestLogout(BaseTestCase):
-    
+
     def test_succesful_logout_after_register(self):
         """ Test logout from a recently registered user"""
         auth_token = ''
         with self.client:
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd', "user":{"username":"joe_smith"}}
+                mock_post.return_value.json.return_value = {'id':"1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(
@@ -201,7 +201,7 @@ class TestLogout(BaseTestCase):
         with self.client:
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd', "user":{"username":"joe_smith"}}
+                mock_post.return_value.json.return_value = {'id':"1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 self.client.post(
@@ -308,7 +308,7 @@ class TestLogout(BaseTestCase):
         with self.client:
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd',  "user":{"username":"joe_smith"}}
+                mock_post.return_value.json.return_value = {'id':"1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(

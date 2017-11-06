@@ -14,81 +14,21 @@ class TestRegistration(BaseTestCase):
         """ Test for user registration """
 
         mock_request.return_value = Mock()
-        mock_request.return_value.json.return_value = {
-                            "metadata": {
-                                "version": "string"
-                            },
-                            "auth_token": "fasdasfdsafsd.fdsafdsa.fdsafsdafdsa",
-                            "user": {
-                                "id": "1",
-                                "_ref": "2",
-                                "applicationOwner": "fiuber",
-                                "type": "driver",
-                                "cars": [
-                                {
-                                    "id": "2",
-                                    "_ref": "3",
-                                    "owner": "carlosc",
-                                    "properties": [
-                                    {
-                                        "name": "string",
-                                        "value": "string"
-                                    }
-                                    ]
-                                }
-                                ],
-                                "username": "carlosc",
-                                "name": "Carlos",
-                                "surname": "Carloso",
-                                "country": "Argentina",
-                                "email": "carlos@gmail.com",
-                                "birthdate": "23-10-2017",
-                                "images": [
-                                "fdlsakflsdak"
-                                ],
-                                "balance": [
-                                {
-                                    "currency": "ARS",
-                                    "value": 0
-                                }
-                                ]
-                            }
-                            }
+        mock_request.return_value.json.return_value = {'id':"1"}
         mock_request.return_value.ok = True
         with self.client:
             response = self.client.post(
                 '/users',
                 data=json.dumps({
-                                "type": "driver",
-                                "cars": [
-                                {
-                                    "id": "2",
-                                    "_ref": "3",
-                                    "owner": "carlosc",
-                                    "properties": [
-                                    {
-                                        "name": "string",
-                                        "value": "string"
-                                    }
-                                    ]
-                                }
-                                ],
-                                "username": "carlosc",
-                                "password": "12345678",
-                                "name": "Carlos",
-                                "surname": "Carloso",
-                                "country": "Argentina",
-                                "email": "carlos@gmail.com",
-                                "birthdate": "23-10-2017",
-                                "images": [
-                                "fdlsakflsdak"
-                                ],
-                                "balance": [
-                                {
-                                    "currency": "ARS",
-                                    "value": 0
-                                }
-                                ]
+                      'username':"fedebalina",
+                      'password':"picapiedra",
+                      'firstname':"Federico",
+                      'lastname':"Balina",
+                      'email':"federicobalina@gmail.com",
+                      'birthdate':"05/06/1995",
+                      'type':"driver",
+                      'country':"Argentina",
+                      'image':"iVBORw0KGgoAAAANSUhEUgAABOEAAATrCAYAAADbvqaNAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYACbM5SURBVHja7P3ZkiRX"
                             }
                             ),
                 content_type='application/json'
@@ -96,44 +36,8 @@ class TestRegistration(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertEqual(data['message'], 'user_registered')
             self.assertEqual(data['status'],'success')
-            self.assertEqual(data['info'], 
-                            {
-                                "id": "1",
-                                "_ref": "2",
-                                "applicationOwner": "fiuber",
-                                "type": "driver",
-                                "cars": [
-                                {
-                                    "id": "2",
-                                    "_ref": "3",
-                                    "owner": "carlosc",
-                                    "properties": [
-                                    {
-                                        "name": "string",
-                                        "value": "string"
-                                    }
-                                    ]
-                                }
-                                ],
-                                "username": "carlosc",
-                                "name": "Carlos",
-                                "surname": "Carloso",
-                                "country": "Argentina",
-                                "email": "carlos@gmail.com",
-                                "birthdate": "23-10-2017",
-                                "images": [
-                                "fdlsakflsdak"
-                                ],
-                                "balance": [
-                                {
-                                    "currency": "ARS",
-                                    "value": 0
-                                }
-                                ]
-                            }
-                            )
-            self.assertEqual(data['message'],'user_registered')
             self.assertTrue(data['auth_token'])
+            self.assertEqual(data['id'],"1")
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 201)
     @patch('requests.post')
@@ -141,24 +45,26 @@ class TestRegistration(BaseTestCase):
         """ Test for user registration """
 
         mock_request.return_value = Mock()
-        mock_request.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'fmsdakfkldskafl.fdsalfkdsa.fdsafsd', "user":{"username":"joe_smith"}}
+        mock_request.return_value.json.return_value = {'id':"1"}
         mock_request.return_value.ok = True
         with self.client:
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
                     username='joe_smith',
-                    password='123456'
+                    password='123456',
+                    email='joesmith@gmail.com',
+                    type='passenger'
                 )),
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
             self.assertEqual(data['message'], 'user_registered')
             self.assertEqual(data['status'], 'success')
-
             self.assertTrue(data['auth_token'])
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 201)
+
     @patch('requests.post')
     def test_registered_with_already_registered_user(self, mock_request):
         """ Test registration with already registered username"""
@@ -185,9 +91,9 @@ class TestRegistration(BaseTestCase):
 
     def test_register_with_missing_username(self):
         """ Test registration without an username"""
-        
+
         with self.client:
-            
+
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
@@ -202,12 +108,12 @@ class TestRegistration(BaseTestCase):
                 data['message'], 'invalid_username')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 400)
-    
+
     def test_register_with_missing_password(self):
         """ Test registration without password"""
-        
+
         with self.client:
-            
+
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
@@ -232,7 +138,7 @@ class TestDelete(BaseTestCase):
     def test_delete_user_correctly(self, mock_delete, mock_post):
         """ Test for user delete, correct case """
         mock_post.return_value = Mock()
-        mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'hghghg', "user":{"username":"joe_smith","id":"123"}}
+        mock_post.return_value.json.return_value = {'id':"1"}
         mock_post.return_value.ok = True
         mock_post.return_value.status_code = 201
 
@@ -241,8 +147,8 @@ class TestDelete(BaseTestCase):
         mock_delete.return_value.ok = True
         mock_delete.return_value.status_code = 203
         with self.client:
-            
-            
+
+
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
@@ -259,7 +165,7 @@ class TestDelete(BaseTestCase):
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 201)
 
-            
+
             response = self.client.delete(
                 '/users',
                 headers=dict(
@@ -281,7 +187,7 @@ class TestDelete(BaseTestCase):
         mock_post.return_value.ok = True
         mock_post.return_value.status_code = 201
         with self.client:
-            
+
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
@@ -304,7 +210,7 @@ class TestDelete(BaseTestCase):
     def test_delete_with_expired_token(self,mock_post):
         """ Test for trying to delete user with expired token """
         mock_post.return_value = Mock()
-        mock_post.return_value.json.return_value = {'status':'success','message':'user_registered','auth_token':'hghghg', "user":{"username":"joe_smith"}}
+        mock_post.return_value.json.return_value = {'id':"1"}
         mock_post.return_value.ok = True
         mock_post.return_value.status_code = 201
         with self.client:
@@ -356,6 +262,6 @@ class TestDelete(BaseTestCase):
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 401)
 
-  
+
 if __name__ == '__main__':
     unittest.main()
