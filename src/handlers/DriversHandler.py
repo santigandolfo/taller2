@@ -23,7 +23,6 @@ class DriversAPI(MethodView):
                 }
                 return make_response(jsonify(response)), 400
             application.logger.info("Asked to update driver's availability for: {}".format(username))
-            user = User.get_user_by_username(username)
             if db.drivers.count({'username':username}) == 0:
                 response = {
                     'status': 'fail',

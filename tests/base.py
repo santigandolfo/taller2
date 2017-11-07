@@ -18,10 +18,10 @@ class BaseTestCase(TestCase):
             pass
         db.create_collection('drivers')
         try:
-            db.passengers.drop()
+            db.riders.drop()
         except Exception:
             pass
-        db.create_collection('passengers')
+        db.create_collection('riders')
         try:
             db.users.drop()
         except Exception:
@@ -42,5 +42,5 @@ class BaseTestCase(TestCase):
         db.drop_collection('users')
         db.drop_collection('blacklistedTokens')
         db.drop_collection('drivers')
-        db.drop_collection('passengers')
+        db.drop_collection('riders')
         db.drop_collection('positions')
