@@ -1,0 +1,141 @@
+.TH "server.src.models.User" 3 "Mon Nov 6 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+server.src.models.User \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits object\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "def \fB__init__\fP (self, \fBusername\fP, \fBuid\fP)"
+.br
+.ti -1c
+.RI "def \fBencode_auth_token\fP (self)"
+.br
+.ti -1c
+.RI "def \fBremove_from_db\fP (self)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "def \fBget_user_by_username\fP (\fBusername\fP)"
+.br
+.ti -1c
+.RI "def \fBget_user_by_uid\fP (\fBuid\fP)"
+.br
+.ti -1c
+.RI "def \fBdecode_auth_token\fP (auth_token)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBusername\fP"
+.br
+.ti -1c
+.RI "\fBuid\fP"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "string \fBusername\fP = ''"
+.br
+.ti -1c
+.RI "string \fBuid\fP = ''"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+.nf
+Generical User representation 
+.fi
+.PP
+ 
+.PP
+Definition at line 12 of file models\&.py\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "def server\&.src\&.models\&.User\&.__init__ ( self,  username,  uid)"
+
+.PP
+Definition at line 18 of file models\&.py\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "def server\&.src\&.models\&.User\&.decode_auth_token ( auth_token)\fC [static]\fP"
+
+.PP
+.nf
+Decodes the auth token
+:param auth_token:
+:return: integer|string
+
+.fi
+.PP
+ 
+.PP
+Definition at line 58 of file models\&.py\&.
+.SS "def server\&.src\&.models\&.User\&.encode_auth_token ( self)"
+
+.PP
+.nf
+Generates the Auth Token
+:return: string
+
+.fi
+.PP
+ 
+.PP
+Definition at line 23 of file models\&.py\&.
+.SS "def server\&.src\&.models\&.User\&.get_user_by_uid ( uid)\fC [static]\fP"
+
+.PP
+Definition at line 51 of file models\&.py\&.
+.SS "def server\&.src\&.models\&.User\&.get_user_by_username ( username)\fC [static]\fP"
+
+.PP
+Definition at line 45 of file models\&.py\&.
+.SS "def server\&.src\&.models\&.User\&.remove_from_db ( self)"
+
+.PP
+.nf
+Removes itself from the db
+
+.fi
+.PP
+ 
+.PP
+Definition at line 38 of file models\&.py\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "string server\&.src\&.models\&.User\&.uid = ''\fC [static]\fP"
+
+.PP
+Definition at line 16 of file models\&.py\&.
+.SS "server\&.src\&.models\&.User\&.uid"
+
+.PP
+Definition at line 20 of file models\&.py\&.
+.SS "string server\&.src\&.models\&.User\&.username = ''\fC [static]\fP"
+
+.PP
+Definition at line 15 of file models\&.py\&.
+.SS "server\&.src\&.models\&.User\&.username"
+
+.PP
+Definition at line 19 of file models\&.py\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for FIUBER from the source code\&.
