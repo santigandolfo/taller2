@@ -11,9 +11,9 @@ drivers_blueprint = Blueprint('drivers', __name__)
 class DriversAPI(MethodView):
     """Handler for drivers manipulation related API"""
 
-    def patch(self):
+    def patch(self,username):
         try:
-            data = request.get_json()
+            data = request.get_json() #TODO: Usar Schema para validar formato, deberia ser un bool
             try:
                 availability = data['availability']
             except Exception as exc:
@@ -22,33 +22,39 @@ class DriversAPI(MethodView):
                     'message': 'missing_availability'
                 }
                 return make_response(jsonify(response)), 400
+            application.logger.info("Asked to update driver's availability for: {}".format(username))
+            user = User.get_user_by_username(username)
+            if db.drivers.count({'username':username}) == 0:
+                response = {
+                    'status': 'fail',
+                    'message': 'driver_not_found'
+                }
+                return make_response(jsonify(response)),404
+            application.logger.info("driver {} exists".format(username))
             auth_header = request.headers.get('Authorization')
             if auth_header:
                 auth_token = auth_header.split(" ")[1]
             else:
                 auth_token = ''
-            application.logger.info("Removing user. Auth: {}".format(auth_token))
             if auth_token:
+                application.logger.info("Updating driver's availability w/ Auth: {}".format(auth_token))
                 username_user = User.decode_auth_token(auth_token)
-                user = User.get_user_by_username(username_user)
-                if not user:
+                application.logger.info("Update was requested by: {}".format(username_user))
+                if username_user == username:
+                    application.logger.info("Permission granted")
+                    application.logger.info("driver to update {}".format(username_user))
+                    db.drivers.find_one_and_update({'username':username},{'$set': {'available':availability}})
+                    response = {
+                        'status': 'success',
+                        'message': 'updated_availability'
+                    }
+                    return make_response(jsonify(response)), 200
+                else:
                     response = {
                         'status': 'fail',
-                        'message': 'no_such_user'
+                        'message': 'unauthorized_update'
                     }
-                    return make_response(jsonify(response)),404
-                if availability and db.activedrivers.count({'uid':user.uid}) == 0:
-                        db.activedrivers.insert_one({'uid':user.uid})
-                if not availability and db.activedrivers.count({'uid':user.uid}) != 0:
-                    try:
-                        db.activedrivers.delete_one({'uid':user.uid})
-                    except Exception:
-                        pass
-                response = {
-                    'status': 'success',
-                    'message': 'changed_availability'
-                }
-                return make_response(jsonify(response)), 200
+                    return make_response(jsonify(response)), 401
             response = {
                 'status': 'fail',
                 'message': 'missing_token'
@@ -76,14 +82,15 @@ class DriversAPI(MethodView):
                 'error_description': exc.message
             }
             return make_response(jsonify(response)),500
-    
+
 
 class AvailableEndpoint(MethodView):
     def get(self):
         try:
             result = []
-            for driver in db.activedrivers.find():
-                result.append(get_data(driver['uid']).json())
+            for driver in db.drivers.find({"available":True}):
+                userId = db.users.find_one({"username":driver['username']})['uid']
+                result.append(get_data(userId).json()) #TODO: Obtener toda la info con un solo request, pasando un vector de ids
             return make_response(jsonify(result)),200
         except Exception as exc: #pragma: no cover
             response = {
@@ -98,7 +105,7 @@ available_view = AvailableEndpoint.as_view('available_endpoint')
 
 #add Rules for API Endpoints
 drivers_blueprint.add_url_rule(
-    '/drivers',
+    '/drivers/<username>',
     view_func=drivers_view,
     methods=['PATCH']
 )

@@ -28,7 +28,7 @@ class TestDriverManipulation(BaseTestCase):
             data = json.loads(response.data.decode())
             auth_token = data['auth_token']
             response = self.client.patch(
-                '/drivers',
+                '/drivers/pedro',
                 data=json.dumps(dict(
                     availability=True
                 )),
@@ -42,7 +42,7 @@ class TestDriverManipulation(BaseTestCase):
             data = json.loads(response.data.decode())
 
             self.assertEqual(data['status'],'success')
-            self.assertEqual(data['message'],'changed_availability')
+            self.assertEqual(data['message'],'updated_availability')
             self.assertEqual(response.content_type,'application/json')
             self.assertEqual(response.status_code,200)
 
@@ -71,7 +71,7 @@ class TestDriverManipulation(BaseTestCase):
             data = json.loads(response.data.decode())
             auth_token = data['auth_token']
             response = self.client.patch(
-                '/drivers',
+                '/drivers/pedro',
                 data=json.dumps(dict(
                     availability=True
                 )),
@@ -118,7 +118,7 @@ class TestDriverManipulation(BaseTestCase):
             data = json.loads(response.data.decode())
             auth_token = data['auth_token']
             response = self.client.patch(
-                '/drivers',
+                '/drivers/pedro',
                 data=json.dumps(dict(
                     availability=True
                 )),
@@ -129,7 +129,7 @@ class TestDriverManipulation(BaseTestCase):
 
                 )
             response = self.client.patch(
-                '/drivers',
+                '/drivers/pedro',
                 data=json.dumps(dict(
                     availability=False
                 )),

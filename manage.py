@@ -51,9 +51,18 @@ def test_security():
     return 1
 
 @manager.command
-def test_manipulation():
+def test_user_manipulation():
     """Runs the position unit tests without test coverage."""
-    tests = unittest.TestLoader().discover('tests', pattern='test_*_manipulation.py')
+    tests = unittest.TestLoader().discover('tests', pattern='test_user_manipulation.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
+@manager.command
+def test_driver_manipulation():
+    """Runs the position unit tests without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_driver_manipulation.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
         return 0
