@@ -32,6 +32,15 @@ def test():
         return 0
     return 1
 
+@manager.command
+def test_positions():
+    """Runs the position unit tests without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_positions.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
 
 @manager.command
 def cov():
