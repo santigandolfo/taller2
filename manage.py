@@ -33,6 +33,33 @@ def test():
     return 1
 
 @manager.command
+def test_registration():
+    """Runs the position unit tests without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_registration.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
+@manager.command
+def test_security():
+    """Runs the position unit tests without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_security.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
+@manager.command
+def test_manipulation():
+    """Runs the position unit tests without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_*_manipulation.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
+@manager.command
 def test_positions():
     """Runs the position unit tests without test coverage."""
     tests = unittest.TestLoader().discover('tests', pattern='test_positions.py')

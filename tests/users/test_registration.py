@@ -78,7 +78,8 @@ class TestRegistration(BaseTestCase):
                 '/users',
                 data=json.dumps(dict(
                     username='joe_smith',
-                    password='123456'
+                    password='123456',
+                    type='passenger'
                 )),
                 content_type='application/json'
             )
@@ -98,7 +99,8 @@ class TestRegistration(BaseTestCase):
                 '/users',
                 data=json.dumps(dict(
                     emal='joe_smith',
-                    password='123456'
+                    password='123456',
+                    type='passenger'
                 )),
                 content_type='application/json'
             )
@@ -117,7 +119,8 @@ class TestRegistration(BaseTestCase):
                 '/users',
                 data=json.dumps(dict(
                     username='joe_smith',
-                    pssword='123456'
+                    pssword='123456',
+                    type='passenger'
                 )),
                 content_type='application/json'
             )
@@ -152,7 +155,8 @@ class TestDelete(BaseTestCase):
                 '/users',
                 data=json.dumps(dict(
                     username='joe_smith',
-                    password='123456'
+                    password='123456',
+                    type='passenger'
                 )),
                 content_type='application/json'
             )
@@ -192,7 +196,8 @@ class TestDelete(BaseTestCase):
                 '/users',
                 data=json.dumps(dict(
                     username='joe_smith',
-                    password='123456'
+                    password='123456',
+                    type='passenger'
                 )),
                 content_type='application/json'
             )
@@ -219,7 +224,8 @@ class TestDelete(BaseTestCase):
                 '/users',
                 data=json.dumps(dict(
                     username='joe_smith',
-                    password='123456'
+                    password='123456',
+                    type='passenger'
                 )),
                 content_type='application/json'
             )
@@ -250,7 +256,8 @@ class TestDelete(BaseTestCase):
                 '/users',
                 data=json.dumps(dict(
                     username='joe_smith',
-                    password='123456'
+                    password='123456',
+                    type='driver'
                 )),
                 content_type='application/json'
             )

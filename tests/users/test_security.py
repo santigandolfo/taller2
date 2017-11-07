@@ -95,7 +95,8 @@ class TestLogin(BaseTestCase):
                     '/users',
                     data=json.dumps(dict(
                         username='juan_perez',
-                        password='perez20'
+                        password='perez20',
+                        type='passenger'
                     )),
                     content_type='application/json'
                 )
@@ -132,7 +133,8 @@ class TestLogin(BaseTestCase):
                     '/users',
                     data=json.dumps(dict(
                         username='juan_perez',
-                        password='perez20'
+                        password='perez20',
+                        type='driver'
                     )),
                     content_type='application/json'
                 )
@@ -172,7 +174,8 @@ class TestLogout(BaseTestCase):
                     '/users',
                     data=json.dumps(dict(
                         username='pedro_gomez',
-                        password='peritomoreno'
+                        password='peritomoreno',
+                        type='passenger'
                     )),
                     content_type='application/json'
                 )
@@ -208,7 +211,8 @@ class TestLogout(BaseTestCase):
                     '/users',
                     data=json.dumps(dict(
                         username='pedro_gomez',
-                        password='peritomoreno'
+                        password='peritomoreno',
+                        type='passenger'
                     )),
                     content_type='application/json'
                 )
@@ -315,7 +319,8 @@ class TestLogout(BaseTestCase):
                     '/users',
                     data=json.dumps(dict(
                         username='pedro_gomez',
-                        password='peritomoreno'
+                        password='peritomoreno',
+                        type='driver'
                     )),
                     content_type='application/json'
                 )

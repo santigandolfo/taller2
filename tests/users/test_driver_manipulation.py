@@ -20,7 +20,8 @@ class TestDriverManipulation(BaseTestCase):
                 '/users',
                 data=json.dumps(dict(
                     username='pedro',
-                    password='123456'
+                    password='123456',
+                    type='driver'
                 )),
                 content_type='application/json'
             )
@@ -62,7 +63,8 @@ class TestDriverManipulation(BaseTestCase):
                 '/users',
                 data=json.dumps(dict(
                     username='pedro',
-                    password='123456'
+                    password='123456',
+                    type='driver'
                 )),
                 content_type='application/json'
             )
@@ -106,7 +108,8 @@ class TestDriverManipulation(BaseTestCase):
                 '/users',
                 data=json.dumps(dict(
                     username='pedro',
-                    password='123456'
+                    password='123456',
+                    type='driver'
                 )),
                 content_type='application/json'
             )

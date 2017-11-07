@@ -25,7 +25,8 @@ class TestBasic(BaseTestCase):
                 '/users',
                 data=json.dumps(dict(
                     username='joe_smith',
-                    password='123456'
+                    password='123456',
+                    type='passenger'
                 )),
                 content_type='application/json'
             )
@@ -63,7 +64,8 @@ class TestBasic(BaseTestCase):
                     '/users',
                     data=json.dumps(dict(
                         username='joe_smith',
-                        password='123456'
+                        password='123456',
+                        type='driver'
                     )),
                     content_type='application/json'
                 )
@@ -106,7 +108,8 @@ class TestBasic(BaseTestCase):
                     '/users',
                     data=json.dumps(dict(
                         username='joe_smith',
-                        password='123456'
+                        password='123456',
+                        type='passenger'
                     )),
                     content_type='application/json'
                 )
@@ -143,7 +146,8 @@ class TestBasic(BaseTestCase):
                     '/users',
                     data=json.dumps(dict(
                         username='joe_smith',
-                        password='123456'
+                        password='123456',
+                        type='passenger'
                     )),
                     content_type='application/json'
                 )
@@ -183,7 +187,8 @@ class TestBasic(BaseTestCase):
                     '/users',
                     data=json.dumps(dict(
                         username='joe_smith',
-                        password='123456'
+                        password='123456',
+                        type='passenger'
                     )),
                     content_type='application/json'
                 )
@@ -230,7 +235,8 @@ class TestBasic(BaseTestCase):
                     '/users',
                     data=json.dumps(dict(
                         username='joe_smith',
-                        password='123456'
+                        password='123456',
+                        type='passenger'
                     )),
                     content_type='application/json'
                 )
