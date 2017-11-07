@@ -71,9 +71,18 @@ class TestRegistration(BaseTestCase):
         with self.client:
             response = ''
             mock_request.return_value = Mock()
-            mock_request.return_value.json.return_value = {'status':'fail','message':'user_username_already_exists'}
-            mock_request.return_value.ok = False
-            mock_request.return_value.status_code = 409
+            mock_request.return_value.json.return_value = {'id':'1'}
+            mock_request.return_value.ok = True
+            mock_request.return_value.status_code = 201
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='joe_smith',
+                    password='123456',
+                    type='passenger'
+                )),
+                content_type='application/json'
+            )
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
@@ -85,8 +94,7 @@ class TestRegistration(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(data['status'], 'fail')
-            self.assertEqual(
-                data['message'], 'user_username_already_exists')
+            self.assertEqual(data['message'], 'user_username_already_exists')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 409)
 

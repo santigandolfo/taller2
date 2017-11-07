@@ -37,6 +37,11 @@ class BaseTestCase(TestCase):
         except Exception:
             pass
         db.create_collection('positions')
+        try:
+            db.requests.drop()
+        except Exception:
+            pass
+        db.create_collection('requests')
 
     def tearDown(self):
         db.drop_collection('users')
@@ -44,3 +49,4 @@ class BaseTestCase(TestCase):
         db.drop_collection('drivers')
         db.drop_collection('riders')
         db.drop_collection('positions')
+        db.drop_collection('requests')

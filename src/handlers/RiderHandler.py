@@ -37,17 +37,17 @@ class RidersAPI(MethodView):
             if auth_token:
                 application.logger.info("Submitting trip request w/ Auth: {}".format(auth_token))
                 username_user = User.decode_auth_token(auth_token)
-                application.logger.info("Update was requested by: {}".format(username_user))
+                application.logger.info("Token decoded: {}".format(username_user))
                 if username_user == username:
                     application.logger.info("Permission granted")
                     application.logger.info("Rider submitting request: {}".format(username_user))
 
                     if db.requests.count({'username':username,'pending':True}) == 0:
                         #DO REQUEST STUFF
-                        result = db.request.insert_one({'username':username,'coordinates':data,'pending':True})#TODO: Check this db
+                        result = db.requests.insert_one({'username':username,'coordinates':data,'pending':True})#TODO: Check this db
                         response = {
                         'status': 'success',
-                        'message': 'request_submitted' #Add request id reference
+                        'message': 'request_submitted', #Add request id reference
                         'id': str(result.inserted_id)
                         }
                         return make_response(jsonify(response)), 201
@@ -120,10 +120,10 @@ class RidersAPI(MethodView):
                 if username_user == username:
                     application.logger.info("Permission granted")
                     if db.requests.count({'username':username,'pending':True}) > 0:
-                        result = db.request.delete_one({'username':username,'pending':True})
+                        result = db.requests.delete_one({'username':username,'pending':True})
                         response = {
                         'status': 'success',
-                        'message': 'request_cancelled'
+                        'message': 'request_cancelled',
                         'count': result.deleted_count #should be always 1
                         }
                         return make_response(jsonify(response)), 200
