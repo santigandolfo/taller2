@@ -639,7 +639,247 @@ class TestRequestDeletion(BaseTestCase):
             self.assertEqual(response.status_code,401)
 
 
+class TestIntegrationRequests(BaseTestCase):
 
+    @patch('requests.post')
+    def test_submit_request_cancel_submit_again(self, mock_post):
+        """ Test case for a succesful submit after deleting a previous submit"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='passenger'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            response = self.client.post(
+                '/riders/pedro/request',
+                data=json.dumps(dict(
+                    latitude_initial=30.00,
+                    latitude_final=31.32,
+                    longitude_initial=42,
+                    longitude_final=43.21
+                )),
+                headers=dict(
+                    Authorization='Bearer '+auth_token
+                ),
+                content_type='application/json'
+                )
+            response = self.client.delete(
+                '/riders/pedro/request',
+                headers=dict(
+                    Authorization='Bearer '+auth_token
+                ),
+                content_type='application/json'
+                )
+            response = self.client.post(
+                '/riders/pedro/request',
+                data=json.dumps(dict(
+                    latitude_initial=30.00,
+                    latitude_final=31.32,
+                    longitude_initial=42,
+                    longitude_final=43.21
+                )),
+                headers=dict(
+                    Authorization='Bearer '+auth_token
+                ),
+                content_type='application/json'
+                )
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'],'success')
+            self.assertEqual(data['message'],'request_submitted')
+            self.assertEqual(response.content_type,'application/json')
+            self.assertEqual(response.status_code,201)
+
+class TestAvailableRequests(BaseTestCase):
+
+    @patch('requests.post')
+    @patch('requests.get')
+    def test_no_requests_availabe(self, mock_get, mock_post):
+        """Test case for a driver asking for requests available and getting empty list"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        mock_get.return_value = Mock()
+        mock_get.return_value.json.return_value = {'username':'carlos'}
+        mock_get.return_value.ok = True
+        mock_get.return_value.status_code = 200
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='driver'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            response = self.client.get('/requests/available',
+                headers=dict(
+                    Authorization='Bearer '+auth_token
+                ),
+            )
+            requests = json.loads(response.data.decode())
+            self.assertEqual(response.content_type,'application/json')
+            self.assertEqual(response.status_code,200)
+            self.assertTrue(isinstance(requests,list))
+            self.assertEqual(len(requests),0)
+
+    @patch('requests.post')
+    @patch('requests.get')
+    def test_one_request_availabe(self, mock_get, mock_post):
+        """Test case for a passenger creating a request and a driver asking for it succesfully"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        mock_get.return_value = Mock()
+        mock_get.return_value.json.return_value = {'username':'carlos'}
+        mock_get.return_value.ok = True
+        mock_get.return_value.status_code = 200
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='juan',
+                    password='123456',
+                    type='passenger'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token2 = data['auth_token']
+            response = self.client.post(
+                '/riders/juan/request',
+                data=json.dumps(dict(
+                    latitude_initial=30.00,
+                    latitude_final=31.32,
+                    longitude_initial=42,
+                    longitude_final=43.21
+                )),
+                headers=dict(
+                    Authorization='Bearer '+auth_token2
+                ),
+                content_type='application/json'
+                )
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='driver'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token1 = data['auth_token']
+            response = self.client.get('/requests/available',
+                headers=dict(
+                    Authorization='Bearer '+auth_token1
+                ),
+            )
+            requests = json.loads(response.data.decode())
+            self.assertEqual(response.content_type,'application/json')
+            self.assertEqual(response.status_code,200)
+            self.assertTrue(isinstance(requests,list))
+            self.assertEqual(len(requests), 1)
+
+    @patch('requests.post')
+    def test_requests_available_unauthorized(self, mock_post):
+        """ Test case for asking for requests available without proper authorization"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='juan',
+                    password='123456',
+                    type='passenger'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            response = self.client.get(
+                '/requests/available',
+                headers=dict(
+                    Authorization='Bearer '+auth_token
+                ))
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'],'fail')
+            self.assertEqual(data['message'],'unauthorized_request')
+            self.assertEqual(response.content_type,'application/json')
+            self.assertEqual(response.status_code,401)
+
+    def test_requests_available_missing_token(self):
+        """ Test case for asking for available requests without a token"""
+        with self.client:
+            response = self.client.get('/requests/available')
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'],'fail')
+            self.assertEqual(data['message'],'missing_token')
+            self.assertEqual(response.content_type,'application/json')
+            self.assertEqual(response.status_code,401)
+
+
+    def test_requests_available_invalid_token(self):
+        """ Test case for asking for available requests with an invalid token"""
+        with self.client:
+            response = self.client.get(
+                '/requests/available',
+                headers=dict(
+                    Authorization='Bearer a'
+                ))
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'],'fail')
+            self.assertEqual(data['message'],'invalid_token')
+            self.assertEqual(response.content_type,'application/json')
+            self.assertEqual(response.status_code,401)
+
+    @patch('requests.post')
+    def test_requests_available_expired_token(self, mock_post):
+        """ Test case for asking for available requests with an expired token"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='passenger'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            time.sleep(TOKEN_DURATION+1)
+            response = self.client.get(
+                '/requests/available',
+                headers=dict(
+                    Authorization='Bearer '+auth_token
+                ))
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'],'fail')
+            self.assertEqual(data['message'],'expired_token')
+            self.assertEqual(response.content_type,'application/json')
+            self.assertEqual(response.status_code,401)
 
 
 
