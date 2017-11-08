@@ -10,7 +10,7 @@ info:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 host: fiuber
-basePath: /v2
+basePath:
 tags:
   - name: security
     description: Security operations
@@ -26,6 +26,15 @@ tags:
     description: Operations about trips
 schemes:
   - http
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    in: header
+    name: Authorization
 paths:
   /security:
     post:
@@ -34,21 +43,13 @@ paths:
       summary: User login
       description: ''
       operationId: login
-      consumes:
-        - application/json
-      produces:
-        - application/json
       parameters:
-        - name: username
-          in: formData
-          description: username
+        - in: body
+          name: body
+          description: Credentials used to log in in the system
           required: true
-          type: string
-        - name: password
-          in: formData
-          description: password
-          required: true
-          type: string
+          schema:
+            $ref: '#/definitions/Credentials'
       responses:
         '200':
           description: Succesful login
@@ -63,8 +64,8 @@ paths:
       summary: User logout
       description: ''
       operationId: logout
-      produces:
-        - application/json
+      security:
+        - Authorization: []
       parameters:
         - name: userID
           in: path
@@ -85,17 +86,13 @@ paths:
       summary: Register a new user
       description: ''
       operationId: addUser
-      consumes:
-        - application/json
-      produces:
-        - application/json
       parameters:
         - in: body
           name: body
           description: User object that needs to be registered into the system
           required: true
           schema:
-            $ref: '#/definitions/User'
+            $ref: '#/definitions/UserCreate'
       responses:
         '201':
           description: Successful user registration
@@ -108,8 +105,6 @@ paths:
       summary: Find user by ID
       description: Returns a single user
       operationId: getUserById
-      produces:
-        - application/json
       parameters:
         - name: userID
           in: path
@@ -129,8 +124,8 @@ paths:
       summary: Deletes a user
       description: ''
       operationId: deleteUser
-      produces:
-        - application/json
+      security:
+        - Authorization: []
       parameters:
         - name: userID
           in: path
@@ -150,10 +145,8 @@ paths:
       summary: Update user's profile
       description: ''
       operationId: updateUser
-      consumes:
-        - application/json
-      produces:
-        - application/json
+      security:
+        - Authorization: []
       parameters:
         - name: userID
           in: path
@@ -165,7 +158,7 @@ paths:
           description: User object that needs to be updated into the system
           required: true
           schema:
-            $ref: '#/definitions/User'
+            $ref: '#/definitions/UserUpdate'
       responses:
         '204':
           description: User updated
@@ -180,10 +173,8 @@ paths:
       summary: Update user's gps coordinates
       description: ''
       operationId: updateUserCoordinates
-      consumes:
-        - application/json
-      produces:
-        - application/json
+      security:
+        - Authorization: []
       parameters:
         - name: userID
           in: path
@@ -210,10 +201,8 @@ paths:
       summary: Update rider's Credit/Debit card information
       description: ''
       operationId: updateRidersCard
-      consumes:
-        - application/json
-      produces:
-        - application/json
+      security:
+        - Authorization: []
       parameters:
         - name: riderID
           in: path
@@ -241,10 +230,8 @@ paths:
       summary: Submit a trip request
       description: ''
       operationId: submitRequest
-      consumes:
-        - application/json
-      produces:
-        - application/json
+      security:
+        - Authorization: []
       parameters:
         - name: riderID
           in: path
@@ -271,8 +258,8 @@ paths:
       summary: Cancel a rider's request
       description: ''
       operationId: deleteRequest
-      produces:
-        - application/json
+      security:
+        - Authorization: []
       parameters:
         - name: riderID
           in: path
@@ -293,10 +280,8 @@ paths:
       summary: Update driver's car information
       description: ''
       operationId: updateDriversCar
-      consumes:
-        - application/json
-      produces:
-        - application/json
+      security:
+        - Authorization: []
       parameters:
         - name: driverID
           in: path
@@ -321,13 +306,11 @@ paths:
       tags:
         - trip
         - driver
-      summary: Register a trip
+      summary: Start a trip
       description: ''
-      operationId: addTrip
-      consumes:
-        - application/json
-      produces:
-        - application/json
+      operationId: startTrip
+      security:
+        - Authorization: []
       parameters:
         - in: path
           name: driverID
@@ -354,10 +337,8 @@ paths:
       summary: Finish and Collect a trip
       description: ''
       operationId: finishTrip
-      consumes:
-        - application/json
-      produces:
-        - application/json
+      security:
+        - Authorization: []
       parameters:
         - in: path
           name: driverID
@@ -378,10 +359,8 @@ paths:
       summary: Change the driver's duty status
       description: ''
       operationId: changeDriverStatus
-      consumes:
-        - application/json
-      produces:
-        - application/json
+      security:
+        - Authorization: []
       parameters:
         - in: path
           name: driverID
@@ -408,10 +387,8 @@ paths:
       summary: Return available drivers
       description: ''
       operationId: getDrivers
-      consumes:
-        - application/json
-      produces:
-        - application/json
+      security:
+        - Authorization: []
       parameters: []
       responses:
         '200':
@@ -420,17 +397,15 @@ paths:
             type: array
             items:
               $ref: '#/definitions/User'
-  /requests:
+  /requests/available:
     get:
       tags:
         - request
       summary: Return available requests
       description: ''
       operationId: getRequests
-      consumes:
-        - application/json
-      produces:
-        - application/json
+      security:
+        - Authorization: []
       parameters: []
       responses:
         '200':
@@ -446,8 +421,6 @@ paths:
       summary: Return possible ways to make it to destination
       description: ''
       operationId: getRoutes
-      produces:
-        - application/json
       parameters:
         - in: path
           name: requestID
@@ -468,8 +441,6 @@ paths:
       summary: Return an estimated cost of the ride
       description: ''
       operationId: getCostEstimation
-      produces:
-        - application/json
       parameters:
         - in: path
           name: requestID
@@ -485,6 +456,16 @@ paths:
         '404':
           description: Request not found
 definitions:
+  Credentials:
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+    required:
+      - username
+      - password
   User:
     type: object
     properties:
@@ -494,18 +475,75 @@ definitions:
         type: string
       lastName:
         type: string
+      birtdate:
+        type: string
+        format: date
       email:
         type: string
       password:
         type: string
-      phone:
+      type:
         type: string
-      role:
-        type: string
-        description: Rider or Driver
+        description: Passenger or Driver
         enum:
-          - rider
+          - passenger
           - driver
+      country:
+        type: string
+      image:
+        type: string
+        format: base64
+  UserCreate:
+    type: object
+    properties:
+      username:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      birtdate:
+        type: string
+        format: date
+      email:
+        type: string
+      password:
+        type: string
+      type:
+        type: string
+        description: Passenger or Driver
+        enum:
+          - passenger
+          - driver
+      country:
+        type: string
+      image:
+        type: string
+        format: base64
+    required:
+      - username
+      - password
+      - email
+      - type
+  UserUpdate:
+    type: object
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      birtdate:
+        type: string
+        format: date
+      email:
+        type: string
+      password:
+        type: string
+      country:
+        type: string
+      image:
+        type: string
+        format: base64
   Car:
     type: object
     properties:
@@ -559,8 +597,6 @@ definitions:
   Request:
     type: object
     properties:
-      rider:
-        type: string
       latInit:
         type: number
         format: float
