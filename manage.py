@@ -34,7 +34,7 @@ def test():
 
 @manager.command
 def test_registration():
-    """Runs the position unit tests without test coverage."""
+    """Runs the registration unit tests without test coverage."""
     tests = unittest.TestLoader().discover('tests', pattern='test_registration.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
@@ -43,7 +43,7 @@ def test_registration():
 
 @manager.command
 def test_security():
-    """Runs the position unit tests without test coverage."""
+    """Runs the security unit tests without test coverage."""
     tests = unittest.TestLoader().discover('tests', pattern='test_security.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
@@ -51,8 +51,19 @@ def test_security():
     return 1
 
 @manager.command
+def test_requests():
+    """Runs the requests unit tests without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_requests.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
+
+
+@manager.command
 def test_user_manipulation():
-    """Runs the position unit tests without test coverage."""
+    """Runs the user manipulation unit tests without test coverage."""
     tests = unittest.TestLoader().discover('tests', pattern='test_user_manipulation.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
@@ -61,7 +72,7 @@ def test_user_manipulation():
 
 @manager.command
 def test_driver_manipulation():
-    """Runs the position unit tests without test coverage."""
+    """Runs the driver manipulation unit tests without test coverage."""
     tests = unittest.TestLoader().discover('tests', pattern='test_driver_manipulation.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
