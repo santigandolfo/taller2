@@ -328,15 +328,12 @@ class TestPosition(BaseTestCase):
                 response = self.client.post(
                     '/users',
                     data=json.dumps(dict(
-                        username='joe_smith',
+                        username='pablo_perez',
                         password='123456',
-                        type='passenger'
+                        type='driver'
                     )),
                     content_type='application/json'
                 )
-                data = json.loads(response.data.decode())
-                auth_token=data['auth_token']
-
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
                 mock_post.return_value.json.return_value = {'id':"1"}
@@ -345,12 +342,14 @@ class TestPosition(BaseTestCase):
                 response = self.client.post(
                     '/users',
                     data=json.dumps(dict(
-                        username='pablo_perez',
+                        username='joe_smith',
                         password='123456',
-                        type='driver'
+                        type='passenger'
                     )),
                     content_type='application/json'
                 )
+                data = json.loads(response.data.decode())
+                auth_token=data['auth_token']
             response = self.client.put(
                 '/users/pablo_perez/coordinates',
                 headers=dict(

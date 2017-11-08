@@ -47,7 +47,7 @@ class RegisterAPI(MethodView):
                 if tipo == "driver":
                     db.drivers.insert_one({'username':username,'available':False})
                 else:
-                    db.passengers.insert_one({'username':username})
+                    db.riders.insert_one({'username':username})
                 auth_token = user.encode_auth_token()
                 application.logger.debug(isinstance(auth_token,unicode))
                 response = {
