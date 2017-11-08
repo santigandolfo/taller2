@@ -120,7 +120,7 @@ class RidersAPI(MethodView):
                 if username_user == username:
                     application.logger.info("Permission granted")
                     if db.requests.count({'username':username,'pending':True}) > 0:
-                        result = db.requests.delete_one({'username':username,'pending':True})
+                        result = db.requests.delete_many({'username':username,'pending':True})
                         response = {
                         'status': 'success',
                         'message': 'request_cancelled',
@@ -136,7 +136,7 @@ class RidersAPI(MethodView):
                 else:
                     response = {
                         'status': 'fail',
-                        'message': 'unauthorized_request'
+                        'message': 'unauthorized_deletion'
                     }
                     return make_response(jsonify(response)), 401
             response = {
@@ -144,13 +144,6 @@ class RidersAPI(MethodView):
                 'message': 'missing_token'
             }
             return make_response(jsonify(response)), 401
-        except SchemaError as exc:
-            application.logger.error("Request data error")
-            response = {
-                'status': 'fail',
-                'message': 'bad_request_data'
-            }
-            return make_response(jsonify(response)), 400
         except ExpiredTokenException as exc:
             application.logger.error("Expired token")
             response = {

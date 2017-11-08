@@ -417,6 +417,232 @@ class TestRequestsSubmission(BaseTestCase):
             self.assertEqual(response.content_type,'application/json')
             self.assertEqual(response.status_code,409)
 
+class TestRequestDeletion(BaseTestCase):
+
+    @patch('requests.post')
+    def test_simple_request_deletion(self, mock_post):
+        """ Test case for a simple request succesfully deleted"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='passenger'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            response = self.client.post(
+                '/riders/pedro/request',
+                data=json.dumps(dict(
+                    latitude_initial=30.00,
+                    latitude_final=31.32,
+                    longitude_initial=42,
+                    longitude_final=43.21
+                )),
+                headers=dict(
+                    Authorization='Bearer '+auth_token
+                ),
+                content_type='application/json'
+                )
+            response = self.client.delete(
+                '/riders/pedro/request',
+                headers=dict(
+                    Authorization='Bearer '+auth_token
+                ),
+                content_type='application/json'
+                )
+
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'],'success')
+            self.assertEqual(data['message'],'request_cancelled')
+            self.assertEqual(data['count'],1)
+            self.assertEqual(response.content_type,'application/json')
+            self.assertEqual(response.status_code,200)
+
+    @patch('requests.post')
+    def test_delete_request_never_submitted(self, mock_post):
+        """ Test case for deleting a request that was never submitted"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='passenger'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            response = self.client.delete(
+                '/riders/pedro/request',
+                headers=dict(
+                    Authorization='Bearer '+auth_token
+                ),
+                content_type='application/json'
+                )
+
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'],'fail')
+            self.assertEqual(data['message'],'no_pending_request')
+            self.assertEqual(response.content_type,'application/json')
+            self.assertEqual(response.status_code,404)
+
+    @patch('requests.post')
+    def test_delete_request_unauthorized(self, mock_post):
+        """ Test case for deleting a request without corresponding authorization"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='juan',
+                    password='123456',
+                    type='passenger'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='passenger'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            response = self.client.delete(
+                '/riders/juan/request',
+                headers=dict(
+                    Authorization='Bearer '+auth_token
+                ),
+                content_type='application/json'
+                )
+
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'],'fail')
+            self.assertEqual(data['message'],'unauthorized_deletion')
+            self.assertEqual(response.content_type,'application/json')
+            self.assertEqual(response.status_code,401)
+
+    @patch('requests.post')
+    def test_delete_request_missing_token(self, mock_post):
+        """ Test case for deleting a request without a token"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='passenger'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            response = self.client.delete(
+                '/riders/pedro/request',
+                content_type='application/json'
+                )
+
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'],'fail')
+            self.assertEqual(data['message'],'missing_token')
+            self.assertEqual(response.content_type,'application/json')
+            self.assertEqual(response.status_code,401)
+
+    @patch('requests.post')
+    def test_delete_request_invalid_token(self, mock_post):
+        """ Test case for deleting a request with an invalid token"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='passenger'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            response = self.client.delete(
+                '/riders/pedro/request',
+                headers=dict(
+                    Authorization='Bearer snajdsnajdaskdwe3414314123'
+                ),
+                content_type='application/json'
+                )
+
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'],'fail')
+            self.assertEqual(data['message'],'invalid_token')
+            self.assertEqual(response.content_type,'application/json')
+            self.assertEqual(response.status_code,401)
+
+    @patch('requests.post')
+    def test_delete_request_expired_token(self, mock_post):
+        """ Test case for deleting a request with an expired token"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='passenger'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            time.sleep(TOKEN_DURATION+1)
+            response = self.client.delete(
+                '/riders/pedro/request',
+                headers=dict(
+                    Authorization='Bearer '+auth_token
+                ),
+                content_type='application/json'
+                )
+
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'],'fail')
+            self.assertEqual(data['message'],'expired_token')
+            self.assertEqual(response.content_type,'application/json')
+            self.assertEqual(response.status_code,401)
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
