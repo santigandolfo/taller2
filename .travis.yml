@@ -2,7 +2,17 @@ language: python
 python:
   - "2.7"
 env: 
-  - PORT=5000
+  global:
+    - PORT=5000
+    - DB_URL=mongodb://localhost:27017/fiuberdb-test
+    - DB_NAME=fiuberdb-test
+    - BCRYPT_ROUNDS=4
+    - SECRET_KEY=umpalumpa
+    - LOG_LEVEL=ERROR
+    - TOKEN_DURATION=1
+    - MONGODB_VERSION=2.6.10
+
+
 notifications:
   email:  
      recipients:
@@ -12,7 +22,16 @@ notifications:
        -  christiangelone@gmail.com
      on_failure: always 
      on_success: change
-install: "pip install -r requirements.txt"
+install: 
+  - pip install -r requirements.txt
+  - wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-$MONGODB_VERSION.tgz
+  - tar xfz mongodb-linux-x86_64-$MONGODB_VERSION.tgz
+  - export PATH=`pwd`/mongodb-linux-x86_64-$MONGODB_VERSION/bin:$PATH
+  - mkdir -p data/db
+  - mongod --dbpath=data/db &
+  - sleep 3
+before_script:
+  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
 script: 
   python manage.py cov
 
