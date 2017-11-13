@@ -6,7 +6,7 @@
 
 
 
-###Puesta en marcha local docker
+##Puesta en marcha local docker
 Para setear las variables de entorno se debe hacer en el archivo .env, escribiendo en cada linea las distintas variables de entorno con el formato
 NOMBRE=\"valor\".
 Las variables a setear se encuentran en el archivo EnvVar.
@@ -15,7 +15,7 @@ Las variables a setear se encuentran en el archivo EnvVar.
 Finalmente, ejecutar el comando:
 > sh docker-correr-local.sh
 
-###Subir a heroku docker container
+##Subir a heroku docker container
 ```Heroku y docker debe estar instalado```
 Para setear las variables de entorno se debe hacer en heroku, esto se puede hacer desde el dashboard desde la opcion Env Var.
 Las variables a setear se encuentran en el archivo EnvVar.
@@ -23,7 +23,7 @@ Las variables a setear se encuentran en el archivo EnvVar.
 Finalmente, ejecutar el comando:
 > sh push\_docker\_to\_heroku.sh
 
-###Puesta en marcha local heroku
+##Puesta en marcha local heroku
 
 ```Heroku debe estar instalado```
 
@@ -36,3 +36,21 @@ Las variables a setear se encuentran en el archivo EnvVar.
 
 Luego, ejecutar el comando en la misma shell donde se setearon las variables:
 > heroku local
+
+
+##Ejecutar las pruebas
+
+``` Es necesario tener instalado mongodb y tener un servidor del mismo corriendo localmente```
+
+Setear las variables de entorno acorde al archivo EnvVar, cabe destacar que las variables de entorno deben ser seteadas en la misma Shell donde se ejecutaran las pruebas. Para cada variable de entorno se debe ejecutar
+> export \<NombreVariable\>=\"Valor\"
+
+Para ejecutar las pruebas se debe ejecutar 
+
+> python manage.py <comando-de-prueba>
+
+Donde \<comando-de-prueba\> puede ser
+
+ * *test* Ejecutar todas las pruebas **sin** coverage.
+ * *cov* Ejecutar todas las pruebas **con** coverage.
+ * *\<nombre-suite-especifica\>* Ejecuta los tests de la suite especifica, por ej. test_driver_manipulation
