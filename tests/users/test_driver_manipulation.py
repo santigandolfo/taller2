@@ -141,6 +141,161 @@ class TestDriverManipulation(BaseTestCase):
             self.assertTrue(isinstance(drivers, list))
             self.assertEqual(len(drivers), 0)
 
+    @patch('requests.post')
+    def test_missing_availability(self, mock_post):
+        """Availability is missing, error should  be received"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id': "1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='driver'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            response = self.client.patch(
+                '/drivers/pedro',
+                data=json.dumps(dict(
+                )),
+                headers=dict(
+                    Authorization='Bearer ' + auth_token
+                ),
+                content_type='application/json'
+
+            )
+
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'missing_availability')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 400)
+
+    @patch('requests.post')
+    def test_change_availability_unexisting_user(self, mock_post):
+        """Change availability of an unexisting user, error should  be received"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id': "1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='driver'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            response = self.client.patch(
+                '/drivers/juan',
+                data=json.dumps(dict(
+                    availability=True
+                )),
+                headers=dict(
+                    Authorization='Bearer ' + auth_token
+                ),
+                content_type='application/json'
+
+            )
+
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'driver_not_found')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 404)
+
+    @patch('requests.post')
+    def test_change_availability_of_another_user(self, mock_post):
+        """Try to change the availability of another user"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id': "1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='driver'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='juan',
+                    password='123456',
+                    type='driver'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            auth_token = data['auth_token']
+            response = self.client.patch(
+                '/drivers/pedro',
+                data=json.dumps(dict(
+                    availability=True
+                )),
+                headers=dict(
+                    Authorization='Bearer ' + auth_token
+                ),
+                content_type='application/json'
+
+            )
+
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'unauthorized_update')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 401)
+
+
+    @patch('requests.post')
+    def test_change_availability_without_token(self, mock_post):
+        """Change availability without a token, error should  be received"""
+        mock_post.return_value = Mock()
+        mock_post.return_value.json.return_value = {'id': "1"}
+        mock_post.return_value.ok = True
+        mock_post.return_value.status_code = 201
+        with self.client:
+            self.client.post(
+                '/users',
+                data=json.dumps(dict(
+                    username='pedro',
+                    password='123456',
+                    type='driver'
+                )),
+                content_type='application/json'
+            )
+            response = self.client.patch(
+                '/drivers/pedro',
+                data=json.dumps(dict(
+                    availability=True
+                )),
+                headers=dict(
+                ),
+                content_type='application/json'
+
+            )
+
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'missing_token')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 401)
+
 
 if __name__ == '__main__':
     unittest.main()
