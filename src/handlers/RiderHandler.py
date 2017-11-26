@@ -1,9 +1,10 @@
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
-from app import db, application
-from src.models import User
-from src.exceptions import ExpiredTokenException, InvalidTokenException
 from schema import Schema, And, Use, SchemaError
+
+from app import db, application
+from src.exceptions import ExpiredTokenException, InvalidTokenException
+from src.models import User
 
 riders_blueprint = Blueprint('riders', __name__)
 

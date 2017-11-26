@@ -1,8 +1,11 @@
 import datetime
 import os
-from app import db, application, TOKEN_DURATION
+
 import python_jwt as jwt
-from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, InvalidTokenException
+
+from app import db, application, TOKEN_DURATION
+from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, \
+    InvalidTokenException
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "key")
 

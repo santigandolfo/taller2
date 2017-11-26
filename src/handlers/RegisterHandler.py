@@ -1,8 +1,9 @@
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
+
 from app import db, application
-from src.models import User
 from src.exceptions import ExpiredTokenException, InvalidTokenException
+from src.models import User
 from src.services.shared_server import register_user, remove_user, update_user_data, get_data
 
 registration_blueprint = Blueprint('users', __name__)
