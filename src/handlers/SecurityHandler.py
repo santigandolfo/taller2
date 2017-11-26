@@ -1,3 +1,5 @@
+"""Handlers related with loging in and out an user"""
+
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 
@@ -5,8 +7,9 @@ from app import db, application
 from src.exceptions import ExpiredTokenException, InvalidTokenException
 from src.models import User, BlacklistToken
 from src.services.shared_server import validate_user
+from src.mixins.AuthenticationMixin import Authenticator
 
-security_blueprint = Blueprint('security', __name__)
+SECURITY_BLUEPRINT = Blueprint('security', __name__)
 
 
 class SecurityAPI(MethodView):
@@ -15,6 +18,7 @@ class SecurityAPI(MethodView):
     # LOGIN
     @staticmethod
     def post():
+        """Endpoint for loging in a user, returns authentication token"""
 
         try:
             data = request.get_json()
@@ -63,7 +67,8 @@ class SecurityAPI(MethodView):
                 return make_response(jsonify(response)), 401
 
         except Exception as exc:  # pragma: no cover
-            application.logger.error("Error ocurred. Message: " + exc.message + ".Doc: " + exc.__doc__)
+            application.logger.error("Error ocurred. Message: " + exc.message +
+                                     ".Doc: " + exc.__doc__)
             response = {
                 'status': 'fail',
                 'message': 'internal_error',
@@ -74,12 +79,18 @@ class SecurityAPI(MethodView):
     # LOGOUT
     @staticmethod
     def delete():
+        """Endpoint for loging out a user, blacklists authentication token"""
+
         try:
             auth_header = request.headers.get('Authorization')
-            if auth_header:
-                auth_token = auth_header.split(" ")[1]
-            else:
-                auth_token = ''
+            _, error_message = Authenticator.authenticate(auth_header)
+            if error_message:
+                response = {
+                    'status': 'fail',
+                    'message': error_message
+                }
+                return make_response(jsonify(response)), 401
+            auth_token = auth_header.split(" ")[1]
             application.logger.debug("Log Out: {}".format(auth_token))
             if auth_token:
                 try:
@@ -114,7 +125,8 @@ class SecurityAPI(MethodView):
                 }
                 return make_response(jsonify(response_object)), 400
         except Exception as exc:  # pragma: no cover
-            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message, exc.__doc__))
+            application.logger.error('Error msg: {0}. Error doc: {1}'
+                                     .format(exc.message, exc.__doc__))
             response = {
                 'status': 'fail',
                 'message': 'internal_error'
@@ -123,11 +135,11 @@ class SecurityAPI(MethodView):
 
 
 # define the API resources
-security_view = SecurityAPI.as_view('security_api')
+SECURITY_VIEW = SecurityAPI.as_view('security_api')
 
 # add Rules for API Endpoints
-security_blueprint.add_url_rule(
+SECURITY_BLUEPRINT.add_url_rule(
     '/security',
-    view_func=security_view,
+    view_func=SECURITY_VIEW,
     methods=['POST', 'DELETE']
 )

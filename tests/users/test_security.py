@@ -2,9 +2,8 @@ import unittest
 import json
 import time
 from mock import patch, Mock
-from src.models import User
 from tests.base import BaseTestCase
-from app import application, TOKEN_DURATION
+from app import TOKEN_DURATION
 
 
 class TestLogin(BaseTestCase):
@@ -262,7 +261,7 @@ class TestLogout(BaseTestCase):
             self.assertEqual(data['status'], 'fail')
             self.assertEqual(data['message'], 'missing_token')
             self.assertEqual(response.content_type, 'application/json')
-            self.assertEqual(response.status_code, 400)
+            self.assertEqual(response.status_code, 401)
 
     def test_logout_with_empty_token(self):
         """ Test logout with an empty token"""
@@ -279,7 +278,7 @@ class TestLogout(BaseTestCase):
             self.assertEqual(data['status'], 'fail')
             self.assertEqual(data['message'], 'missing_token')
             self.assertEqual(response.content_type, 'application/json')
-            self.assertEqual(response.status_code, 400)
+            self.assertEqual(response.status_code, 401)
 
     def test_logout_with_invalid_token(self):
         """ Test logout with a string as token"""
@@ -347,9 +346,9 @@ class TestLogout(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(data['status'], 'fail')
-            self.assertEqual(data['message'], 'internal_error')
+            self.assertEqual(data['message'], 'missing_token')
             self.assertEqual(response.content_type, 'application/json')
-            self.assertEqual(response.status_code, 500)
+            self.assertEqual(response.status_code, 401)
 
 
 if __name__ == '__main__':

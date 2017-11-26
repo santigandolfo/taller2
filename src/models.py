@@ -1,3 +1,4 @@
+"""Entitys saved in the db"""
 import datetime
 import os
 
@@ -29,12 +30,13 @@ class User(object):
             payload = {
                 'sub': self.username
             }
-            g = jwt.generate_jwt(payload, SECRET_KEY, algorithm='HS256',
-                                 lifetime=datetime.timedelta(days=0, seconds=TOKEN_DURATION))
-            application.logger.info(isinstance(g, unicode))
-            return g
-        except Exception as e:  # pragma: no cover
-            return e
+            auth_token = jwt.generate_jwt(payload, SECRET_KEY, algorithm='HS256',
+                                          lifetime=datetime
+                                          .timedelta(days=0, seconds=TOKEN_DURATION))
+            application.logger.info(isinstance(auth_token, unicode))
+            return auth_token
+        except Exception as exc:  # pragma: no cover
+            return exc
 
     def remove_from_db(self):
         """
@@ -44,6 +46,7 @@ class User(object):
 
     @staticmethod
     def get_user_by_username(username):
+        """Given a username return the corresponding user"""
         user_dict = db.users.find_one({'username': username})
         if not user_dict:
             return None
@@ -51,6 +54,7 @@ class User(object):
 
     @staticmethod
     def get_user_by_uid(uid):
+        """Given a user_id return the corresponding user"""
         user_dict = db.users.find_one({'uid': uid})
         if not user_dict:
             return None
@@ -64,7 +68,7 @@ class User(object):
         :return: integer|string
         """
         try:
-            header, payload = jwt.verify_jwt(auth_token, SECRET_KEY, allowed_algs=['HS256'])
+            _, payload = jwt.verify_jwt(auth_token, SECRET_KEY, allowed_algs=['HS256'])
         except jwt.jws.exceptions.SignatureError:
             raise SignatureException(auth_token)
         except Exception as exc:
@@ -92,4 +96,5 @@ class BlacklistToken(object):
 
     @staticmethod
     def is_blacklisted(token):
+        """Returns true if a user has logged out using this token"""
         return db.blacklistedTokens.count({'token': token}) > 0

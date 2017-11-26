@@ -1,15 +1,15 @@
+"""Mixins for authentication stuff"""
 from src.models import User
 from src.exceptions import InvalidTokenException, ExpiredTokenException
 from app import application
 
 
-class Authenticator:
-
-    def __init__(self):
-        application.loggger.info("Authenticator initialized")
+class Authenticator(object):
+    """Utility class for anything related with authentication"""
 
     @staticmethod
     def authenticate(auth_header):
+        """Gets the correspondig user given the auth header, returns error_message if any"""
         error_message = ''
         username = ''
         try:

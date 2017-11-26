@@ -72,18 +72,18 @@ application.logger.addHandler(handler)
 application.logger.setLevel(get_log_level(LOG_LEVEL))
 
 db = MongoClient(DB_URL)[DB_NAME]
-from src.handlers.RegisterHandler import registration_blueprint
-from src.handlers.SecurityHandler import security_blueprint
-from src.handlers.DriversHandler import drivers_blueprint
-from src.handlers.PositionHandler import position_blueprint
-from src.handlers.RiderHandler import riders_blueprint
-from src.handlers.RequestHandler import requests_blueprint
-application.register_blueprint(registration_blueprint)
-application.register_blueprint(security_blueprint)
-application.register_blueprint(drivers_blueprint)
-application.register_blueprint(position_blueprint)
-application.register_blueprint(riders_blueprint)
-application.register_blueprint(requests_blueprint)
+from src.handlers.RegisterHandler import REGISTRATION_BLUEPRINT
+from src.handlers.SecurityHandler import SECURITY_BLUEPRINT
+from src.handlers.DriversHandler import DRIVERS_BLUEPRINT
+from src.handlers.PositionHandler import POSITION_BLUEPRINT
+from src.handlers.RiderHandler import RIDERS_BLUEPRINT
+from src.handlers.RequestHandler import REQUESTS_BLUEPRINT
+application.register_blueprint(REGISTRATION_BLUEPRINT)
+application.register_blueprint(SECURITY_BLUEPRINT)
+application.register_blueprint(DRIVERS_BLUEPRINT)
+application.register_blueprint(POSITION_BLUEPRINT)
+application.register_blueprint(RIDERS_BLUEPRINT)
+application.register_blueprint(REQUESTS_BLUEPRINT)
 
 if __name__ == "__main__":
 

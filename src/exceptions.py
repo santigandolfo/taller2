@@ -1,4 +1,4 @@
-
+"""Custom exceptions"""
 class InvalidTokenException(Exception):
     """ This generic exception raised on a invalid token"""
 
