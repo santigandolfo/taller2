@@ -1,22 +1,23 @@
-import python_jwt as jwt
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from app import db, application
-from src.models import  User
-from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, InvalidTokenException
+from src.models import User
+from src.exceptions import ExpiredTokenException, InvalidTokenException
 from src.services.shared_server import get_data
 
 drivers_blueprint = Blueprint('drivers', __name__)
 
+
 class DriversAPI(MethodView):
     """Handler for drivers manipulation related API"""
 
-    def patch(self,username):
+    @staticmethod
+    def patch(username):
         try:
-            data = request.get_json() #TODO: Usar Schema para validar formato, deberia ser un bool
+            data = request.get_json()  # TODO: Usar Schema para validar formato, deberia ser un bool
             try:
                 availability = data['availability']
-            except Exception as exc:
+            except Exception:
                 response = {
                     'status': 'fail',
                     'message': 'missing_availability'
@@ -28,7 +29,7 @@ class DriversAPI(MethodView):
                     'status': 'fail',
                     'message': 'driver_not_found'
                 }
-                return make_response(jsonify(response)),404
+                return make_response(jsonify(response)), 404
             application.logger.info("driver {} exists".format(username))
             auth_header = request.headers.get('Authorization')
             if auth_header:
@@ -59,7 +60,7 @@ class DriversAPI(MethodView):
                 'message': 'missing_token'
             }
             return make_response(jsonify(response)), 401
-        except ExpiredTokenException as exc:
+        except ExpiredTokenException:
             application.logger.error("Expired token")
             response = {
                 'status': 'fail',
@@ -73,7 +74,7 @@ class DriversAPI(MethodView):
                 'message': 'invalid_token'
             }
             return make_response(jsonify(response)), 401
-        except Exception as exc: #pragma: no cover
+        except Exception as exc:  # pragma: no cover
             application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
             response = {
                 'status': 'fail',
@@ -84,25 +85,29 @@ class DriversAPI(MethodView):
 
 
 class AvailableEndpoint(MethodView):
-    def get(self):
+
+    @staticmethod
+    def get():
         try:
             result = []
-            for driver in db.drivers.find({"available":True}):
-                userId = db.users.find_one({"username":driver['username']})['uid']
-                result.append(get_data(userId).json()) #TODO: Obtener toda la info con un solo request, pasando un vector de ids
+            for driver in db.drivers.find({"available": True}):
+                user_id = db.users.find_one({"username": driver['username']})['uid']
+                # TODO: Obtener toda la info con un solo request, pasando un vector de ids
+                result.append(get_data(user_id).json())
             return make_response(jsonify(result)),200
-        except Exception as exc: #pragma: no cover
+        except Exception:  # pragma: no cover
             response = {
                 'status': 'fail',
                 'message': 'internal_error'
             }
             return make_response(jsonify(response)),500
 
-#define the API resources
+
+# define the API resources
 drivers_view = DriversAPI.as_view('drivers_api')
 available_view = AvailableEndpoint.as_view('available_endpoint')
 
-#add Rules for API Endpoints
+# add Rules for API Endpoints
 drivers_blueprint.add_url_rule(
     '/drivers/<username>',
     view_func=drivers_view,

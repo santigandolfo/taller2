@@ -1,17 +1,18 @@
-import python_jwt as jwt
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from app import db, application
-from src.models import  User
-from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, InvalidTokenException
+from src.models import User
+from src.exceptions import ExpiredTokenException, InvalidTokenException
 from src.services.shared_server import register_user, remove_user, update_user_data, get_data
 
 registration_blueprint = Blueprint('users', __name__)
 
+
 class RegisterAPI(MethodView):
     """Handler for registration related API"""
 
-    def post(self):
+    @staticmethod
+    def post():
 
         try:
             data = request.get_json()
@@ -31,7 +32,7 @@ class RegisterAPI(MethodView):
                 }
                 return make_response(jsonify(response)), 400
             application.logger.debug(type(username))
-            search_pattern = {'username' : username}
+            search_pattern = {'username': username}
             if db.users.count(search_pattern) > 0:
                 response = {
                     'status': 'fail',
@@ -41,15 +42,15 @@ class RegisterAPI(MethodView):
             resp = register_user(data)
             if resp.ok:
                 application.logger.info('User registered')
-                user = User(username=username,uid=resp.json()['id'])
+                user = User(username=username, uid=resp.json()['id'])
                 db.users.insert_one(user.__dict__)
-                tipo = data['type']
-                if tipo == "driver":
-                    db.drivers.insert_one({'username':username,'available':False})
+                user_type = data['type']
+                if user_type == "driver":
+                    db.drivers.insert_one({'username': username, 'available': False})
                 else:
-                    db.riders.insert_one({'username':username})
+                    db.riders.insert_one({'username': username})
                 auth_token = user.encode_auth_token()
-                application.logger.debug(isinstance(auth_token,unicode))
+                application.logger.debug(isinstance(auth_token, unicode))
                 response = {
                     'status': 'success',
                     'message': 'user_registered',
@@ -69,7 +70,8 @@ class RegisterAPI(MethodView):
             }
             return make_response(jsonify(response)), 500
 
-    def delete(self,username):
+    @staticmethod
+    def delete(username):
         try:
             application.logger.info("Asked to remove user: {}".format(username))
             user = User.get_user_by_username(username)
@@ -78,7 +80,7 @@ class RegisterAPI(MethodView):
                     'status': 'fail',
                     'message': 'user_not_found'
                 }
-                return make_response(jsonify(response)),404
+                return make_response(jsonify(response)), 404
             application.logger.info("user {} exists".format(username))
             auth_header = request.headers.get('Authorization')
             if auth_header:
@@ -115,31 +117,32 @@ class RegisterAPI(MethodView):
                 'message': 'missing_token'
             }
             return make_response(jsonify(response)), 401
-        except ExpiredTokenException as exc:
+        except ExpiredTokenException:
             application.logger.error("Expired token")
             response = {
                 'status': 'fail',
                 'message': 'expired_token'
             }
             return make_response(jsonify(response)), 401
-        except InvalidTokenException as exc:
+        except InvalidTokenException:
             application.logger.error("Invalid token")
             response = {
                 'status': 'fail',
                 'message': 'invalid_token'
             }
             return make_response(jsonify(response)), 401
-        except Exception as exc: #pragma: no cover
+        except Exception as exc:  # pragma: no cover
 
-            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
+            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message, exc.__doc__))
             response = {
                 'status': 'fail',
                 'message': 'internal_error',
                 'error_description': exc.message
             }
-            return make_response(jsonify(response)),500
+            return make_response(jsonify(response)), 500
 
-    def put(self,username):
+    @staticmethod
+    def put(username):
         try:
             application.logger.info("Asked to update user: {}".format(username))
             user = User.get_user_by_username(username)
@@ -148,7 +151,7 @@ class RegisterAPI(MethodView):
                     'status': 'fail',
                     'message': 'user_not_found'
                 }
-                return make_response(jsonify(response)),404
+                return make_response(jsonify(response)), 404
             application.logger.info("user {} exists".format(username))
             auth_header = request.headers.get('Authorization')
             if auth_header:
@@ -164,7 +167,7 @@ class RegisterAPI(MethodView):
                     application.logger.info("User to update {}".format(username_user))
                     application.logger.debug(type(username_user))
                     data = request.get_json()
-                    resp = update_user_data(user.uid,data)
+                    resp = update_user_data(user.uid, data)
                     if resp.ok:
                         response = {
                             'status': 'success',
@@ -184,7 +187,7 @@ class RegisterAPI(MethodView):
                 'message': 'missing_token'
             }
             return make_response(jsonify(response)), 401
-        except ExpiredTokenException as exc:
+        except ExpiredTokenException:
             application.logger.error("Expired token")
             response = {
                 'status': 'fail',
@@ -198,18 +201,19 @@ class RegisterAPI(MethodView):
                 'message': 'invalid_token'
             }
             return make_response(jsonify(response)), 401
-        except Exception as exc: #pragma: no cover
-            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
+        except Exception as exc:  # pragma: no cover
+            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message, exc.__doc__))
             response = {
                 'status': 'fail',
                 'message': 'internal_error',
                 'error_description': exc.message
             }
-            return make_response(jsonify(response)),500
+            return make_response(jsonify(response)), 500
 
-    def get(self,username):
+    @staticmethod
+    def get(username):
         try:
-            user =  User.get_user_by_username(username)
+            user = User.get_user_by_username(username)
             if not user:
                 response = {
                     'status': 'fail',
@@ -226,19 +230,20 @@ class RegisterAPI(MethodView):
                 return make_response(jsonify(response)), 200
             else:
                 return make_response(jsonify(resp.json())), resp.status_code
-        except Exception as exc: #pragma: no cover
-            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
+        except Exception as exc:  # pragma: no cover
+            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message, exc.__doc__))
             response = {
                 'status': 'fail',
                 'message': 'internal_error',
                 'error_description': exc.message
             }
-            return make_response(jsonify(response)),500
+            return make_response(jsonify(response)), 500
 
-#define the API resources
+
+# define the API resources
 registration_view = RegisterAPI.as_view('registration_api')
 
-#add Rules for API Endpoints
+# add Rules for API Endpoints
 registration_blueprint.add_url_rule(
     '/users',
     view_func=registration_view,
@@ -248,5 +253,5 @@ registration_blueprint.add_url_rule(
 registration_blueprint.add_url_rule(
     '/users/<username>',
     view_func=registration_view,
-    methods=['DELETE', 'PUT','GET']
+    methods=['DELETE', 'PUT', 'GET']
 )

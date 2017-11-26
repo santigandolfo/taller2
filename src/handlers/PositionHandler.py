@@ -1,22 +1,24 @@
-import python_jwt as jwt
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from app import db, application
 from src.models import  User
-from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, InvalidTokenException
-from schema import Schema, And, Use, Optional, SchemaError
+from src.exceptions import ExpiredTokenException, InvalidTokenException
+from schema import Schema, And, Use, SchemaError
 
 position_blueprint = Blueprint('position', __name__)
+
 
 class PositionAPI(MethodView):
     """Handler for position related API"""
 
-    def put(self,username):
+    @staticmethod
+    def put(username):
         try:
             data = request.get_json()
             schema = Schema([{'latitude': And(Use(float), lambda x: -90 < x < 90),
-                'longitude':  And(Use(float), lambda x: -180 < x < 180)}])
-            data = schema.validate([data])[0] #IMPORTANTE: el 0 es para que devuelva el diccionario dentro y no una lista
+                              'longitude':  And(Use(float), lambda x: -180 < x < 180)}])
+            # IMPORTANTE: el 0 es para que devuelva el diccionario dentro y no una lista
+            data = schema.validate([data])[0]
             application.logger.info("Asked to update {}'s position coordinates'".format(username))
             user = User.get_user_by_username(username)
             if not user:
@@ -38,12 +40,13 @@ class PositionAPI(MethodView):
                 if username_user == username:
                     application.logger.info("Permission granted")
                     application.logger.info("User's position to update: {}".format(username_user))
-                    latitude=data['latitude']
-                    longitude=data['longitude']
-                    if (db.positions.count({'username':username}) == 0): #TODO: Asegurarse que ya este inicializado
-                        db.positions.insert_one({'username':username,'latitude':latitude,'longitude':longitude})
+                    latitude = data['latitude']
+                    longitude = data['longitude']
+                    if db.positions.count({'username': username}) == 0:  # TODO: Asegurarse que ya este inicializado
+                        db.positions.insert_one({'username': username, 'latitude': latitude, 'longitude': longitude})
                     else:
-                        db.positions.find_one_and_update({'username':username},{'$set': {'latitude':latitude}, '$set': {'longitude':longitude}})
+                        db.positions.find_one_and_update({'username': username}, {'$set': {'latitude': latitude},
+                                                                                  '$set': {'longitude': longitude}})
                     response = {
                         'status': 'success',
                         'message': 'position_updated'
@@ -60,29 +63,29 @@ class PositionAPI(MethodView):
             }
             return make_response(jsonify(response)), 401
 
-        except SchemaError as exc:
+        except SchemaError:
             application.logger.error("Request data error")
             response = {
                 'status': 'fail',
                 'message': 'bad_request_data'
             }
             return make_response(jsonify(response)), 400
-        except ExpiredTokenException as exc:
+        except ExpiredTokenException:
             application.logger.error("Expired token")
             response = {
                 'status': 'fail',
                 'message': 'expired_token'
             }
             return make_response(jsonify(response)), 401
-        except InvalidTokenException as exc:
+        except InvalidTokenException:
             application.logger.error("Invalid token")
             response = {
                 'status': 'fail',
                 'message': 'invalid_token'
             }
             return make_response(jsonify(response)), 401
-        except Exception as exc: #pragma: no cover
-            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
+        except Exception as exc:  # pragma: no cover
+            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message, exc.__doc__))
             response = {
                 'status': 'fail',
                 'message': 'internal_error',
@@ -90,10 +93,11 @@ class PositionAPI(MethodView):
             }
             return make_response(jsonify(response)),500
 
-#define the API resources
+
+# define the API resources
 position_view = PositionAPI.as_view('position_api')
 
-#add Rules for API Endpoints
+# add Rules for API Endpoints
 position_blueprint.add_url_rule(
     '/users/<username>/coordinates',
     view_func=position_view,
