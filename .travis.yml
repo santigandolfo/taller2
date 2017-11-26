@@ -8,7 +8,7 @@ env:
     - DB_NAME=fiuberdb-test
     - SECRET_KEY=umpalumpa
     - LOG_LEVEL=ERROR
-    - TOKEN_DURATION=1
+    - TOKEN_DURATION=2
     - MONGODB_VERSION=2.6.10
 
 

@@ -88,6 +88,14 @@ def test_positions():
         return 0
     return 1
 
+@manager.command
+def test_notifiactions_token():
+    """Runs the notifications token tests without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_push_notification_manipulation.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
 
 @manager.command
 def cov():
@@ -101,8 +109,6 @@ def cov():
         COV.report()
         return 0
     return 1
-
-
 
 
 if __name__ == '__main__':
