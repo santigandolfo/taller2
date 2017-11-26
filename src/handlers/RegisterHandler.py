@@ -65,7 +65,7 @@ class RegisterAPI(MethodView):
                 return make_response(jsonify(response)), 201
             else:
                 return make_response(jsonify(resp.json())), resp.status_code
-        except Exception as exc:
+        except Exception as exc: # pragma: no cover
             application.logger.error("Error ocurred. Message: {} .Doc: {}"
                                      .format(exc.message, exc.__doc__))
             response = {

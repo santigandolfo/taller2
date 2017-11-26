@@ -83,7 +83,7 @@ class SecurityAPI(MethodView):
 
         try:
             auth_header = request.headers.get('Authorization')
-            _, error_message = Authenticator.authenticate(auth_header)
+            token_username, error_message = Authenticator.authenticate(auth_header)
             if error_message:
                 response = {
                     'status': 'fail',
@@ -92,38 +92,16 @@ class SecurityAPI(MethodView):
                 return make_response(jsonify(response)), 401
             auth_token = auth_header.split(" ")[1]
             application.logger.debug("Log Out: {}".format(auth_token))
-            if auth_token:
-                try:
-                    username_user = User.decode_auth_token(auth_token)
-                except ExpiredTokenException:
-                    response = {
-                        'status': 'fail',
-                        'message': 'expired_token'
-                    }
-                    return make_response(jsonify(response)), 401
-                except InvalidTokenException:
-                    response = {
-                        'status': 'fail',
-                        'message': 'invalid_token'
-                    }
-                    return make_response(jsonify(response)), 401
-
-                application.logger.info("Log Out: {}".format(username_user))
-                blacklist_token = BlacklistToken(token=auth_token)
-                application.logger.debug("blacklistToken created")
-                db.blacklistedTokens.insert_one(blacklist_token.__dict__)
-                application.logger.debug("blacklistToken inserted")
-                response_object = {
-                    'status': 'success',
-                    'message': 'logout_succesful'
-                }
-                return make_response(jsonify(response_object)), 200
-            else:
-                response_object = {
-                    'status': 'fail',
-                    'message': 'missing_token'
-                }
-                return make_response(jsonify(response_object)), 400
+            application.logger.info("Log Out: {}".format(token_username))
+            blacklist_token = BlacklistToken(token=auth_token)
+            application.logger.debug("blacklistToken created")
+            db.blacklistedTokens.insert_one(blacklist_token.__dict__)
+            application.logger.debug("blacklistToken inserted")
+            response_object = {
+                'status': 'success',
+                'message': 'logout_succesful'
+            }
+            return make_response(jsonify(response_object)), 200
         except Exception as exc:  # pragma: no cover
             application.logger.error('Error msg: {0}. Error doc: {1}'
                                      .format(exc.message, exc.__doc__))
