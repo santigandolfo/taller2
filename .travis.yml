@@ -6,7 +6,6 @@ env:
     - PORT=5000
     - DB_URL=mongodb://localhost:27017/fiuberdb-test
     - DB_NAME=fiuberdb-test
-    - BCRYPT_ROUNDS=4
     - SECRET_KEY=umpalumpa
     - LOG_LEVEL=ERROR
     - TOKEN_DURATION=1

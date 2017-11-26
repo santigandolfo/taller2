@@ -1,4 +1,4 @@
-
+"""Custom exceptions"""
 class InvalidTokenException(Exception):
     """ This generic exception raised on a invalid token"""
 
@@ -26,6 +26,7 @@ class SignatureException(InvalidTokenException):
 
         # Call the base class constructor with the parameters it needs
         super(SignatureException, self).__init__("Invalid signature", token)
+
 
 class ExpiredTokenException(InvalidTokenException):
     """ This exception is raised if a token that is trying to be used has expired"""

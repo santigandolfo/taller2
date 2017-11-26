@@ -1,12 +1,10 @@
-# project/tests/test_auth.py
-
 import unittest
 import json
 import time
-from src.models import User
 from tests.base import BaseTestCase
-from mock import patch,Mock
-from app import application, TOKEN_DURATION
+from mock import patch, Mock
+from app import TOKEN_DURATION
+
 
 class TestRegistration(BaseTestCase):
     @patch('requests.post')
@@ -14,38 +12,41 @@ class TestRegistration(BaseTestCase):
         """ Test for user registration """
 
         mock_request.return_value = Mock()
-        mock_request.return_value.json.return_value = {'id':"1"}
+        mock_request.return_value.json.return_value = {'id': "1"}
         mock_request.return_value.ok = True
         with self.client:
             response = self.client.post(
                 '/users',
                 data=json.dumps({
-                      'username':"fedebalina",
-                      'password':"picapiedra",
-                      'firstname':"Federico",
-                      'lastname':"Balina",
-                      'email':"federicobalina@gmail.com",
-                      'birthdate':"05/06/1995",
-                      'type':"driver",
-                      'country':"Argentina",
-                      'image':"iVBORw0KGgoAAAANSUhEUgAABOEAAATrCAYAAADbvqaNAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYACbM5SURBVHja7P3ZkiRX"
-                            }
-                            ),
+                    'username': "fedebalina",
+                    'password': "picapiedra",
+                    'firstname': "Federico",
+                    'lastname': "Balina",
+                    'email': "federicobalina@gmail.com",
+                    'birthdate': "05/06/1995",
+                    'type': "driver",
+                    'country': "Argentina",
+                    'image': "iVBORw0KGgoAAAANSUhEUgAABOEAAATrCAYAAADbvqaNAAAACXBI"
+                             "WXMAAA7EAAAOxAGVKw4bAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpA"
+                             "AB1MAAA6mAAADqYAAAXb5JfxUYACbM5SURBVHja7P3ZkiRX"
+                }
+                ),
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
             self.assertEqual(data['message'], 'user_registered')
-            self.assertEqual(data['status'],'success')
+            self.assertEqual(data['status'], 'success')
             self.assertTrue(data['auth_token'])
-            self.assertEqual(data['id'],"1")
+            self.assertEqual(data['id'], "1")
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 201)
+
     @patch('requests.post')
     def test_registration_with_minimum_info(self, mock_request):
         """ Test for user registration """
 
         mock_request.return_value = Mock()
-        mock_request.return_value.json.return_value = {'id':"1"}
+        mock_request.return_value.json.return_value = {'id': "1"}
         mock_request.return_value.ok = True
         with self.client:
             response = self.client.post(
@@ -69,12 +70,11 @@ class TestRegistration(BaseTestCase):
     def test_registered_with_already_registered_user(self, mock_request):
         """ Test registration with already registered username"""
         with self.client:
-            response = ''
             mock_request.return_value = Mock()
-            mock_request.return_value.json.return_value = {'id':'1'}
+            mock_request.return_value.json.return_value = {'id': '1'}
             mock_request.return_value.ok = True
             mock_request.return_value.status_code = 201
-            response = self.client.post(
+            self.client.post(
                 '/users',
                 data=json.dumps(dict(
                     username='joe_smith',
@@ -102,7 +102,6 @@ class TestRegistration(BaseTestCase):
         """ Test registration without an username"""
 
         with self.client:
-
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
@@ -114,7 +113,7 @@ class TestRegistration(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(data['status'], 'fail')
-            self.assertEqual(data['message'],'invalid_username')
+            self.assertEqual(data['message'], 'invalid_username')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 400)
 
@@ -122,7 +121,6 @@ class TestRegistration(BaseTestCase):
         """ Test registration without password"""
 
         with self.client:
-
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
@@ -140,25 +138,21 @@ class TestRegistration(BaseTestCase):
             self.assertEqual(response.status_code, 400)
 
 
-
-
 class TestDelete(BaseTestCase):
     @patch('requests.post')
     @patch('requests.delete')
     def test_delete_user_correctly(self, mock_delete, mock_post):
         """ Test for user delete, correct case """
         mock_post.return_value = Mock()
-        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.json.return_value = {'id': "1"}
         mock_post.return_value.ok = True
         mock_post.return_value.status_code = 201
 
         mock_delete.return_value = Mock()
-        mock_delete.return_value.json.return_value = {'status':'success','message':'user_removed'}
+        mock_delete.return_value.json.return_value = {'status': 'success', 'message': 'user_removed'}
         mock_delete.return_value.ok = True
         mock_delete.return_value.status_code = 203
         with self.client:
-
-
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
@@ -176,7 +170,6 @@ class TestDelete(BaseTestCase):
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 201)
 
-
             response = self.client.delete(
                 '/users/joe_smith',
                 headers=dict(
@@ -191,15 +184,14 @@ class TestDelete(BaseTestCase):
             self.assertEqual(response.status_code, 203)
 
     @patch('requests.post')
-    def test_delete_without_token(self,mock_post):
+    def test_delete_without_token(self, mock_post):
         """ Test for trying to delete user without loging in """
 
         mock_post.return_value = Mock()
-        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.json.return_value = {'id': "1"}
         mock_post.return_value.ok = True
         mock_post.return_value.status_code = 201
         with self.client:
-
             response = self.client.post(
                 '/users',
                 data=json.dumps(dict(
@@ -209,7 +201,6 @@ class TestDelete(BaseTestCase):
                 )),
                 content_type='application/json'
             )
-            data = json.loads(response.data.decode())
             response = self.client.delete(
                 '/users/joe_smith',
                 content_type='application/json'
@@ -221,10 +212,10 @@ class TestDelete(BaseTestCase):
             self.assertEqual(response.status_code, 401)
 
     @patch('requests.post')
-    def test_delete_with_expired_token(self,mock_post):
+    def test_delete_with_expired_token(self, mock_post):
         """ Test for trying to delete user with expired token """
         mock_post.return_value = Mock()
-        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.json.return_value = {'id': "1"}
         mock_post.return_value.ok = True
         mock_post.return_value.status_code = 201
         with self.client:
@@ -238,7 +229,7 @@ class TestDelete(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            time.sleep(TOKEN_DURATION+1)
+            time.sleep(TOKEN_DURATION + 1)
             response = self.client.delete(
                 '/users/joe_smith',
                 headers=dict(
@@ -253,14 +244,14 @@ class TestDelete(BaseTestCase):
             self.assertEqual(response.status_code, 401)
 
     @patch('requests.post')
-    def test_delete_with_invalid_token(self,mock_post):
+    def test_delete_with_invalid_token(self, mock_post):
         """ Test for trying to delete user with invalid token """
         mock_post.return_value = Mock()
-        mock_post.return_value.json.return_value = {'id':"1"}
+        mock_post.return_value.json.return_value = {'id': "1"}
         mock_post.return_value.ok = True
         mock_post.return_value.status_code = 201
         with self.client:
-            response = self.client.post(
+            self.client.post(
                 '/users',
                 data=json.dumps(dict(
                     username='joe_smith',
@@ -269,12 +260,15 @@ class TestDelete(BaseTestCase):
                 )),
                 content_type='application/json'
             )
-            data = json.loads(response.data.decode())
 
             response = self.client.delete(
                 '/users/joe_smith',
                 headers=dict(
-                    Authorization='Bearer ' + u'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dnZWRJbkFzIjoiYWRtaW4iLCJpYXQiOjE0MjI3Nzk2Mzh9.gzSraSYS8EXBxLN_oWnFSRgCzcmJmMjLiuyu5CSpyHI'
+                    Authorization='Bearer ' + u'eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp'
+                                              u'XVCJ9.eyJsb2dnZWRJbkFzIjoiYWRta'
+                                              u'W4iLCJpYXQiOjE0MjI3Nzk2Mzh9.gzS'
+                                              u'raSYS8EXBxLN_oWnFSRgCzcmJmMjLiu'
+                                              u'yu5CSpyHI'
                 ),
                 content_type='application/json'
             )

@@ -1,13 +1,11 @@
 
 #PROD
 export PORT=5000
-export BCRYPT_ROUNDS=12
 export LOG_LEVEL=INFO
 export TOKEN_DURATION=60
 
 #DEV
 export PORT=5000
-export BCRYPT_ROUNDS=4
 export LOG_LEVEL=DEBUG
 export TOKEN_DURATION=2
 
@@ -17,7 +15,6 @@ export DB_USER=team-apgb
 export DB_PWD=1234
 export DB_NAME=fiuberdb-test
 export DB_URL=mongodb://localhost:27017/fiuberdb-test
-export BCRYPT_ROUNDS=4
 export SECRET_KEY=umpalumpa
 export LOG_LEVEL=ERROR
 export TOKEN_DURATION=1

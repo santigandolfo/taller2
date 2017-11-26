@@ -1,19 +1,17 @@
 import unittest
 import json
 import time
-from src.models import User
 from tests.base import BaseTestCase
-from mock import patch,Mock
-from app import application, TOKEN_DURATION
+from mock import patch, Mock
+from app import TOKEN_DURATION
+
 
 class TestPosition(BaseTestCase):
-
     def test_update_position_correctly(self):
         with self.client:
-            auth_token=''
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'id':"1"}
+                mock_post.return_value.json.return_value = {'id': "1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(
@@ -26,7 +24,7 @@ class TestPosition(BaseTestCase):
                     content_type='application/json'
                 )
                 data = json.loads(response.data.decode())
-                auth_token=data['auth_token']
+                auth_token = data['auth_token']
 
             response = self.client.put(
                 '/users/joe_smith/coordinates',
@@ -40,17 +38,16 @@ class TestPosition(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(data['status'],'success')
-            self.assertEqual(data['message'],'position_updated')
-            self.assertEqual(response.content_type,'application/json')
-            self.assertEqual(response.status_code,200)
+            self.assertEqual(data['status'], 'success')
+            self.assertEqual(data['message'], 'position_updated')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 200)
 
     def test_update_position_correctly_twice(self):
         with self.client:
-            auth_token=''
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'id':"1"}
+                mock_post.return_value.json.return_value = {'id': "1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(
@@ -63,9 +60,9 @@ class TestPosition(BaseTestCase):
                     content_type='application/json'
                 )
                 data = json.loads(response.data.decode())
-                auth_token=data['auth_token']
+                auth_token = data['auth_token']
 
-            response = self.client.put(
+            self.client.put(
                 '/users/joe_smith/coordinates',
                 headers=dict(
                     Authorization='Bearer ' + auth_token
@@ -89,17 +86,16 @@ class TestPosition(BaseTestCase):
             )
 
             data = json.loads(response.data.decode())
-            self.assertEqual(data['status'],'success')
-            self.assertEqual(data['message'],'position_updated')
-            self.assertEqual(response.content_type,'application/json')
-            self.assertEqual(response.status_code,200)
+            self.assertEqual(data['status'], 'success')
+            self.assertEqual(data['message'], 'position_updated')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 200)
 
     def test_update_position_bad_request_no_longitude(self):
         with self.client:
-            auth_token=''
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'id':"1"}
+                mock_post.return_value.json.return_value = {'id': "1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(
@@ -112,7 +108,7 @@ class TestPosition(BaseTestCase):
                     content_type='application/json'
                 )
                 data = json.loads(response.data.decode())
-                auth_token=data['auth_token']
+                auth_token = data['auth_token']
 
             response = self.client.put(
                 '/users/joe_smith/coordinates',
@@ -126,17 +122,16 @@ class TestPosition(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(data['status'],'fail')
-            self.assertEqual(data['message'],'bad_request_data')
-            self.assertEqual(response.content_type,'application/json')
-            self.assertEqual(response.status_code,400)
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'bad_request_data')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 400)
 
     def test_update_position_bad_request_invalid_latitude(self):
         with self.client:
-            auth_token=''
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'id':"1"}
+                mock_post.return_value.json.return_value = {'id': "1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(
@@ -149,7 +144,7 @@ class TestPosition(BaseTestCase):
                     content_type='application/json'
                 )
                 data = json.loads(response.data.decode())
-                auth_token=data['auth_token']
+                auth_token = data['auth_token']
 
             response = self.client.put(
                 '/users/joe_smith/coordinates',
@@ -163,17 +158,16 @@ class TestPosition(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(data['status'],'fail')
-            self.assertEqual(data['message'],'bad_request_data')
-            self.assertEqual(response.content_type,'application/json')
-            self.assertEqual(response.status_code,400)
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'bad_request_data')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 400)
 
     def test_update_position_user_not_found(self):
         with self.client:
-            auth_token=''
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'id':"1"}
+                mock_post.return_value.json.return_value = {'id': "1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(
@@ -186,7 +180,7 @@ class TestPosition(BaseTestCase):
                     content_type='application/json'
                 )
                 data = json.loads(response.data.decode())
-                auth_token=data['auth_token']
+                auth_token = data['auth_token']
 
             response = self.client.put(
                 '/users/joel_smith/coordinates',
@@ -200,20 +194,19 @@ class TestPosition(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(data['status'],'fail')
-            self.assertEqual(data['message'],'user_not_found')
-            self.assertEqual(response.content_type,'application/json')
-            self.assertEqual(response.status_code,404)
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'user_not_found')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 404)
 
     def test_update_position_missing_token(self):
         with self.client:
-            auth_token=''
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'id':"1"}
+                mock_post.return_value.json.return_value = {'id': "1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
-                response = self.client.post(
+                self.client.post(
                     '/users',
                     data=json.dumps(dict(
                         username='joe_smith',
@@ -222,9 +215,6 @@ class TestPosition(BaseTestCase):
                     )),
                     content_type='application/json'
                 )
-                data = json.loads(response.data.decode())
-                auth_token=data['auth_token']
-
             response = self.client.put(
                 '/users/joe_smith/coordinates',
                 headers=dict(
@@ -237,17 +227,16 @@ class TestPosition(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(data['status'],'fail')
-            self.assertEqual(data['message'],'missing_token')
-            self.assertEqual(response.content_type,'application/json')
-            self.assertEqual(response.status_code,401)
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'missing_token')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 401)
 
     def test_update_position_invalid_token(self):
         with self.client:
-            auth_token=''
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'id':"1"}
+                mock_post.return_value.json.return_value = {'id': "1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(
@@ -259,8 +248,6 @@ class TestPosition(BaseTestCase):
                     )),
                     content_type='application/json'
                 )
-                data = json.loads(response.data.decode())
-                auth_token=data['auth_token']
 
             response = self.client.put(
                 '/users/joe_smith/coordinates',
@@ -274,17 +261,16 @@ class TestPosition(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(data['status'],'fail')
-            self.assertEqual(data['message'],'invalid_token')
-            self.assertEqual(response.content_type,'application/json')
-            self.assertEqual(response.status_code,401)
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'invalid_token')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 401)
 
     def test_update_position_expired_token(self):
         with self.client:
-            auth_token=''
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'id':"1"}
+                mock_post.return_value.json.return_value = {'id': "1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(
@@ -297,9 +283,9 @@ class TestPosition(BaseTestCase):
                     content_type='application/json'
                 )
                 data = json.loads(response.data.decode())
-                auth_token=data['auth_token']
+                auth_token = data['auth_token']
 
-            time.sleep(TOKEN_DURATION+1)
+            time.sleep(TOKEN_DURATION + 1)
             response = self.client.put(
                 '/users/joe_smith/coordinates',
                 headers=dict(
@@ -312,20 +298,19 @@ class TestPosition(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(data['status'],'fail')
-            self.assertEqual(data['message'],'expired_token')
-            self.assertEqual(response.content_type,'application/json')
-            self.assertEqual(response.status_code,401)
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'expired_token')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 401)
 
     def test_update_position_unauthorized_user(self):
         with self.client:
-            auth_token=''
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'id':"1"}
+                mock_post.return_value.json.return_value = {'id': "1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
-                response = self.client.post(
+                self.client.post(
                     '/users',
                     data=json.dumps(dict(
                         username='pablo_perez',
@@ -336,7 +321,7 @@ class TestPosition(BaseTestCase):
                 )
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'id':"1"}
+                mock_post.return_value.json.return_value = {'id': "1"}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(
@@ -349,7 +334,7 @@ class TestPosition(BaseTestCase):
                     content_type='application/json'
                 )
                 data = json.loads(response.data.decode())
-                auth_token=data['auth_token']
+                auth_token = data['auth_token']
             response = self.client.put(
                 '/users/pablo_perez/coordinates',
                 headers=dict(
@@ -362,11 +347,10 @@ class TestPosition(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(data['status'],'fail')
-            self.assertEqual(data['message'],'unauthorized_update')
-            self.assertEqual(response.content_type,'application/json')
-            self.assertEqual(response.status_code,401)
-
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'unauthorized_update')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 401)
 
 
 if __name__ == '__main__':
