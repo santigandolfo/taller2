@@ -13,8 +13,7 @@ TOKEN_MANIPULATION_BLUEPRINT = Blueprint('token_push_notifications', __name__)
 
 class PushNotificationAPI(MethodView):
     """Handlers for manipulating the firebase token"""
-    def get(self):
-        return make_response("hola"), 200
+
     @staticmethod
     def put(username):
         """Endpoint for changing an user's push notification token"""
