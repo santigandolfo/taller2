@@ -272,6 +272,54 @@ class TestPushNotification(BaseTestCase):
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 401)
 
+    def test_update_token_bad_request(self):
+        with self.client:
+            with patch('requests.post') as mock_post:
+                mock_post.return_value = Mock()
+                mock_post.return_value.json.return_value = {'id': "1"}
+                mock_post.return_value.ok = True
+                mock_post.return_value.status_code = 201
+                self.client.post(
+                    '/users',
+                    data=json.dumps(dict(
+                        username='pablo_perez',
+                        password='123456',
+                        type='driver'
+                    )),
+                    content_type='application/json'
+                )
+            with patch('requests.post') as mock_post:
+                mock_post.return_value = Mock()
+                mock_post.return_value.json.return_value = {'id': "1"}
+                mock_post.return_value.ok = True
+                mock_post.return_value.status_code = 201
+                response = self.client.post(
+                    '/users',
+                    data=json.dumps(dict(
+                        username='joe_smith',
+                        password='123456',
+                        type='passenger'
+                    )),
+                    content_type='application/json'
+                )
+                data = json.loads(response.data.decode())
+                auth_token = data['auth_token']
+            response = self.client.put(
+                '/users/pablo_perez/push-token',
+                headers=dict(
+                    Authorization='Bearer ' + auth_token
+                ),
+                data=json.dumps(dict(
+                    push_tokn=u'pushToken'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(data['status'], 'fail')
+            self.assertEqual(data['message'], 'bad_request_data')
+            self.assertEqual(response.content_type, 'application/json')
+            self.assertEqual(response.status_code, 400)
+
 
 if __name__ == '__main__':
     unittest.main()
