@@ -6,6 +6,7 @@ from schema import Schema, And, Use, SchemaError
 
 from app import db, application
 from src.mixins.AuthenticationMixin import Authenticator
+from src.services.google_maps import get_directions
 
 RIDERS_BLUEPRINT = Blueprint('riders', __name__)
 
@@ -23,8 +24,9 @@ class RidersAPI(MethodView):
                               'latitude_final': And(Use(float), lambda x: -90 < x < 90),
                               'longitude_initial': And(Use(float), lambda x: -180 < x < 180),
                               'longitude_final': And(Use(float), lambda x: -180 < x < 180)}])
+
             # IMPORTANTE: el 0 es para que devuelva el diccionario dentro y no una lista
-            data = schema\
+            data = schema \
                 .validate([data])[0]
             application.logger.info("{} asked to submit a request for a trip".format(username))
             if db.riders.count({'username': username}) == 0:
@@ -48,22 +50,32 @@ class RidersAPI(MethodView):
                 application.logger.info("Permission granted")
                 application.logger.info("Rider submitting request: {}".format(token_username))
 
-                if db.requests.count({'username': username, 'pending': True}) == 0:
-                    # DO REQUEST STUFF
-                    result = db.requests.insert_one(
-                        {'username': username, 'coordinates': data, 'pending': True})
-                    response = {
-                        'status': 'success',
-                        'message': 'request_submitted',  # Add request id reference
-                        'id': str(result.inserted_id)
-                    }
-                    status_code = 201
-                else:
+                if not db.requests.count({'username': username, 'pending': True}) == 0:
                     response = {
                         'status': 'fail',
                         'message': 'one_request_already_pending'
                     }
                     status_code = 409
+                    return make_response(jsonify(response)), status_code
+
+                # DO REQUEST STUFF
+
+                directions_response = get_directions(data)
+
+                if not directions_response.ok:
+                    raise Exception('failed_to_get_directions')
+
+                result = db.requests.insert_one(
+                    {'username': username, 'coordinates': data, 'pending': True})
+                response = {
+                    'status': 'success',
+                    'message': 'request_submitted',  # Add request id reference
+                    'id': str(result.inserted_id),
+                    'directions': directions_response
+                        .json()['routes'][0]['overview_polyline']['points']
+                }
+                status_code = 201
+
             else:
                 response = {
                     'status': 'fail',
