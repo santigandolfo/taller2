@@ -27,6 +27,10 @@ def update_user_data(user_id, data):
     application.logger.info("Response was {}".format(str(resp.content)))
     return resp
 
+def update_car_info(user_id, data):
+    """Update driver's car info in the shared server"""
+    return requests.post(urljoin(SHARED_SERVER_URL, 'users/{}/cars'.format(user_id)),
+                        headers={"AuthToken": SS_TOKEN}, data=data)
 
 def validate_user(username, password):
     """Validate user's credentials in the shared server"""
