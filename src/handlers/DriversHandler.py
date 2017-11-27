@@ -154,7 +154,7 @@ class AvailableEndpoint(MethodView):
 # define the API resources
 DRIVERS_VIEW = DriversAPI.as_view('drivers_api')
 AVAILABLE_VIEW = AvailableEndpoint.as_view('available_endpoint')
-CAR_VIEW = CarEndPoint('car_endpoint')
+CAR_VIEW = CarEndPoint.as_view('car_endpoint')
 
 # add Rules for API Endpoints
 DRIVERS_BLUEPRINT.add_url_rule(
