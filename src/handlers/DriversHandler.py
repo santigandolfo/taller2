@@ -4,7 +4,7 @@ from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from app import db, application
 from src.models import User
-from src.services.shared_server import get_data, update_car_info
+from src.services.shared_server import get_data, register_car, delete_car
 from src.mixins.AuthenticationMixin import Authenticator
 
 DRIVERS_BLUEPRINT = Blueprint('drivers', __name__)
@@ -73,15 +73,15 @@ class DriversAPI(MethodView):
             return make_response(jsonify(response)), 500
 
 
-class CarEndPoint(MethodView):
-    """View used for car information corresponding to a driver"""
+class CarRegisterEndPoint(MethodView):
+    """View used for registering car information corresponding to a driver"""
 
     @staticmethod
-    def put():
-        """Update the information regardings driver's car"""
+    def post(username):
+        """Registering a car for a specific driver"""
         try:
             data = request.get_json()
-            application.logger.info("Asked to update driver's car information for: {}"
+            application.logger.info("Asked to register driver's car information for: {}"
                                     .format(username))
             if db.drivers.count({'username': username}) == 0:
                 response = {
@@ -98,19 +98,75 @@ class CarEndPoint(MethodView):
                     'message': error_message
                 }
                 return make_response(jsonify(response)), 401
-            application.logger.info("Updating driver's car information w/ Auth: {}"
+            application.logger.info("Registering driver's car information w/ Auth: {}"
                                     .format(auth_header))
-            application.logger.info("Update was requested by: {}".format(token_username))
+            application.logger.info("Register was requested by: {}".format(token_username))
             if token_username == username:
                 application.logger.info("Permission granted")
                 application.logger.info("driver to update {}".format(token_username))
                 user = User.get_user_by_username(username)
-                resp = update_car_info(user.uid, data)
-                #TODO: Add car id to response
+                resp = register_car(user.uid, data)
                 if resp.ok:
                     response = {
                         'status': 'success',
-                        'message': 'data_updated_succesfully'
+                        'message': 'car_registered_succesfully'
+                        'car_id': resp.json().get('id')
+                    }
+                    return make_response(jsonify(response)), 200
+                else:
+                    return make_response(jsonify(resp.json())), resp.status_code
+            else:
+                response = {
+                    'status': 'fail',
+                    'message': 'unauthorized_update'
+                }
+                return make_response(jsonify(response)), 401
+        except Exception as exc:  # pragma: no cover
+            application.logger.error('Error msg: {0}. Error doc: {1}'
+                                     .format(exc.message, exc.__doc__))
+            response = {
+                'status': 'fail',
+                'message': 'internal_error',
+                'error_description': exc.message
+            }
+            return make_response(jsonify(response)), 500
+
+class CarDeleteEndPoint(MethodView):
+    """View used for deleting a car from a specific driver"""
+
+    @staticmethod
+    def delete(username,car_id):
+        """Delete a car from a driver's info"""
+        try:
+            application.logger.info("Asked to remove driver's car information for: {}"
+                                    .format(username))
+            if db.drivers.count({'username': username}) == 0:
+                response = {
+                    'status': 'fail',
+                    'message': 'driver_not_found'
+                }
+                return make_response(jsonify(response)), 404
+            application.logger.info("driver {} exists".format(username))
+            auth_header = request.headers.get('Authorization')
+            token_username, error_message = Authenticator.authenticate(auth_header)
+            if error_message:
+                response = {
+                    'status': 'fail',
+                    'message': error_message
+                }
+                return make_response(jsonify(response)), 401
+            application.logger.info("Removing driver's car information w/ Auth: {}"
+                                    .format(auth_header))
+            application.logger.info("Removal was requested by: {}".format(token_username))
+            if token_username == username:
+                application.logger.info("Permission granted")
+                application.logger.info("driver to update {}".format(token_username))
+                user = User.get_user_by_username(username)
+                resp = delete_car(user.uid, car_id, data)
+                if resp.ok:
+                    response = {
+                        'status': 'success',
+                        'message': 'car_deleted_succesfully'
                     }
                     return make_response(jsonify(response)), 200
                 else:
@@ -155,7 +211,8 @@ class AvailableEndpoint(MethodView):
 # define the API resources
 DRIVERS_VIEW = DriversAPI.as_view('drivers_api')
 AVAILABLE_VIEW = AvailableEndpoint.as_view('available_endpoint')
-CAR_VIEW = CarEndPoint.as_view('car_endpoint')
+CAR_REGISTER_VIEW = CarRegisterEndPoint.as_view('car_register_endpoint')
+CAR_DELETE_VIEW = CarDeleteEndPoint.as_view('car_delete_endpoint')
 
 # add Rules for API Endpoints
 DRIVERS_BLUEPRINT.add_url_rule(
@@ -166,8 +223,14 @@ DRIVERS_BLUEPRINT.add_url_rule(
 
 DRIVERS_BLUEPRINT.add_url_rule(
     '/drivers/<username>/car',
-    view_func=CAR_VIEW,
-    methods=['PUT']
+    view_func=CAR_REGISTER_VIEW,
+    methods=['POST']
+)
+
+DRIVERS_BLUEPRINT.add_url_rule(
+    '/drivers/<username>/car/<carid>',
+    view_func=CAR_DELETE_VIEW,
+    methods=['DELETE']
 )
 
 DRIVERS_BLUEPRINT.add_url_rule(
