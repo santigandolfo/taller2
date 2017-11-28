@@ -72,7 +72,12 @@ class RidersAPI(MethodView):
 
                 if assigned_driver:
                     message = "A trip was assigned to you"
-                    send_push_notifications(assigned_driver, message)
+                    data = {
+                        'rider': username,
+                        'directions': directions_response
+                            .json()['routes'][0]['overview_polyline']['points']
+                    }
+                    send_push_notifications(assigned_driver, message, additional_data=data)
 
                 result = db.requests.insert_one(
                     {'username': username, 'coordinates': data, 'pending': True})
