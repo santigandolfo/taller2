@@ -4,7 +4,7 @@ from tests.base import BaseTestCase
 from mock import patch, Mock
 
 
-class TestDriverManipulation(BaseTestCase):
+class TestDriverAvailabilityManipulation(BaseTestCase):
     @patch('requests.post')
     def test_simple_data_update(self, mock_post):
         """ Test case for a simple availability change"""
@@ -295,7 +295,6 @@ class TestDriverManipulation(BaseTestCase):
             self.assertEqual(data['message'], 'missing_token')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 401)
-
 
 if __name__ == '__main__':
     unittest.main()
