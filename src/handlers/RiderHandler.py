@@ -51,7 +51,6 @@ class RidersAPI(MethodView):
             if token_username == username:
                 application.logger.info("Permission granted")
                 application.logger.info("Rider submitting request: {}".format(token_username))
-
                 if not db.requests.count({'username': username, 'pending': True}) == 0:
                     response = {
                         'status': 'fail',
@@ -63,24 +62,22 @@ class RidersAPI(MethodView):
                 # DO REQUEST STUFF
 
                 directions_response = get_directions(data)
-
                 if not directions_response.ok:
                     raise Exception('failed_to_get_directions')
-
-                assigned_driver = DriversMixin.get_closer_driver(
-                    {'lat': data['latitude_initial'], 'lon': 'longitudde_initial'})
+                assigned_driver = DriversMixin.get_closer_driver((data['latitude_initial'],
+                                                                  data['longitude_initial']))
+                result = db.requests.insert_one(
+                    {'username': username, 'coordinates': data, 'pending': True})
 
                 if assigned_driver:
                     message = "A trip was assigned to you"
                     data = {
                         'rider': username,
                         'directions': directions_response
-                            .json()['routes'][0]['overview_polyline']['points']
+                            .json()['routes'][0]['overview_polyline']['points'],
+                        'id': str(result.inserted_id)
                     }
                     send_push_notifications(assigned_driver, message, additional_data=data)
-
-                result = db.requests.insert_one(
-                    {'username': username, 'coordinates': data, 'pending': True})
 
                 response = {
                     'status': 'success',
