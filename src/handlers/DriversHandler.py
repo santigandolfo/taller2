@@ -5,6 +5,7 @@ from flask.views import MethodView
 from app import db, application
 from src.services.shared_server import get_data
 from src.mixins.AuthenticationMixin import Authenticator
+from src.mixins.DriversMixin import DriversMixin
 
 DRIVERS_BLUEPRINT = Blueprint('drivers', __name__)
 
@@ -80,7 +81,7 @@ class AvailableEndpoint(MethodView):
         """Gets all the available drivers"""
         try:
             result = []
-            for driver in db.drivers.find({"available": True}):
+            for driver in DriversMixin.get_available_drivers():
                 user_id = db.users.find_one({"username": driver['username']})['uid']
                 # TODO: Obtener toda la info con un solo request, pasando un vector de ids
                 result.append(get_data(user_id).json())

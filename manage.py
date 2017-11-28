@@ -98,6 +98,16 @@ def test_notifiactions_token():
     return 1
 
 @manager.command
+def test_request_matching():
+    """Runs the matching without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_request_matching.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
+
+@manager.command
 def cov():
     """Runs the unit tests with coverage."""
     tests = unittest.TestLoader().discover('tests')

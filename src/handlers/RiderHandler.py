@@ -7,6 +7,8 @@ from schema import Schema, And, Use, SchemaError
 from app import db, application
 from src.mixins.AuthenticationMixin import Authenticator
 from src.services.google_maps import get_directions
+from src.services.push_notifications import send_push_notifications
+from src.mixins.DriversMixin import DriversMixin
 
 RIDERS_BLUEPRINT = Blueprint('riders', __name__)
 
@@ -65,8 +67,14 @@ class RidersAPI(MethodView):
                 if not directions_response.ok:
                     raise Exception('failed_to_get_directions')
 
+                # assigned_driver = DriversMixin.get_closer_driver(
+                #     {'lat': data['latitude_initial'], 'lon': 'longitudde_initial'})
+                #
+                # message = "A trip was assigned to you"
+                # resp = send_push_notifications(assigned_driver, message)
                 result = db.requests.insert_one(
                     {'username': username, 'coordinates': data, 'pending': True})
+
                 response = {
                     'status': 'success',
                     'message': 'request_submitted',  # Add request id reference
