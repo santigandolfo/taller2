@@ -3,6 +3,7 @@
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from schema import Schema, And, Use, SchemaError
+from bson.objectid import ObjectId
 
 from app import db, application
 from src.mixins.AuthenticationMixin import Authenticator
@@ -10,11 +11,11 @@ from src.services.google_maps import get_directions
 from src.services.push_notifications import send_push_notifications
 from src.mixins.DriversMixin import DriversMixin
 
-RIDERS_BLUEPRINT = Blueprint('riders', __name__)
+REQUESTS_BLUEPRINT = Blueprint('requests', __name__)
 
 
-class RidersAPI(MethodView):
-    """Handler for riders related API"""
+class RequestSubmission(MethodView):
+    """Handler for request submission"""
 
     @staticmethod
     def post(username):
@@ -65,9 +66,7 @@ class RidersAPI(MethodView):
                         directions = directions_response.json()['routes'][0]['overview_polyline']['points']
                     else:
                         raise Exception('unreachable_destination')
-                    result = db.trips.insert_one(
-                                                {'rider': username, 'driver': assigned_driver, 'coordinates': data,
-                                                 'started': False, 'finished': False})
+                    result = db.requests.insert_one({'rider': username, 'driver': assigned_driver, 'coordinates': data})
                     message = "A trip was assigned to you"
                     data = {
                         'rider': username,
@@ -113,14 +112,96 @@ class RidersAPI(MethodView):
             }
             return make_response(jsonify(response)), 500
 
+class RequestCancellation(MethodView):
+    """Handler for request cancellation"""
+
+    @staticmethod
+    def delete(requestID):
+        """Endpoint for cancelling an unstarted trip a.k.a a request made that was matched"""
+
+        try:
+            application.logger.info("{} asked to delete pending request for a trip"
+                                    .format(username))
+            if db.users.count({'username': username}) == 0:
+                response = {
+                    'status': 'fail',
+                    'message': 'user_not_found'
+                }
+                return make_response(jsonify(response)), 404
+            application.logger.info("user {} exists".format(username))
+            auth_header = request.headers.get('Authorization')
+            token_username, error_message = Authenticator.authenticate(auth_header)
+            if error_message:
+                response = {
+                    'status': 'fail',
+                    'message': error_message
+                }
+                return make_response(jsonify(response)), 401
+            application.logger.info("Verifying token: {}".format(auth_header))
+            application.logger.info("Cancellation was requested by: {}".format(token_username))
+            result = db.requests.find_one({'_id': ObjectId(requestID)})
+            if result:
+                application.logger.info("Request found")
+                driver_username = result['driver']
+                application.logger.info("Request driver username: {}".format(driver_username))
+                rider_username = result['rider']
+                application.logger.info("Request rider username: {}".format(rider_username))
+                if (token_username == driver_username or token_username == rider_username):
+                    application.logger.info("Permission granted")
+                    application.logger.info("User cancelling request: {}".format(token_username))
+                    db.requests.delete_one({'_id': ObjectId(requestID)})
+                    message = "Your trip was cancelled by " + token_username
+                    if (token_username == driver_username):
+                        receiver = rider_username
+                    else:
+                        receiver = driver_username
+                    data = {
+                        'id': requestID
+                    }
+                    send_push_notifications(receiver, message, data)
+                    response = {
+                        'status': 'success',
+                        'message': 'request_cancelled'
+                    }
+                    status_code = 203
+                else:
+                    response = {
+                        'status': 'fail',
+                        'message': 'unauthorized_action'
+                    }
+                    status_code = 401
+            else:
+                response = {
+                    'status': 'fail',
+                    'message': 'no_request_found'
+                }
+                status_code = 404
+            return make_response(jsonify(response)), status_code
+        except Exception as exc:  # pragma: no cover
+            application.logger.error('Error msg: {0}. Error doc: {1}'
+                                     .format(exc.message, exc.__doc__))
+            response = {
+                'status': 'fail',
+                'message': 'internal_error',
+                'error_description': exc.message
+            }
+            return make_response(jsonify(response)), 500
+
 
 
 # define the API resources
-RIDERS_VIEW = RidersAPI.as_view('riders_api')
+REQUESTS_SUBMISSION_VIEW = RequestSubmission.as_view('request_submission')
+REQUEST_CANCELLATION_VIEW = RequestCancellation.as_view('request_cancellation')
 
 # add Rules for API Endpoints
-RIDERS_BLUEPRINT.add_url_rule(
+REQUESTS_BLUEPRINT.add_url_rule(
     '/riders/<username>/request',
-    view_func=RIDERS_VIEW,
+    view_func=REQUESTS_SUBMISSION_VIEW,
     methods=['POST']
+)
+
+REQUESTS_BLUEPRINT.add_url_rule(
+    '/requests/<requestID>',
+    view_func=REQUEST_CANCELLATION_VIEW,
+    methods=['DELETE']
 )
