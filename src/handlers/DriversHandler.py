@@ -82,14 +82,15 @@ class AvailableEndpoint(MethodView):
         try:
             result = []
             for driver in DriversMixin.get_available_drivers():
-                user_id = db.users.find_one({"username": driver['username']})['uid']
+                user_id = db.users.find_one({"username": driver})['uid']
                 # TODO: Obtener toda la info con un solo request, pasando un vector de ids
                 result.append(get_data(user_id).json())
             return make_response(jsonify(result)), 200
-        except Exception:  # pragma: no cover
+        except Exception as exc:  # pragma: no cover
             response = {
                 'status': 'fail',
-                'message': 'internal_error'
+                'message': 'internal_error',
+                'exc': exc.message
             }
             return make_response(jsonify(response)), 500
 

@@ -67,11 +67,13 @@ class RidersAPI(MethodView):
                 if not directions_response.ok:
                     raise Exception('failed_to_get_directions')
 
-                # assigned_driver = DriversMixin.get_closer_driver(
-                #     {'lat': data['latitude_initial'], 'lon': 'longitudde_initial'})
-                #
-                # message = "A trip was assigned to you"
-                # resp = send_push_notifications(assigned_driver, message)
+                assigned_driver = DriversMixin.get_closer_driver(
+                    {'lat': data['latitude_initial'], 'lon': 'longitudde_initial'})
+
+                if assigned_driver:
+                    message = "A trip was assigned to you"
+                    send_push_notifications(assigned_driver, message)
+
                 result = db.requests.insert_one(
                     {'username': username, 'coordinates': data, 'pending': True})
 
@@ -80,7 +82,8 @@ class RidersAPI(MethodView):
                     'message': 'request_submitted',  # Add request id reference
                     'id': str(result.inserted_id),
                     'directions': directions_response
-                        .json()['routes'][0]['overview_polyline']['points']
+                        .json()['routes'][0]['overview_polyline']['points'],
+                    'driver': assigned_driver
                 }
                 status_code = 201
 
