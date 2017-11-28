@@ -6,6 +6,7 @@ from app import db, application
 from src.models import User
 from src.services.shared_server import get_data, register_car, delete_car
 from src.mixins.AuthenticationMixin import Authenticator
+from src.mixins.DriversMixin import DriversMixin
 
 DRIVERS_BLUEPRINT = Blueprint('drivers', __name__)
 
@@ -195,15 +196,16 @@ class AvailableEndpoint(MethodView):
         """Gets all the available drivers"""
         try:
             result = []
-            for driver in db.drivers.find({"available": True}):
-                user_id = db.users.find_one({"username": driver['username']})['uid']
+            for driver in DriversMixin.get_available_drivers():
+                user_id = db.users.find_one({"username": driver})['uid']
                 # TODO: Obtener toda la info con un solo request, pasando un vector de ids
                 result.append(get_data(user_id).json())
             return make_response(jsonify(result)), 200
-        except Exception:  # pragma: no cover
+        except Exception as exc:  # pragma: no cover
             response = {
                 'status': 'fail',
-                'message': 'internal_error'
+                'message': 'internal_error',
+                'exc': exc.message
             }
             return make_response(jsonify(response)), 500
 

@@ -7,6 +7,8 @@ from schema import Schema, And, Use, SchemaError
 from app import db, application
 from src.mixins.AuthenticationMixin import Authenticator
 from src.services.google_maps import get_directions
+from src.services.push_notifications import send_push_notifications
+from src.mixins.DriversMixin import DriversMixin
 
 RIDERS_BLUEPRINT = Blueprint('riders', __name__)
 
@@ -49,7 +51,6 @@ class RidersAPI(MethodView):
             if token_username == username:
                 application.logger.info("Permission granted")
                 application.logger.info("Rider submitting request: {}".format(token_username))
-
                 if not db.requests.count({'username': username, 'pending': True}) == 0:
                     response = {
                         'status': 'fail',
@@ -61,18 +62,30 @@ class RidersAPI(MethodView):
                 # DO REQUEST STUFF
 
                 directions_response = get_directions(data)
-
                 if not directions_response.ok:
                     raise Exception('failed_to_get_directions')
-
+                assigned_driver = DriversMixin.get_closer_driver((data['latitude_initial'],
+                                                                  data['longitude_initial']))
                 result = db.requests.insert_one(
                     {'username': username, 'coordinates': data, 'pending': True})
+
+                if assigned_driver:
+                    message = "A trip was assigned to you"
+                    data = {
+                        'rider': username,
+                        'directions': directions_response
+                            .json()['routes'][0]['overview_polyline']['points'],
+                        'id': str(result.inserted_id)
+                    }
+                    send_push_notifications(assigned_driver, message, additional_data=data)
+
                 response = {
                     'status': 'success',
                     'message': 'request_submitted',  # Add request id reference
                     'id': str(result.inserted_id),
                     'directions': directions_response
-                        .json()['routes'][0]['overview_polyline']['points']
+                        .json()['routes'][0]['overview_polyline']['points'],
+                    'driver': assigned_driver
                 }
                 status_code = 201
 

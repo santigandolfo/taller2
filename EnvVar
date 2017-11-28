@@ -19,3 +19,4 @@ export SECRET_KEY=umpalumpa
 export LOG_LEVEL=ERROR
 export TOKEN_DURATION=1
 export GOOGLE_KEY=fictitousGoogleKey
+export FIREBASE_KEY=fictitousGoogleKey

@@ -16,10 +16,12 @@ class User(object):
 
     username = ''
     uid = ''
+    push_token = ''
 
-    def __init__(self, username, uid):
+    def __init__(self, username, uid, push_token=''):
         self.username = username
         self.uid = uid
+        self.push_token = push_token
 
     def encode_auth_token(self):
         """
@@ -50,7 +52,8 @@ class User(object):
         user_dict = db.users.find_one({'username': username})
         if not user_dict:
             return None
-        return User(username=user_dict['username'], uid=user_dict['uid'])
+        return User(username=user_dict['username'], uid=user_dict['uid'],
+                    push_token=user_dict['push_token'])
 
     @staticmethod
     def get_user_by_uid(uid):
@@ -58,7 +61,8 @@ class User(object):
         user_dict = db.users.find_one({'uid': uid})
         if not user_dict:
             return None
-        return User(username=user_dict['username'], uid=user_dict['uid'])
+        return User(username=user_dict['username'], uid=user_dict['uid'],
+                    push_token=user_dict['push_token'])
 
     @staticmethod
     def decode_auth_token(auth_token):
