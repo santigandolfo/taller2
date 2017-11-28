@@ -109,7 +109,7 @@ class CarRegisterEndPoint(MethodView):
                 if resp.ok:
                     response = {
                         'status': 'success',
-                        'message': 'car_registered_succesfully'
+                        'message': 'car_registered_succesfully',
                         'car_id': resp.json().get('id')
                     }
                     return make_response(jsonify(response)), 200
@@ -118,7 +118,7 @@ class CarRegisterEndPoint(MethodView):
             else:
                 response = {
                     'status': 'fail',
-                    'message': 'unauthorized_update'
+                    'message': 'unauthorized_action'
                 }
                 return make_response(jsonify(response)), 401
         except Exception as exc:  # pragma: no cover
@@ -162,7 +162,7 @@ class CarDeleteEndPoint(MethodView):
                 application.logger.info("Permission granted")
                 application.logger.info("driver to update {}".format(token_username))
                 user = User.get_user_by_username(username)
-                resp = delete_car(user.uid, car_id, data)
+                resp = delete_car(user.uid, car_id)
                 if resp.ok:
                     response = {
                         'status': 'success',
@@ -222,13 +222,13 @@ DRIVERS_BLUEPRINT.add_url_rule(
 )
 
 DRIVERS_BLUEPRINT.add_url_rule(
-    '/drivers/<username>/car',
+    '/drivers/<username>/cars',
     view_func=CAR_REGISTER_VIEW,
     methods=['POST']
 )
 
 DRIVERS_BLUEPRINT.add_url_rule(
-    '/drivers/<username>/car/<carid>',
+    '/drivers/<username>/cars/<car_id>',
     view_func=CAR_DELETE_VIEW,
     methods=['DELETE']
 )

@@ -80,6 +80,15 @@ def test_driver_manipulation():
     return 1
 
 @manager.command
+def test_car_manipulation():
+    """Runs the car manipulation unit tests without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_car_manipulation.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
+@manager.command
 def test_positions():
     """Runs the position unit tests without test coverage."""
     tests = unittest.TestLoader().discover('tests', pattern='test_positions.py')
