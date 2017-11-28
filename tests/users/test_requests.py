@@ -103,7 +103,6 @@ mock_direction.json.return_value = dict(directions_return_example)
 
 
 class TestRequestsSubmission(BaseTestCase):
-    @patch('src.handlers.RiderHandler')
     @patch('requests.get', return_value=mock_direction)
     @patch('requests.post')
     def test_simple_request_submission_driver_assigned(self, mock_post, mocked_google_response, mock_push_notification):
