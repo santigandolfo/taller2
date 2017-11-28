@@ -78,13 +78,11 @@ from src.handlers.DriversHandler import DRIVERS_BLUEPRINT
 from src.handlers.PositionHandler import POSITION_BLUEPRINT
 from src.handlers.RiderHandler import RIDERS_BLUEPRINT
 from src.handlers.TokenRegistrationHandler import TOKEN_MANIPULATION_BLUEPRINT
-from src.handlers.RequestHandler import REQUESTS_BLUEPRINT
 application.register_blueprint(REGISTRATION_BLUEPRINT)
 application.register_blueprint(SECURITY_BLUEPRINT)
 application.register_blueprint(DRIVERS_BLUEPRINT)
 application.register_blueprint(POSITION_BLUEPRINT)
 application.register_blueprint(RIDERS_BLUEPRINT)
-application.register_blueprint(REQUESTS_BLUEPRINT)
 application.register_blueprint(TOKEN_MANIPULATION_BLUEPRINT)
 
 if __name__ == "__main__":
