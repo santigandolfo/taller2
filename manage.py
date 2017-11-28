@@ -20,7 +20,7 @@ LOG_LEVEL = os.environ["LOG_LEVEL"]
 
 
 manager = Manager(application)
-logging.disable(LOG_LEVEL) #Salida mas limpia por pantalla
+#logging.disable(LOG_LEVEL) #Salida mas limpia por pantalla
 
 
 @manager.command
