@@ -170,7 +170,7 @@ class TestRequestsSubmission(BaseTestCase):
             )
 
             data = json.loads(response.data.decode())
-            #self.assertEqual(data['status'], 'success')
+            self.assertEqual(data['status'], 'success')
             self.assertEqual(data['message'], 'request_submitted')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 201)

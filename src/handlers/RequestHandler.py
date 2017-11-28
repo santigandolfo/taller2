@@ -53,41 +53,49 @@ class RequestSubmission(MethodView):
                 application.logger.info("Permission granted")
                 application.logger.info("Rider submitting request: {}".format(token_username))
 
-                assigned_driver = DriversMixin.get_closer_driver((data['latitude_initial'],                                                                  data['longitude_initial']))
+                if (db.requests.count({'rider': username}) == 0 and db.trips.count({'rider': username}) == 0 ):
 
-                if assigned_driver:
-                    application.logger.info("driver assigned")
-                    directions_response = get_directions(data)
-                    if not directions_response.ok:
-                        raise Exception('failed_to_get_directions')
-                    application.logger.info("google directions response:")
-                    application.logger.info(directions_response)
-                    if directions_response.json()['routes']:
-                        directions = directions_response.json()['routes'][0]['overview_polyline']['points']
+                    assigned_driver = DriversMixin.get_closer_driver((data['latitude_initial'],                                                                  data['longitude_initial']))
+
+                    if assigned_driver:
+                        application.logger.info("driver assigned")
+                        directions_response = get_directions(data)
+                        if not directions_response.ok:
+                            raise Exception('failed_to_get_directions')
+                        application.logger.info("google directions response:")
+                        application.logger.info(directions_response)
+                        if directions_response.json()['routes']:
+                            directions = directions_response.json()['routes'][0]['overview_polyline']['points']
+                        else:
+                            raise Exception('unreachable_destination')
+                        result = db.requests.insert_one({'rider': username, 'driver': assigned_driver, 'coordinates': data})
+                        message = "A trip was assigned to you"
+                        data = {
+                            'rider': username,
+                            'directions': directions,
+                            'id': str(result.inserted_id)
+                        }
+                        send_push_notifications(assigned_driver, message, data)
+                        response = {
+                            'status': 'success',
+                            'message': 'request_submitted',
+                            'id': str(result.inserted_id),
+                            'directions': directions,
+                            'driver': assigned_driver
+                        }
+                        status_code = 201
                     else:
-                        raise Exception('unreachable_destination')
-                    result = db.requests.insert_one({'rider': username, 'driver': assigned_driver, 'coordinates': data})
-                    message = "A trip was assigned to you"
-                    data = {
-                        'rider': username,
-                        'directions': directions,
-                        'id': str(result.inserted_id)
-                    }
-                    send_push_notifications(assigned_driver, message, data)
-                    response = {
-                        'status': 'success',
-                        'message': 'request_submitted',
-                        'id': str(result.inserted_id),
-                        'directions': directions,
-                        'driver': assigned_driver
-                    }
-                    status_code = 201
+                        response = {
+                            'status': 'fail',
+                            'message': 'no_driver_available'
+                        }
+                        status_code = 404
                 else:
                     response = {
                         'status': 'fail',
-                        'message': 'no_driver_available'
+                        'message': 'request_or_trip_ongoing'
                     }
-                    status_code = 404
+                    status_code = 409
             else:
                 response = {
                     'status': 'fail',
