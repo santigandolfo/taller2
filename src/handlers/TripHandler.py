@@ -94,6 +94,7 @@ class TripsAPI(MethodView):
             }
             return make_response(jsonify(response)), 500
 
+    @staticmethod
     def delete(username):
         """Endpoint for finishing an ongoing trip"""
 
@@ -122,6 +123,7 @@ class TripsAPI(MethodView):
                 if result:
                     db.trips.delete_one({'driver': username})
                     #TODO: Inform trip to Shared Server
+                    #Inform cost to users
                     response = {
                         'status': 'success',
                         'message': 'trip_finished'
@@ -136,17 +138,10 @@ class TripsAPI(MethodView):
             else:
                 response = {
                     'status': 'fail',
-                    'message': 'unauthorized_request'
+                    'message': 'unauthorized_action'
                 }
                 status_code = 401
             return make_response(jsonify(response)), status_code
-        except SchemaError:
-            application.logger.error("Request data error")
-            response = {
-                'status': 'fail',
-                'message': 'bad_request_data'
-            }
-            return make_response(jsonify(response)), 400
         except Exception as exc:  # pragma: no cover
             application.logger.error('Error msg: {0}. Error doc: {1}'
                                      .format(exc.message, exc.__doc__))
