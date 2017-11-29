@@ -115,6 +115,15 @@ def test_request_matching():
         return 0
     return 1
 
+@manager.command
+def test_request_cancellation():
+    """Runs the matching without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_request_cancellation.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
 
 @manager.command
 def cov():
