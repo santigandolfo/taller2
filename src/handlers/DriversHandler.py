@@ -16,18 +16,18 @@ class DriversAPI(MethodView):
 
     @staticmethod
     def patch(username):
-        """Endpoint made for modifying the driver availability"""
+        """Endpoint made for modifying the driver's duty status"""
         try:
             # TODO: Usar Schema para validar formato, deberia ser un bool
             data = request.get_json()
-            availability = data.get('availability', '')
-            if availability is not True and availability is not False:
+            duty = data.get('duty', '')
+            if duty is not True and duty is not False:
                 response = {
                     'status': 'fail',
-                    'message': 'missing_availability'
+                    'message': 'missing_duty_status'
                 }
                 return make_response(jsonify(response)), 400
-            application.logger.info("Asked to update driver's availability for: {}"
+            application.logger.info("Asked to update driver's duty status for: {}"
                                     .format(username))
             if db.drivers.count({'username': username}) == 0:
                 response = {
@@ -44,17 +44,17 @@ class DriversAPI(MethodView):
                     'message': error_message
                 }
                 return make_response(jsonify(response)), 401
-            application.logger.info("Updating driver's availability w/ Auth: {}"
+            application.logger.info("Updating driver's duty w/ Auth: {}"
                                     .format(auth_header))
             application.logger.info("Update was requested by: {}".format(token_username))
             if token_username == username:
                 application.logger.info("Permission granted")
                 application.logger.info("driver to update {}".format(token_username))
                 db.drivers.find_one_and_update({'username': username},
-                                               {'$set': {'available': availability}})
+                                               {'$set': {'duty': duty}})
                 response = {
                     'status': 'success',
-                    'message': 'updated_availability'
+                    'message': 'updated_duty_status'
                 }
                 return make_response(jsonify(response)), 200
             else:

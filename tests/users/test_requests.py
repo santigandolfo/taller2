@@ -103,10 +103,9 @@ mock_direction.json.return_value = dict(directions_return_example)
 
 
 class TestRequestsSubmission(BaseTestCase):
-    @patch('src.handlers.RiderHandler')
     @patch('requests.get', return_value=mock_direction)
     @patch('requests.post')
-    def test_simple_request_submission_driver_assigned(self, mock_post, mocked_google_response, mock_push_notification):
+    def test_simple_request_submission_driver_assigned(self, mock_post, mocked_google_response):
         """ Test case for a simple request succesfully submitted"""
         mock_post.return_value = Mock()
         mock_post.return_value.json.return_value = {'id': "1"}
@@ -127,7 +126,7 @@ class TestRequestsSubmission(BaseTestCase):
             response = self.client.patch(
                 '/drivers/juan',
                 data=json.dumps(dict(
-                    availability=True
+                    duty=True
                 )),
                 headers=dict(
                     Authorization='Bearer ' + auth_token
@@ -171,8 +170,8 @@ class TestRequestsSubmission(BaseTestCase):
             )
 
             data = json.loads(response.data.decode())
-            #self.assertEqual(data['status'], 'success')
             self.assertEqual(data['message'], 'request_submitted')
+            self.assertEqual(data['status'], 'success')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 201)
 

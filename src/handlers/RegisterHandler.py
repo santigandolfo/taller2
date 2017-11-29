@@ -50,7 +50,7 @@ class RegisterAPI(MethodView):
                 db.users.insert_one(user.__dict__)
                 user_type = data['type']
                 if user_type == "driver":
-                    db.drivers.insert_one({'username': username, 'available': False})
+                    db.drivers.insert_one({'username': username, 'duty': False, 'trip': False})
                 else:
                     db.riders.insert_one({'username': username})
                 auth_token = user.encode_auth_token()
