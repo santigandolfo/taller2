@@ -122,7 +122,7 @@ class TripsAPI(MethodView):
                 result = db.trips.find_one({'driver': username})
                 if result:
                     db.trips.delete_one({'driver': username})
-                    db.drivers.update_one({'username': assigned_driver}, {'$set': {'trip': False}})
+                    db.drivers.update_one({'username': username}, {'$set': {'trip': False}})
                     #TODO: Inform trip to Shared Server
                     #Inform cost to users
                     response = {
