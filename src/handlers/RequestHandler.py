@@ -93,6 +93,7 @@ class RequestSubmission(MethodView):
                         }
                         resp = estimate_trip_cost(cost_data)
                         if resp.ok:
+                            cost = resp.json()['value']
                             result = db.requests.insert_one({'rider': username, 'driver': assigned_driver, 'coordinates': data})
                             message = "trip_assigned"
                             data = {
@@ -109,7 +110,7 @@ class RequestSubmission(MethodView):
                                 'id': str(result.inserted_id),
                                 'directions': directions_trip,
                                 'driver': assigned_driver,
-                                'estimated_cost': resp.json()['value']
+                                'estimated_cost': cost
                             }
                             status_code = 201
                         else:

@@ -204,6 +204,7 @@ class TestRequestMatching(BaseTestCase):
                         mock_directions.return_value = Mock()
                         mock_directions.return_value.ok = True
                         mock_directions.return_value.json.return_value = directions_return_example
+
                         mock_post.return_value = Mock()
                         mock_post.return_value.json.return_value = {'value': 25}
                         mock_post.return_value.ok = True

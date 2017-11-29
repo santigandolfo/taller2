@@ -1,3 +1,4 @@
+# coding: utf8
 import unittest
 import json
 import time
@@ -5,6 +6,93 @@ from tests.base import BaseTestCase
 from mock import patch, Mock
 from app import TOKEN_DURATION
 
+directions_return_example = {
+    "geocoded_waypoints": [
+        {
+            "geocoder_status": "OK",
+            "place_id": "EilBcmNvcyAyMDEyLTIwMzAsIEMxNDI4QUZGIENBQkEsIEFyZ2VudGluYQ",
+            "types": ["street_address"]
+        },
+        {
+            "geocoder_status": "OK",
+            "place_id": "EjFBdi4gUGFzZW8gQ29sw7NuIDgyOC04MzAsIEJ1ZW5vcyBBaXJlcywgQXJnZW50aW5h",
+            "types": ["street_address"]
+        }
+    ],
+    "routes": [
+        {
+            "bounds": {
+                "northeast": {
+                    "lat": -34.5584317,
+                    "lng": -58.3669878
+                },
+                "southwest": {
+                    "lat": -34.618374,
+                    "lng": -58.4538325
+                }
+            },
+            "copyrights": "Map data ©2017 Google",
+            "legs": [
+                {
+                    "distance": {
+                        "text": "12.3 km",
+                        "value": 12251
+                    },
+                    "duration": {
+                        "text": "32 mins",
+                        "value": 1926
+                    },
+                    "end_address": "Av. Paseo Colon 828-830, Buenos Aires, Argentina",
+                    "end_location": {
+                        "lat": -34.6176331,
+                        "lng": -58.3684494
+                    },
+                    "start_address": "Arcos 2012-2030, C1428AFF CABA, Argentina",
+                    "start_location": {
+                        "lat": -34.5610035,
+                        "lng": -58.4532958
+                    },
+                    "steps": [
+                        {
+                            "distance": {
+                                "text": "81 m",
+                                "value": 81
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 24
+                            },
+                            "end_location": {
+                                "lat": -34.560421,
+                                "lng": -58.4538325
+                            },
+                            "html_instructions": "Head \u003cb\u003enorthwest\u003c/b\u003e "
+                                                 "on \u003cb\u003eArcos\u003c/b\u003e toward "
+                                                 "\u003cb\u003eAv. Juramento\u003c/b\u003e",
+                            "polyline": {
+                                "points": "fe}qEbtwcJsBhB"
+                            },
+                            "start_location": {
+                                "lat": -34.5610035,
+                                "lng": -58.4532958
+                            },
+                            "travel_mode": "DRIVING"
+                        }
+                    ],
+                    "traffic_speed_entry": [],
+                    "via_waypoint": []
+                }
+            ],
+            "overview_polyline": {
+                "points": "fe}qEbtwcJsBhBmBsD}BkEcBkDc@cAYa@jC{E`@}@jBwDl@wBh@yBHQNa@r@_B|@eBZi@d@kAfBmFXuA^qB^qBd@{Cl@_GDu@L}BCQKc@V{BL}@\\aBZmAt@qBxGwMbC{E|BwE~AoCd@a@jAsBz@cB|BeFbAqB|@qBNWXs@|AaDTe@hCiFhAcCt@yB`AqD~BiHfBmFn@kBhAeDvB{Fv@aCpBaFvA}BLYBAFCNMRa@D]CUAI`@iBHi@?[zA_FrAoEhA{CXs@x@qCxBiGbAgD|BeFfAaBxA}An@{@lCqDrCaEp@sAt@gCTqA^}B|B{IPoAz@yIZwCb@yBn@iCrAqGrA_H\\yAdAkEXeEGcABs@Jq@XuAJa@Ja@bAiCxBaGp@aB^eA@MhAgCtFuLr@cCb@}@jBmEtA{CdAaC`AeBpAwBpEgIpBwCRAHEj@qAbBiDbAqCWQkDoCsAeAe@m@e@g@GMEMhA_@|LsDbHwBfNgEtEwAlH}BZKtBObNs@bOw@~Lu@rLq@vDSxAGfEWNfDRxFDpAlFEnEEvCBfE@v@Ap@Kt@SAYMiBAYOAKEIGY?aAD"
+            },
+            "summary": "Av. del Libertador",
+            "warnings": [],
+            "waypoint_order": []
+        }
+    ],
+    "status": "OK"
+}
 
 class TestTripStarting(BaseTestCase):
 
@@ -90,18 +178,12 @@ class TestTripStarting(BaseTestCase):
 
                         mock_directions.return_value = Mock()
                         mock_directions.return_value.ok = True
-                        mock_directions.return_value.json.return_value = {
-                            'routes': [
-                                {
-                                    'overview_polyline': {
-                                        'points':   "fe}qEbtwcJsBhBmBsD}BkEcBkDc@cAYa@jC{E`@}@"
-                                                    "jBwDl@wBh@yBHQNa@r@_B|@eBZi@d@kAfBmFXuA^q"
-                                                    "B^qBd@{Cl@_GDu@L}BCQKc@V{BL}@\\aBZmAt@qBx"
-                                                    "GwMbC{E|BwE~A"
-                                    }
-                                }
-                            ]
-                        }
+                        mock_directions.return_value.json.return_value = directions_return_example
+
+                        mock_post.return_value = Mock()
+                        mock_post.return_value.json.return_value = {'value': 25}
+                        mock_post.return_value.ok = True
+                        mock_post.return_value.status_code = 200
 
                         response = self.client.post(
                             '/riders/joe_smith/request',
@@ -416,18 +498,12 @@ class TestTripFinishing(BaseTestCase):
 
                         mock_directions.return_value = Mock()
                         mock_directions.return_value.ok = True
-                        mock_directions.return_value.json.return_value = {
-                            'routes': [
-                                {
-                                    'overview_polyline': {
-                                        'points':   "fe}qEbtwcJsBhBmBsD}BkEcBkDc@cAYa@jC{E`@}@"
-                                                    "jBwDl@wBh@yBHQNa@r@_B|@eBZi@d@kAfBmFXuA^q"
-                                                    "B^qBd@{Cl@_GDu@L}BCQKc@V{BL}@\\aBZmAt@qBx"
-                                                    "GwMbC{E|BwE~A"
-                                    }
-                                }
-                            ]
-                        }
+                        mock_directions.return_value.json.return_value = directions_return_example
+
+                        mock_post.return_value = Mock()
+                        mock_post.return_value.json.return_value = {'value': 25}
+                        mock_post.return_value.ok = True
+                        mock_post.return_value.status_code = 200
 
                         response = self.client.post(
                             '/riders/joe_smith/request',
