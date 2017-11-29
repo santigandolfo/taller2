@@ -12,7 +12,7 @@ class DriversMixin(object):
         """Gets the ids of all the available drivers"""
 
         return [driver['username'] for driver in
-                db.drivers.find({"available": True}, {'username': 1, '_id': 0})]
+                db.drivers.find({"duty": True, "trip": False}, {'username': 1, '_id': 0})]
 
     @staticmethod
     def get_positions(drivers_names):

@@ -4,10 +4,10 @@ from tests.base import BaseTestCase
 from mock import patch, Mock
 
 
-class TestDriverAvailabilityManipulation(BaseTestCase):
+class TestDriverDutyStatusManipulation(BaseTestCase):
     @patch('requests.post')
     def test_simple_data_update(self, mock_post):
-        """ Test case for a simple availability change"""
+        """ Test case for a simple duty status change"""
         mock_post.return_value = Mock()
         mock_post.return_value.json.return_value = {'id': "1"}
         mock_post.return_value.ok = True
@@ -27,7 +27,7 @@ class TestDriverAvailabilityManipulation(BaseTestCase):
             response = self.client.patch(
                 '/drivers/pedro',
                 data=json.dumps(dict(
-                    availability=True
+                    duty=True
                 )),
                 headers=dict(
                     Authorization='Bearer ' + auth_token
@@ -39,7 +39,7 @@ class TestDriverAvailabilityManipulation(BaseTestCase):
             data = json.loads(response.data.decode())
 
             self.assertEqual(data['status'], 'success')
-            self.assertEqual(data['message'], 'updated_availability')
+            self.assertEqual(data['message'], 'updated_duty_status')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 200)
 
@@ -70,7 +70,7 @@ class TestDriverAvailabilityManipulation(BaseTestCase):
             response = self.client.patch(
                 '/drivers/pedro',
                 data=json.dumps(dict(
-                    availability=True
+                    duty=True
                 )),
                 headers=dict(
                     Authorization='Bearer ' + auth_token
@@ -115,7 +115,7 @@ class TestDriverAvailabilityManipulation(BaseTestCase):
             self.client.patch(
                 '/drivers/pedro',
                 data=json.dumps(dict(
-                    availability=True
+                    duty=True
                 )),
                 headers=dict(
                     Authorization='Bearer ' + auth_token
@@ -126,7 +126,7 @@ class TestDriverAvailabilityManipulation(BaseTestCase):
             self.client.patch(
                 '/drivers/pedro',
                 data=json.dumps(dict(
-                    availability=False
+                    duty=False
                 )),
                 headers=dict(
                     Authorization='Bearer ' + auth_token
@@ -142,8 +142,8 @@ class TestDriverAvailabilityManipulation(BaseTestCase):
             self.assertEqual(len(drivers), 0)
 
     @patch('requests.post')
-    def test_missing_availability(self, mock_post):
-        """Availability is missing, error should  be received"""
+    def test_missing_duty_status(self, mock_post):
+        """duty status is missing, error should  be received"""
         mock_post.return_value = Mock()
         mock_post.return_value.json.return_value = {'id': "1"}
         mock_post.return_value.ok = True
@@ -174,13 +174,13 @@ class TestDriverAvailabilityManipulation(BaseTestCase):
 
             data = json.loads(response.data.decode())
             self.assertEqual(data['status'], 'fail')
-            self.assertEqual(data['message'], 'missing_availability')
+            self.assertEqual(data['message'], 'missing_duty_status')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 400)
 
     @patch('requests.post')
-    def test_change_availability_unexisting_user(self, mock_post):
-        """Change availability of an unexisting user, error should  be received"""
+    def test_change_duty_status_unexisting_user(self, mock_post):
+        """Change duty status of an unexisting user, error should  be received"""
         mock_post.return_value = Mock()
         mock_post.return_value.json.return_value = {'id': "1"}
         mock_post.return_value.ok = True
@@ -200,7 +200,7 @@ class TestDriverAvailabilityManipulation(BaseTestCase):
             response = self.client.patch(
                 '/drivers/juan',
                 data=json.dumps(dict(
-                    availability=True
+                    duty=True
                 )),
                 headers=dict(
                     Authorization='Bearer ' + auth_token
@@ -216,8 +216,8 @@ class TestDriverAvailabilityManipulation(BaseTestCase):
             self.assertEqual(response.status_code, 404)
 
     @patch('requests.post')
-    def test_change_availability_of_another_user(self, mock_post):
-        """Try to change the availability of another user"""
+    def test_change_duty_status_of_another_user(self, mock_post):
+        """Try to change the duty status of another user"""
         mock_post.return_value = Mock()
         mock_post.return_value.json.return_value = {'id': "1"}
         mock_post.return_value.ok = True
@@ -246,7 +246,7 @@ class TestDriverAvailabilityManipulation(BaseTestCase):
             response = self.client.patch(
                 '/drivers/pedro',
                 data=json.dumps(dict(
-                    availability=True
+                    duty=True
                 )),
                 headers=dict(
                     Authorization='Bearer ' + auth_token
@@ -263,8 +263,8 @@ class TestDriverAvailabilityManipulation(BaseTestCase):
 
 
     @patch('requests.post')
-    def test_change_availability_without_token(self, mock_post):
-        """Change availability without a token, error should  be received"""
+    def test_change_duty_status_without_token(self, mock_post):
+        """Change duty status without a token, error should  be received"""
         mock_post.return_value = Mock()
         mock_post.return_value.json.return_value = {'id': "1"}
         mock_post.return_value.ok = True
@@ -282,7 +282,7 @@ class TestDriverAvailabilityManipulation(BaseTestCase):
             response = self.client.patch(
                 '/drivers/pedro',
                 data=json.dumps(dict(
-                    availability=True
+                    duty=True
                 )),
                 headers=dict(
                 ),

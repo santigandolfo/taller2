@@ -58,6 +58,7 @@ class RequestSubmission(MethodView):
                     assigned_driver = DriversMixin.get_closer_driver((data['latitude_initial'],                                                                  data['longitude_initial']))
 
                     if assigned_driver:
+                        db.drivers.update_one({'username': assigned_driver}, {'$set': {'trip': True}})
                         application.logger.info("driver assigned")
                         directions_response = get_directions(data)
                         if not directions_response.ok:
