@@ -22,7 +22,7 @@ class TripsAPI(MethodView):
 
         try:
             data = request.get_json()
-            schema = Schema([{'request_id': Use(unicode)}])
+            schema = Schema([{'request_id': And(Use(unicode), lambda x: ObjectId.is_valid(x) ) }])
             # IMPORTANTE: el 0 es para que devuelva el diccionario dentro y no una lista
             data = schema \
                 .validate([data])[0]
