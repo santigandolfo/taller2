@@ -1,4 +1,4 @@
-duty_statusimport unittest
+import unittest
 import json
 from tests.base import BaseTestCase
 from mock import patch, Mock
