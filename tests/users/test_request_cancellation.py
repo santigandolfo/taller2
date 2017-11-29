@@ -63,7 +63,7 @@ class TestRequestMatching(BaseTestCase):
                 self.client.patch(
                     '/drivers/johny',
                     data=json.dumps(dict(
-                        availability=True
+                        duty=True
                     )),
                     headers=dict(
                         Authorization='Bearer ' + self.driver_auth_token
@@ -87,7 +87,7 @@ class TestRequestMatching(BaseTestCase):
                 self.client.patch(
                     '/drivers/johny2',
                     data=json.dumps(dict(
-                        availability=True
+                        duty=True
                     )),
                     headers=dict(
                         Authorization='Bearer ' + self.driver_auth_token
@@ -198,4 +198,3 @@ class TestRequestMatching(BaseTestCase):
             self.assertEqual(data['status'], 'success')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 203)
-

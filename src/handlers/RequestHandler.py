@@ -150,6 +150,7 @@ class RequestCancellation(MethodView):
                     application.logger.info("Permission granted")
                     application.logger.info("User cancelling request: {}".format(token_username))
                     db.requests.delete_one({'_id': ObjectId(requestID)})
+                    db.drivers.update_one({'username': driver_username}, {'$set': {'trip': False}})
                     message = "Your trip was cancelled by " + token_username
                     if (token_username == driver_username):
                         receiver = rider_username
