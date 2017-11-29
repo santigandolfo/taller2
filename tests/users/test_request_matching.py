@@ -9,7 +9,7 @@ from app import db
 class TestRequestMatching(BaseTestCase):
 
     def test_gets_available_drivers(self):
-        drivers = [{'username': 'x' * x, 'available': x % 2 == 0} for x in range(1, 5)]
+        drivers = [{'username': 'x' * x, 'duty': x % 2 == 0, 'trip':False} for x in range(1, 5)]
         db.drivers.insert_many(drivers)
         available_drivers = list(DriversMixin.get_available_drivers())
         self.assertEqual(len(available_drivers), 2)
@@ -17,7 +17,7 @@ class TestRequestMatching(BaseTestCase):
         self.assertTrue('xxxx' in available_drivers)
 
     def test_get_none_drivers_if_there_isnt_any_available(self):
-        drivers = [{'username': 'x'*x, 'available': False} for x in range(1, 5)]
+        drivers = [{'username': 'x'*x, 'duty': False, 'trip':False} for x in range(1, 5)]
         db.drivers.insert_many(drivers)
         available_drivers = list(DriversMixin.get_available_drivers())
         self.assertEqual(len(available_drivers), 0)
@@ -62,7 +62,7 @@ class TestRequestMatching(BaseTestCase):
 
 
     def test_get_closest_driver(self):
-        drivers = [{'username': 'x' * x, 'available': x % 2 == 0} for x in range(1, 5)]
+        drivers = [{'username': 'x' * x, 'duty': x % 2 == 0, 'trip':False} for x in range(1, 5)]
         db.drivers.insert_many(drivers)
         positions = [{'username': 'x' * x, 'latitude': x + 45, 'longitude': 2 * x + 40}
                      for x in range(1, 5)]
@@ -73,7 +73,7 @@ class TestRequestMatching(BaseTestCase):
         self.assertEqual(closer_driver, 'xx')
 
     def test_get_closest_driver_only_one_available(self):
-        drivers = [{'username': 'x' * x, 'available': x % 4 == 0} for x in range(1, 5)]
+        drivers = [{'username': 'x' * x, 'duty': x % 4 == 0, 'trip':False} for x in range(1, 5)]
         db.drivers.insert_many(drivers)
         positions = [{'username': 'x' * x, 'latitude': x + 45, 'longitude': 2 * x + 40}
                      for x in range(1, 5)]
@@ -84,7 +84,7 @@ class TestRequestMatching(BaseTestCase):
         self.assertEqual(closer_driver, 'xxxx')
 
     def test_get_closest_driver_only_zero_available(self):
-        drivers = [{'username': 'x' * x, 'available': False} for x in range(1, 5)]
+        drivers = [{'username': 'x' * x, 'duty': False, 'trip':False} for x in range(1, 5)]
         db.drivers.insert_many(drivers)
         positions = [{'username': 'x' * x, 'latitude': x + 45, 'longitude': 2 * x + 40}
                      for x in range(1, 5)]

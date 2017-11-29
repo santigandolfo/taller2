@@ -127,7 +127,7 @@ class TestRequestsSubmission(BaseTestCase):
             response = self.client.patch(
                 '/drivers/juan',
                 data=json.dumps(dict(
-                    availability=True
+                    duty=True
                 )),
                 headers=dict(
                     Authorization='Bearer ' + auth_token
