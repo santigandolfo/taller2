@@ -130,7 +130,6 @@ class TestRequestMatching(BaseTestCase):
                             content_type='application/json'
                         )
                         data = json.loads(response.data.decode())
-
                     self.request_id = data['id']
 
     def test_should_be_authenticated(self):

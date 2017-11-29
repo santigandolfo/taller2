@@ -53,7 +53,7 @@ class RequestSubmission(MethodView):
                 application.logger.info("Permission granted")
                 application.logger.info("Rider submitting request: {}".format(token_username))
 
-                if db.requests.count({'rider': username} == 0 and db.trips.count({'rider': username}) == 0 ):
+                if db.requests.count({'rider': username}) == 0 and db.trips.count({'rider': username}) == 0:
 
                     assigned_driver = DriversMixin.get_closer_driver((data['latitude_initial'],                                                                  data['longitude_initial']))
 
