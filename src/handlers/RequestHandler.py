@@ -53,7 +53,7 @@ class RequestSubmission(MethodView):
                 application.logger.info("Permission granted")
                 application.logger.info("Rider submitting request: {}".format(token_username))
 
-                if (db.requests.count({'rider': username}) == 0 and db.trips.count({'rider': username}) == 0 ):
+                if db.requests.count({'rider': username} == 0 and db.trips.count({'rider': username}) == 0 ):
 
                     assigned_driver = DriversMixin.get_closer_driver((data['latitude_initial'],                                                                  data['longitude_initial']))
 
@@ -128,15 +128,6 @@ class RequestCancellation(MethodView):
         """Endpoint for cancelling an unstarted trip a.k.a a request made that was matched"""
 
         try:
-            application.logger.info("{} asked to delete pending request for a trip"
-                                    .format(username))
-            if db.users.count({'username': username}) == 0:
-                response = {
-                    'status': 'fail',
-                    'message': 'user_not_found'
-                }
-                return make_response(jsonify(response)), 404
-            application.logger.info("user {} exists".format(username))
             auth_header = request.headers.get('Authorization')
             token_username, error_message = Authenticator.authenticate(auth_header)
             if error_message:
