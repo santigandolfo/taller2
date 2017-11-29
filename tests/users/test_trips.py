@@ -331,7 +331,7 @@ class TestTripStarting(BaseTestCase):
             self.assertEqual(data['status'], 'fail')
             self.assertEqual(response.content_type, 'application/json')
             self.assertEqual(response.status_code, 404)
-            
+
 class TestTripFinishing(BaseTestCase):
 
     rider_joe_auth_token = ''
@@ -535,37 +535,47 @@ class TestTripFinishing(BaseTestCase):
 
     def test_finish_trip_succesfully(self):
         with self.client:
-            response = self.client.delete(
-                '/drivers/johny/trip',
-                headers=dict(
-                    Authorization='Bearer '+self.driver_auth_token
-                ),
-                content_type='application/json'
-            )
-            data = json.loads(response.data.decode())
-            self.assertEqual(data['message'], 'trip_finished')
-            self.assertEqual(data['status'], 'success')
-            self.assertEqual(response.content_type, 'application/json')
-            self.assertEqual(response.status_code, 203)
+            with patch('requests.post') as mock_post:
+                mock_post.return_value = Mock()
+                mock_post.return_value.json.return_value = {'id': "1"}
+                mock_post.return_value.ok = True
+                mock_post.return_value.status_code = 201
+                response = self.client.delete(
+                    '/drivers/johny/trip',
+                    headers=dict(
+                        Authorization='Bearer '+self.driver_auth_token
+                    ),
+                    content_type='application/json'
+                )
+                data = json.loads(response.data.decode())
+                self.assertEqual(data['message'], 'trip_finished')
+                self.assertEqual(data['status'], 'success')
+                self.assertEqual(response.content_type, 'application/json')
+                self.assertEqual(response.status_code, 203)
 
     def test_finish_trip_already_finished_trip_not_found(self):
         with self.client:
-            response = self.client.delete(
-                '/drivers/johny/trip',
-                headers=dict(
-                    Authorization='Bearer '+self.driver_auth_token
-                ),
-                content_type='application/json'
-            )
-            response = self.client.delete(
-                '/drivers/johny/trip',
-                headers=dict(
-                    Authorization='Bearer '+self.driver_auth_token
-                ),
-                content_type='application/json'
-            )
-            data = json.loads(response.data.decode())
-            self.assertEqual(data['message'], 'trip_not_found')
-            self.assertEqual(data['status'], 'fail')
-            self.assertEqual(response.content_type, 'application/json')
-            self.assertEqual(response.status_code, 404)
+            with patch('requests.post') as mock_post:
+                mock_post.return_value = Mock()
+                mock_post.return_value.json.return_value = {'id': "1"}
+                mock_post.return_value.ok = True
+                mock_post.return_value.status_code = 201
+                response = self.client.delete(
+                    '/drivers/johny/trip',
+                    headers=dict(
+                        Authorization='Bearer '+self.driver_auth_token
+                    ),
+                    content_type='application/json'
+                )
+                response = self.client.delete(
+                    '/drivers/johny/trip',
+                    headers=dict(
+                        Authorization='Bearer '+self.driver_auth_token
+                    ),
+                    content_type='application/json'
+                )
+                data = json.loads(response.data.decode())
+                self.assertEqual(data['message'], 'trip_not_found')
+                self.assertEqual(data['status'], 'fail')
+                self.assertEqual(response.content_type, 'application/json')
+                self.assertEqual(response.status_code, 404)

@@ -5,10 +5,13 @@ from flask.views import MethodView
 from schema import Schema, And, Use, SchemaError
 from bson.objectid import ObjectId
 
+
 from app import db, application
+from src.models import User
 from src.mixins.AuthenticationMixin import Authenticator
 from src.services.push_notifications import send_push_notifications
-
+from src.services.shared_server import register_trip, estimate_trip_cost
+import time
 
 TRIPS_BLUEPRINT = Blueprint('trips', __name__)
 
@@ -51,6 +54,8 @@ class TripsAPI(MethodView):
                 if result:
                     if result['driver'] == username:
                         db.requests.delete_one({'_id': ObjectId(requestID)})
+                        result['distance']=0
+                        result['start_time']=time.time()
                         result = db.trips.insert_one(result)
                         response = {
                             'status': 'success',
@@ -123,13 +128,31 @@ class TripsAPI(MethodView):
                 if result:
                     db.trips.delete_one({'driver': username})
                     db.drivers.update_one({'username': username}, {'$set': {'trip': False}})
-                    #TODO: Inform trip to Shared Server
+                    #TODO: Change hardcoded values
                     #Inform cost to users
-                    response = {
-                        'status': 'success',
-                        'message': 'trip_finished'
+                    coordinates = result['coordinates']
+                    cost = 100
+                    data = {
+                        'start_location': [coordinates['latitude_initial'], coordinates['longitude_initial']],
+                        'end_location': [coordinates['latitude_final'], coordinates['longitude_final']],
+                        'distance': result['distance'],
+                        'pay_method': 'credit',
+                        'currency': '$',
+                        'cost': cost,
+                        'driver_id': User.get_user_by_username(result['driver']).uid,
+                        'passenger_id': User.get_user_by_username(result['rider']).uid
                     }
-                    status_code = 203
+                    resp = register_trip(data)
+                    if resp.ok:
+                        response = {
+                            'status': 'success',
+                            'message': 'trip_finished',
+                            'trip_ss_id': resp.json()['id']
+                        }
+                        status_code = 203
+                    else:
+                        response = resp.json()
+                        status_code = resp.status_code
                 else:
                     response = {
                         'status': 'fail',

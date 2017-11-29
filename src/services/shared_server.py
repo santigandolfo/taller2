@@ -44,6 +44,19 @@ def validate_user(username, password):
                          headers={"AuthToken": SS_TOKEN},
                          json={'username': username, 'password': password})
 
+def register_trip(data):
+    """Register a trip in the shared server that has already finished"""
+
+    return requests.post(urljoin(SHARED_SERVER_URL, 'trips'),
+                         headers={"AuthToken": SS_TOKEN},
+                         json=data)
+
+def estimate_trip_cost(data):
+    """Obtain an estimation of the cost of a trip to be made"""
+
+    return requests.post(urljoin(SHARED_SERVER_URL, 'trips/estimate'),
+                         headers={"AuthToken": SS_TOKEN},
+                         json=data)
 
 def get_data(user_id):
     """Get user's data from the shared server"""
