@@ -82,7 +82,7 @@ class RequestSubmission(MethodView):
                         else:
                             raise Exception('unreachable_destination')
                         result = db.requests.insert_one({'rider': username, 'driver': assigned_driver, 'coordinates': data})
-                        message = "A trip was assigned to you"
+                        message = "trip_assigned"
                         data = {
                             'rider': username,
                             'directions_to_passenger': directions_to_passenger,
@@ -165,13 +165,14 @@ class RequestCancellation(MethodView):
                     application.logger.info("User cancelling request: {}".format(token_username))
                     db.requests.delete_one({'_id': ObjectId(requestID)})
                     db.drivers.update_one({'username': driver_username}, {'$set': {'trip': False}})
-                    message = "Your trip was cancelled by " + token_username
+                    message = "trip_cancelled"
                     if (token_username == driver_username):
                         receiver = rider_username
                     else:
                         receiver = driver_username
                     data = {
-                        'id': requestID
+                        'id': requestID,
+                        'by': token_username
                     }
                     send_push_notifications(receiver, message, data)
                     response = {

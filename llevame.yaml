@@ -374,13 +374,13 @@ paths:
             type: array
             items:
               $ref: '#/definitions/User'
-  '/requests/{requestID}/routes':
-    get:
+  '/requests/{requestID}':
+    delete:
       tags:
         - request
-      summary: Return possible ways to make it to destination
+      summary: Cancel a request on a trip that has not started yet (but was assigned)
       description: ''
-      operationId: getRoutes
+      operationId: cancelRequest
       parameters:
         - in: path
           name: requestID
@@ -388,10 +388,8 @@ paths:
           required: true
           type: string
       responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/Route'
+        '203':
+          description: successful operation
         '404':
           description: Request not found
   '/requests/{requestID}/costEstimate':
@@ -548,8 +546,6 @@ definitions:
       requestID:
         type: integer
         format: int32
-      rider:
-        type: string
   Route:
     type: object
 externalDocs:
