@@ -60,6 +60,18 @@ class TestRequestMatching(BaseTestCase):
                 data = json.loads(response.data.decode())
                 self.driver_auth_token = data['auth_token']
 
+                self.client.put(
+                    '/users/johny/coordinates',
+                    data=json.dumps(dict(
+                        latitude=30.12,
+                        longitude=42.03
+                    )),
+                    headers=dict(
+                        Authorization='Bearer ' + self.driver_auth_token
+                    ),
+                    content_type='application/json'
+                )
+
                 self.client.patch(
                     '/drivers/johny',
                     data=json.dumps(dict(

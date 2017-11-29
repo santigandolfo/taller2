@@ -61,6 +61,8 @@ class RequestSubmission(MethodView):
                         db.drivers.update_one({'username': assigned_driver}, {'$set': {'trip': True}})
                         application.logger.info("driver assigned")
                         driver_position = db.positions.find_one({'username':assigned_driver})
+                        if not driver_position:
+                            raise Exception('driver_position_unknown')
                         coordinates_to_passenger = {
                             'latitude_initial':driver_position['latitude'],
                             'longitude_initial':driver_position['longitude'],
