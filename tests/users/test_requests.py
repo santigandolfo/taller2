@@ -155,6 +155,10 @@ class TestRequestsSubmission(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             auth_token = data['auth_token']
+            mock_post.return_value = Mock()
+            mock_post.return_value.json.return_value = {'value': 25}
+            mock_post.return_value.ok = True
+            mock_post.return_value.status_code = 200
             response = self.client.post(
                 '/riders/pedro/request',
                 data=json.dumps(dict(
