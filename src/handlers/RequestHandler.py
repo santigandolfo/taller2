@@ -55,25 +55,37 @@ class RequestSubmission(MethodView):
 
                 if db.requests.count({'rider': username}) == 0 and db.trips.count({'rider': username}) == 0:
 
-                    assigned_driver = DriversMixin.get_closer_driver((data['latitude_initial'],                                                                  data['longitude_initial']))
+                    assigned_driver = DriversMixin.get_closer_driver((data['latitude_initial'],data['longitude_initial']))
 
                     if assigned_driver:
                         db.drivers.update_one({'username': assigned_driver}, {'$set': {'trip': True}})
                         application.logger.info("driver assigned")
-                        directions_response = get_directions(data)
-                        if not directions_response.ok:
+                        driver_position = db.positions.find_one({'username':assigned_driver})
+                        coordinates_to_passenger = {
+                            'latitude_initial':driver_position['latitude'],
+                            'longitude_initial':driver_position['longitude'],
+                            'latitude_final':data['latitude_initial'],
+                            'longitude_final':data['longitude_initial']
+                        }
+                        directions_trip_response = get_directions(data)
+                        directions_passenger_response = get_directions(coordinates_to_passenger)
+                        if (not directions_trip_response.ok or not directions_passenger_response.ok):
                             raise Exception('failed_to_get_directions')
-                        application.logger.info("google directions response:")
-                        application.logger.info(directions_response)
-                        if directions_response.json()['routes']:
-                            directions = directions_response.json()['routes'][0]['overview_polyline']['points']
+                        application.logger.debug("google directions responses:")
+                        application.logger.debug(directions_trip_response)
+                        application.logger.debug(directions_passenger_response)
+                        if directions_trip_response.json()['routes'] and directions_passenger_response.json()['routes'] :
+                            directions_trip = directions_trip_response.json()['routes'][0]['overview_polyline']['points']
+                            directions_to_passenger = directions_passenger_response.json()['routes'][0]['overview_polyline']['points']
                         else:
                             raise Exception('unreachable_destination')
                         result = db.requests.insert_one({'rider': username, 'driver': assigned_driver, 'coordinates': data})
                         message = "A trip was assigned to you"
                         data = {
                             'rider': username,
-                            'directions': directions,
+                            'directions_to_passenger': directions_to_passenger,
+                            'directions_trip': directions_trip,
+                            'trip_coordinates': data,
                             'id': str(result.inserted_id)
                         }
                         send_push_notifications(assigned_driver, message, data)
@@ -81,7 +93,7 @@ class RequestSubmission(MethodView):
                             'status': 'success',
                             'message': 'request_submitted',
                             'id': str(result.inserted_id),
-                            'directions': directions,
+                            'directions': directions_trip,
                             'driver': assigned_driver
                         }
                         status_code = 201
