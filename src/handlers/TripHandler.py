@@ -3,6 +3,7 @@
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from schema import Schema, And, Use, SchemaError
+from bson.objectid import ObjectId
 
 from app import db, application
 from src.mixins.AuthenticationMixin import Authenticator
@@ -25,6 +26,7 @@ class TripsAPI(MethodView):
             # IMPORTANTE: el 0 es para que devuelva el diccionario dentro y no una lista
             data = schema \
                 .validate([data])[0]
+            requestID = data['request_id']
             application.logger.info("{} asked to start a trip".format(username))
             if db.drivers.count({'username': username}) == 0:
                 response = {
@@ -45,12 +47,33 @@ class TripsAPI(MethodView):
             if token_username == username:
                 application.logger.info("Permission granted")
                 application.logger.info("Driver starting trip: {}".format(token_username))
-                #DO TRIP STUFF
-                #Verify Request ID, trip permissions
+                result = db.requests.find_one({'_id': ObjectId(requestID)})
+                if result:
+                    if result['driver'] == username:
+                        db.requests.delete_one({'_id': ObjectId(requestID)})
+                        result = db.trips.insert_one(result)
+                        response = {
+                            'status': 'success',
+                            'message': 'trip_started',
+                            'id': str(result.inserted_id)
+                        }
+                        status_code = 201
+                    else:
+                        response = {
+                            'status': 'fail',
+                            'message': 'unauthorized_for_request'
+                        }
+                        status_code = 401
+                else:
+                    response = {
+                        'status': 'fail',
+                        'message': 'request_not_found'
+                    }
+                    status_code = 404
             else:
                 response = {
                     'status': 'fail',
-                    'message': 'unauthorized_request'
+                    'message': 'unauthorized_action'
                 }
                 status_code = 401
             return make_response(jsonify(response)), status_code
@@ -95,8 +118,21 @@ class TripsAPI(MethodView):
             if token_username == username:
                 application.logger.info("Permission granted")
                 application.logger.info("Driver finishing trip: {}".format(token_username))
-                #DO TRIP STUFF
-                #Check if there is an ongoing trip
+                result = db.trips.find_one({'driver': username})
+                if result:
+                    db.trips.delete_one({'driver': username})
+                    #TODO: Inform trip to Shared Server
+                    response = {
+                        'status': 'success',
+                        'message': 'trip_finished'
+                    }
+                    status_code = 203
+                else:
+                    response = {
+                        'status': 'fail',
+                        'message': 'trip_not_found'
+                    }
+                    status_code = 404
             else:
                 response = {
                     'status': 'fail',
