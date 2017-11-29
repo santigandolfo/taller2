@@ -6,9 +6,11 @@ from schema import Schema, And, Use, SchemaError
 from bson.objectid import ObjectId
 
 from app import db, application
+from src.models import User
 from src.mixins.AuthenticationMixin import Authenticator
 from src.services.google_maps import get_directions
 from src.services.push_notifications import send_push_notifications
+from src.services.shared_server import estimate_trip_cost
 from src.mixins.DriversMixin import DriversMixin
 
 REQUESTS_BLUEPRINT = Blueprint('requests', __name__)
@@ -81,24 +83,37 @@ class RequestSubmission(MethodView):
                             directions_to_passenger = directions_passenger_response.json()['routes'][0]['overview_polyline']['points']
                         else:
                             raise Exception('unreachable_destination')
-                        result = db.requests.insert_one({'rider': username, 'driver': assigned_driver, 'coordinates': data})
-                        message = "trip_assigned"
-                        data = {
-                            'rider': username,
-                            'directions_to_passenger': directions_to_passenger,
-                            'directions_trip': directions_trip,
-                            'trip_coordinates': data,
-                            'id': str(result.inserted_id)
+                        cost_data = {
+                            "start_location":[data['latitude_initial'], data['longitude_initial']],
+                            "end_location":[data['latitude_initial'], data['longitude_initial']],
+                            "distance": directions_trip_response.json()['routes'][0]['legs'][0]['distance']['value']/1000.0,
+                            "pay_method":"credit",
+                            "driver_id": User.get_user_by_username(assigned_driver).uid,
+                            "passenger_id": User.get_user_by_username(username).uid
                         }
-                        send_push_notifications(assigned_driver, message, data)
-                        response = {
-                            'status': 'success',
-                            'message': 'request_submitted',
-                            'id': str(result.inserted_id),
-                            'directions': directions_trip,
-                            'driver': assigned_driver
-                        }
-                        status_code = 201
+                        resp = estimate_trip_cost(cost_data)
+                        if resp.ok:
+                            result = db.requests.insert_one({'rider': username, 'driver': assigned_driver, 'coordinates': data})
+                            message = "trip_assigned"
+                            data = {
+                                'rider': username,
+                                'directions_to_passenger': directions_to_passenger,
+                                'directions_trip': directions_trip,
+                                'trip_coordinates': data,
+                                'id': str(result.inserted_id)
+                            }
+                            send_push_notifications(assigned_driver, message, data)
+                            response = {
+                                'status': 'success',
+                                'message': 'request_submitted',
+                                'id': str(result.inserted_id),
+                                'directions': directions_trip,
+                                'driver': assigned_driver,
+                                'estimated_cost': resp.json()['value']
+                            }
+                            status_code = 201
+                        else:
+                            raise Exception('failed_to_get_cost_estimation')
                     else:
                         response = {
                             'status': 'fail',
