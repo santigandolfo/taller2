@@ -100,62 +100,99 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_available_endpoint.html">AvailableEndpoint</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_car_delete_end_point.html">CarDeleteEndPoint</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_car_register_end_point.html">CarRegisterEndPoint</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_drivers_a_p_i.html">DriversAPI</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ac15b68f00fb1e08ff9dd46f13f34e82f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#ac15b68f00fb1e08ff9dd46f13f34e82f">drivers_blueprint</a> = Blueprint('drivers', __name__)</td></tr>
-<tr class="separator:ac15b68f00fb1e08ff9dd46f13f34e82f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac76d8dfea6082ab7b13dd0d276233de9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#ac76d8dfea6082ab7b13dd0d276233de9">drivers_view</a> = DriversAPI.as_view('drivers_api')</td></tr>
-<tr class="separator:ac76d8dfea6082ab7b13dd0d276233de9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c1c480eaf0befef25de1afc735af217"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#a7c1c480eaf0befef25de1afc735af217">available_view</a> = AvailableEndpoint.as_view('available_endpoint')</td></tr>
-<tr class="separator:a7c1c480eaf0befef25de1afc735af217"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c1d2669f6e617b959332d523f8fbcc7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#a2c1d2669f6e617b959332d523f8fbcc7">DRIVERS_BLUEPRINT</a> = Blueprint('drivers', __name__)</td></tr>
+<tr class="separator:a2c1d2669f6e617b959332d523f8fbcc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2de23c61550d05c2739cbe8d7e0ceaeb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#a2de23c61550d05c2739cbe8d7e0ceaeb">DRIVERS_VIEW</a> = DriversAPI.as_view('drivers_api')</td></tr>
+<tr class="separator:a2de23c61550d05c2739cbe8d7e0ceaeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8aaa47e84a448d1319186a424a08705"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#ac8aaa47e84a448d1319186a424a08705">AVAILABLE_VIEW</a> = AvailableEndpoint.as_view('available_endpoint')</td></tr>
+<tr class="separator:ac8aaa47e84a448d1319186a424a08705"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef78289c84185700fe7afcde60dfeb34"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#aef78289c84185700fe7afcde60dfeb34">CAR_REGISTER_VIEW</a> = CarRegisterEndPoint.as_view('car_register_endpoint')</td></tr>
+<tr class="separator:aef78289c84185700fe7afcde60dfeb34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ca29fb02445457afdbe41bbea4b467a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#a8ca29fb02445457afdbe41bbea4b467a">CAR_DELETE_VIEW</a> = CarDeleteEndPoint.as_view('car_delete_endpoint')</td></tr>
+<tr class="separator:a8ca29fb02445457afdbe41bbea4b467a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af37c168b94ff719ffb324453c5c1cd06"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#af37c168b94ff719ffb324453c5c1cd06">view_func</a></td></tr>
 <tr class="separator:af37c168b94ff719ffb324453c5c1cd06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3634d5c3f882ab668da5e543eaec9be9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#a3634d5c3f882ab668da5e543eaec9be9">methods</a></td></tr>
 <tr class="separator:a3634d5c3f882ab668da5e543eaec9be9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Variable Documentation</h2>
-<a class="anchor" id="a7c1c480eaf0befef25de1afc735af217"></a>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><pre class="fragment">Handlers related with driver's specific functionality</pre> </div><h2 class="groupheader">Variable Documentation</h2>
+<a class="anchor" id="ac8aaa47e84a448d1319186a424a08705"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">server.src.handlers.DriversHandler.available_view = AvailableEndpoint.as_view('available_endpoint')</td>
+          <td class="memname">server.src.handlers.DriversHandler.AVAILABLE_VIEW = AvailableEndpoint.as_view('available_endpoint')</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_drivers_handler_8py_source.html#l00097">97</a> of file <a class="el" href="_drivers_handler_8py_source.html">DriversHandler.py</a>.</p>
+<p>Definition at line <a class="el" href="_drivers_handler_8py_source.html#l00215">215</a> of file <a class="el" href="_drivers_handler_8py_source.html">DriversHandler.py</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ac15b68f00fb1e08ff9dd46f13f34e82f"></a>
+<a class="anchor" id="a8ca29fb02445457afdbe41bbea4b467a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">server.src.handlers.DriversHandler.drivers_blueprint = Blueprint('drivers', __name__)</td>
+          <td class="memname">server.src.handlers.DriversHandler.CAR_DELETE_VIEW = CarDeleteEndPoint.as_view('car_delete_endpoint')</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_drivers_handler_8py_source.html#l00009">9</a> of file <a class="el" href="_drivers_handler_8py_source.html">DriversHandler.py</a>.</p>
+<p>Definition at line <a class="el" href="_drivers_handler_8py_source.html#l00217">217</a> of file <a class="el" href="_drivers_handler_8py_source.html">DriversHandler.py</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ac76d8dfea6082ab7b13dd0d276233de9"></a>
+<a class="anchor" id="aef78289c84185700fe7afcde60dfeb34"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">server.src.handlers.DriversHandler.drivers_view = DriversAPI.as_view('drivers_api')</td>
+          <td class="memname">server.src.handlers.DriversHandler.CAR_REGISTER_VIEW = CarRegisterEndPoint.as_view('car_register_endpoint')</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_drivers_handler_8py_source.html#l00096">96</a> of file <a class="el" href="_drivers_handler_8py_source.html">DriversHandler.py</a>.</p>
+<p>Definition at line <a class="el" href="_drivers_handler_8py_source.html#l00216">216</a> of file <a class="el" href="_drivers_handler_8py_source.html">DriversHandler.py</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2c1d2669f6e617b959332d523f8fbcc7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">server.src.handlers.DriversHandler.DRIVERS_BLUEPRINT = Blueprint('drivers', __name__)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_drivers_handler_8py_source.html#l00011">11</a> of file <a class="el" href="_drivers_handler_8py_source.html">DriversHandler.py</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2de23c61550d05c2739cbe8d7e0ceaeb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">server.src.handlers.DriversHandler.DRIVERS_VIEW = DriversAPI.as_view('drivers_api')</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_drivers_handler_8py_source.html#l00214">214</a> of file <a class="el" href="_drivers_handler_8py_source.html">DriversHandler.py</a>.</p>
 
 </div>
 </div>
@@ -169,7 +206,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_drivers_handler_8py_source.html#l00103">103</a> of file <a class="el" href="_drivers_handler_8py_source.html">DriversHandler.py</a>.</p>
+<p>Definition at line <a class="el" href="_drivers_handler_8py_source.html#l00223">223</a> of file <a class="el" href="_drivers_handler_8py_source.html">DriversHandler.py</a>.</p>
 
 </div>
 </div>
@@ -183,7 +220,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_drivers_handler_8py_source.html#l00102">102</a> of file <a class="el" href="_drivers_handler_8py_source.html">DriversHandler.py</a>.</p>
+<p>Definition at line <a class="el" href="_drivers_handler_8py_source.html#l00222">222</a> of file <a class="el" href="_drivers_handler_8py_source.html">DriversHandler.py</a>.</p>
 
 </div>
 </div>

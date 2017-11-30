@@ -1,4 +1,4 @@
-.TH "src/handlers/DriversHandler.py" 3 "Mon Nov 6 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
+.TH "src/handlers/DriversHandler.py" 3 "Thu Nov 30 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -11,6 +11,12 @@ src/handlers/DriversHandler.py \-
 .in +1c
 .ti -1c
 .RI "class \fBserver\&.src\&.handlers\&.DriversHandler\&.DriversAPI\fP"
+.br
+.ti -1c
+.RI "class \fBserver\&.src\&.handlers\&.DriversHandler\&.CarRegisterEndPoint\fP"
+.br
+.ti -1c
+.RI "class \fBserver\&.src\&.handlers\&.DriversHandler\&.CarDeleteEndPoint\fP"
 .br
 .ti -1c
 .RI "class \fBserver\&.src\&.handlers\&.DriversHandler\&.AvailableEndpoint\fP"
@@ -27,13 +33,19 @@ src/handlers/DriversHandler.py \-
 
 .in +1c
 .ti -1c
-.RI "\fBserver\&.src\&.handlers\&.DriversHandler\&.drivers_blueprint\fP = Blueprint('drivers', __name__)"
+.RI "\fBserver\&.src\&.handlers\&.DriversHandler\&.DRIVERS_BLUEPRINT\fP = Blueprint('drivers', __name__)"
 .br
 .ti -1c
-.RI "\fBserver\&.src\&.handlers\&.DriversHandler\&.drivers_view\fP = DriversAPI\&.as_view('drivers_api')"
+.RI "\fBserver\&.src\&.handlers\&.DriversHandler\&.DRIVERS_VIEW\fP = DriversAPI\&.as_view('drivers_api')"
 .br
 .ti -1c
-.RI "\fBserver\&.src\&.handlers\&.DriversHandler\&.available_view\fP = AvailableEndpoint\&.as_view('available_endpoint')"
+.RI "\fBserver\&.src\&.handlers\&.DriversHandler\&.AVAILABLE_VIEW\fP = AvailableEndpoint\&.as_view('available_endpoint')"
+.br
+.ti -1c
+.RI "\fBserver\&.src\&.handlers\&.DriversHandler\&.CAR_REGISTER_VIEW\fP = CarRegisterEndPoint\&.as_view('car_register_endpoint')"
+.br
+.ti -1c
+.RI "\fBserver\&.src\&.handlers\&.DriversHandler\&.CAR_DELETE_VIEW\fP = CarDeleteEndPoint\&.as_view('car_delete_endpoint')"
 .br
 .ti -1c
 .RI "\fBserver\&.src\&.handlers\&.DriversHandler\&.view_func\fP"

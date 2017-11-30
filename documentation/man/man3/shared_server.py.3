@@ -1,4 +1,4 @@
-.TH "src/services/shared_server.py" 3 "Mon Nov 6 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
+.TH "src/services/shared_server.py" 3 "Thu Nov 30 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -26,7 +26,19 @@ src/services/shared_server.py \-
 .RI "def \fBserver\&.src\&.services\&.shared_server\&.update_user_data\fP (user_id, data)"
 .br
 .ti -1c
+.RI "def \fBserver\&.src\&.services\&.shared_server\&.register_car\fP (user_id, data)"
+.br
+.ti -1c
+.RI "def \fBserver\&.src\&.services\&.shared_server\&.delete_car\fP (user_id, car_id)"
+.br
+.ti -1c
 .RI "def \fBserver\&.src\&.services\&.shared_server\&.validate_user\fP (username, password)"
+.br
+.ti -1c
+.RI "def \fBserver\&.src\&.services\&.shared_server\&.register_trip\fP (data)"
+.br
+.ti -1c
+.RI "def \fBserver\&.src\&.services\&.shared_server\&.estimate_trip_cost\fP (data)"
 .br
 .ti -1c
 .RI "def \fBserver\&.src\&.services\&.shared_server\&.get_data\fP (user_id)"

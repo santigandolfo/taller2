@@ -102,6 +102,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_drivers_a_p_i.html">server.src.handlers.DriversHandler.DriversAPI</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_car_register_end_point.html">server.src.handlers.DriversHandler.CarRegisterEndPoint</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_car_delete_end_point.html">server.src.handlers.DriversHandler.CarDeleteEndPoint</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_available_endpoint.html">server.src.handlers.DriversHandler.AvailableEndpoint</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -112,12 +116,16 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ac15b68f00fb1e08ff9dd46f13f34e82f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#ac15b68f00fb1e08ff9dd46f13f34e82f">server.src.handlers.DriversHandler.drivers_blueprint</a> = Blueprint('drivers', __name__)</td></tr>
-<tr class="separator:ac15b68f00fb1e08ff9dd46f13f34e82f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac76d8dfea6082ab7b13dd0d276233de9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#ac76d8dfea6082ab7b13dd0d276233de9">server.src.handlers.DriversHandler.drivers_view</a> = DriversAPI.as_view('drivers_api')</td></tr>
-<tr class="separator:ac76d8dfea6082ab7b13dd0d276233de9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c1c480eaf0befef25de1afc735af217"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#a7c1c480eaf0befef25de1afc735af217">server.src.handlers.DriversHandler.available_view</a> = AvailableEndpoint.as_view('available_endpoint')</td></tr>
-<tr class="separator:a7c1c480eaf0befef25de1afc735af217"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c1d2669f6e617b959332d523f8fbcc7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#a2c1d2669f6e617b959332d523f8fbcc7">server.src.handlers.DriversHandler.DRIVERS_BLUEPRINT</a> = Blueprint('drivers', __name__)</td></tr>
+<tr class="separator:a2c1d2669f6e617b959332d523f8fbcc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2de23c61550d05c2739cbe8d7e0ceaeb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#a2de23c61550d05c2739cbe8d7e0ceaeb">server.src.handlers.DriversHandler.DRIVERS_VIEW</a> = DriversAPI.as_view('drivers_api')</td></tr>
+<tr class="separator:a2de23c61550d05c2739cbe8d7e0ceaeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8aaa47e84a448d1319186a424a08705"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#ac8aaa47e84a448d1319186a424a08705">server.src.handlers.DriversHandler.AVAILABLE_VIEW</a> = AvailableEndpoint.as_view('available_endpoint')</td></tr>
+<tr class="separator:ac8aaa47e84a448d1319186a424a08705"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef78289c84185700fe7afcde60dfeb34"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#aef78289c84185700fe7afcde60dfeb34">server.src.handlers.DriversHandler.CAR_REGISTER_VIEW</a> = CarRegisterEndPoint.as_view('car_register_endpoint')</td></tr>
+<tr class="separator:aef78289c84185700fe7afcde60dfeb34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ca29fb02445457afdbe41bbea4b467a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#a8ca29fb02445457afdbe41bbea4b467a">server.src.handlers.DriversHandler.CAR_DELETE_VIEW</a> = CarDeleteEndPoint.as_view('car_delete_endpoint')</td></tr>
+<tr class="separator:a8ca29fb02445457afdbe41bbea4b467a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af37c168b94ff719ffb324453c5c1cd06"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#af37c168b94ff719ffb324453c5c1cd06">server.src.handlers.DriversHandler.view_func</a></td></tr>
 <tr class="separator:af37c168b94ff719ffb324453c5c1cd06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3634d5c3f882ab668da5e543eaec9be9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#a3634d5c3f882ab668da5e543eaec9be9">server.src.handlers.DriversHandler.methods</a></td></tr>
