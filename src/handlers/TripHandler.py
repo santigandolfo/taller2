@@ -9,6 +9,7 @@ from bson.objectid import ObjectId
 from app import db, application
 from src.models import User
 from src.mixins.AuthenticationMixin import Authenticator
+from src.mixins.TrackingMixin import TrackingTripsMixin
 from src.services.push_notifications import send_push_notifications
 from src.services.shared_server import register_trip, estimate_trip_cost
 import time
@@ -53,16 +54,24 @@ class TripsAPI(MethodView):
                 result = db.requests.find_one({'_id': ObjectId(requestID)})
                 if result:
                     if result['driver'] == username:
-                        db.requests.delete_one({'_id': ObjectId(requestID)})
-                        result['distance']=0
-                        result['start_time']=time.time()
-                        result = db.trips.insert_one(result)
-                        response = {
-                            'status': 'success',
-                            'message': 'trip_started',
-                            'id': str(result.inserted_id)
-                        }
-                        status_code = 201
+                        location_initial = (result['coordinates']['latitude_initial'],result['coordinates']['longitude_initial'])
+                        if TrackingTripsMixin.check_positions_with_location([result['driver'],result['rider']],location_initial):
+                            db.requests.delete_one({'_id': ObjectId(requestID)})
+                            result['distance']=0
+                            result['start_time']=time.time()
+                            result = db.trips.insert_one(result)
+                            response = {
+                                'status': 'success',
+                                'message': 'trip_started',
+                                'id': str(result.inserted_id)
+                            }
+                            status_code = 201
+                        else:
+                            response = {
+                                'status': 'fail',
+                                'message': 'users_not_in_start_location',
+                            }
+                            status_code = 200
                     else:
                         response = {
                             'status': 'fail',
@@ -126,33 +135,46 @@ class TripsAPI(MethodView):
                 application.logger.info("Driver finishing trip: {}".format(token_username))
                 result = db.trips.find_one({'driver': username})
                 if result:
-                    db.trips.delete_one({'driver': username})
-                    db.drivers.update_one({'username': username}, {'$set': {'trip': False}})
-                    #TODO: Change hardcoded values
-                    #Inform cost to users
-                    coordinates = result['coordinates']
-                    cost = 100
-                    data = {
-                        'start_location': [coordinates['latitude_initial'], coordinates['longitude_initial']],
-                        'end_location': [coordinates['latitude_final'], coordinates['longitude_final']],
-                        'distance': result['distance'],
-                        'pay_method': 'credit',
-                        'currency': '$',
-                        'cost': cost,
-                        'driver_id': User.get_user_by_username(result['driver']).uid,
-                        'passenger_id': User.get_user_by_username(result['rider']).uid
-                    }
-                    resp = register_trip(data)
-                    if resp.ok:
-                        response = {
-                            'status': 'success',
-                            'message': 'trip_finished',
-                            'trip_ss_id': resp.json()['id']
+                    location_final = (result['coordinates']['latitude_final'],result['coordinates']['longitude_final'])
+                    if TrackingTripsMixin.check_positions_with_location([result['driver'],result['rider']],location_final):
+                        db.trips.delete_one({'driver': username})
+                        db.drivers.update_one({'username': username}, {'$set': {'trip': False}})
+                        #TODO: Change hardcoded values
+                        #Inform cost to users
+                        coordinates = result['coordinates']
+                        cost = 100
+                        data = {
+                            'start_location': [coordinates['latitude_initial'], coordinates['longitude_initial']],
+                            'end_location': [coordinates['latitude_final'], coordinates['longitude_final']],
+                            'distance': result['distance'],
+                            'pay_method': 'credit',
+                            'currency': '$',
+                            'cost': cost,
+                            'driver_id': User.get_user_by_username(result['driver']).uid,
+                            'passenger_id': User.get_user_by_username(result['rider']).uid
                         }
-                        status_code = 203
+                        resp = register_trip(data)
+                        if resp.ok:
+                            message = "trip_finished"
+                            data = {
+                                'trip_ss_id': resp.json()['id']
+                            }
+                            send_push_notifications(result['rider'], message, data)
+                            response = {
+                                'status': 'success',
+                                'message': 'trip_finished',
+                                'trip_ss_id': resp.json()['id']
+                            }
+                            status_code = 203
+                        else:
+                            response = resp.json()
+                            status_code = resp.status_code
                     else:
-                        response = resp.json()
-                        status_code = resp.status_code
+                        response = {
+                            'status': 'fail',
+                            'message': 'users_not_in_final_location',
+                        }
+                        status_code = 200
                 else:
                     response = {
                         'status': 'fail',
