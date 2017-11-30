@@ -1,4 +1,3 @@
-import requests
 import os
 from src.models import User
 from pyfcm import FCMNotification
