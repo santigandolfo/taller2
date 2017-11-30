@@ -5,12 +5,10 @@ from flask.views import MethodView
 from schema import Schema, And, Use, SchemaError
 from bson.objectid import ObjectId
 
-
 from app import db, application
 from src.models import User
 from src.mixins.AuthenticationMixin import Authenticator
-from src.services.push_notifications import send_push_notifications
-from src.services.shared_server import register_trip, estimate_trip_cost, get_trips
+from src.services.shared_server import register_trip, get_trips
 import time
 
 TRIPS_BLUEPRINT = Blueprint('trips', __name__)
@@ -25,7 +23,7 @@ class TripsAPI(MethodView):
 
         try:
             data = request.get_json()
-            schema = Schema([{'request_id': And(Use(unicode), lambda x: ObjectId.is_valid(x) ) }])
+            schema = Schema([{'request_id': And(Use(unicode), lambda x: ObjectId.is_valid(x))}])
             # IMPORTANTE: el 0 es para que devuelva el diccionario dentro y no una lista
             data = schema \
                 .validate([data])[0]
@@ -54,8 +52,8 @@ class TripsAPI(MethodView):
                 if result:
                     if result['driver'] == username:
                         db.requests.delete_one({'_id': ObjectId(requestID)})
-                        result['distance']=0
-                        result['start_time']=time.time()
+                        result['distance'] = 0
+                        result['start_time'] = time.time()
                         result = db.trips.insert_one(result)
                         response = {
                             'status': 'success',
@@ -128,8 +126,8 @@ class TripsAPI(MethodView):
                 if result:
                     db.trips.delete_one({'driver': username})
                     db.drivers.update_one({'username': username}, {'$set': {'trip': False}})
-                    #TODO: Change hardcoded values
-                    #Inform cost to users
+                    # TODO: Change hardcoded values
+                    # Inform cost to users
                     coordinates = result['coordinates']
                     cost = 100
                     data = {

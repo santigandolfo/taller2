@@ -1,6 +1,5 @@
 """Mixins for drivers stuff"""
 import math
-from functools import reduce
 from app import db
 
 
@@ -27,14 +26,14 @@ class DriversMixin(object):
 
         dlat = math.radians(lat2 - lat1)
         dlon = math.radians(lon2 - lon1)
-        a = math.sin(dlat / 2) * math.sin(dlat / 2) + math.cos(math.radians(lat1)) \
-                                                      * math.cos(math.radians(lat2)) \
-                                                      * math.sin(dlon / 2) * math.sin(
+        aux = math.sin(dlat / 2) * math.sin(dlat / 2) + math.cos(math.radians(lat1)) \
+                                                        * math.cos(math.radians(lat2)) \
+                                                        * math.sin(dlon / 2) * math.sin(
             dlon / 2)
-        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-        d = radius * c
+        unscaled_distance = 2 * math.atan2(math.sqrt(aux), math.sqrt(1 - aux))
+        final_distance = radius * unscaled_distance
 
-        return d
+        return final_distance
 
     @staticmethod
     def get_closer_driver(location):

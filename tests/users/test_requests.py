@@ -217,7 +217,7 @@ class TestRequestsSubmission(BaseTestCase):
             self.assertEqual(data['status'], 'fail')
             self.assertEqual(data['message'], 'no_driver_available')
             self.assertEqual(response.content_type, 'application/json')
-            self.assertEqual(response.status_code, 404)
+            self.assertEqual(response.status_code, 200)
 
     @patch('requests.get', return_value=mock_direction)
     @patch('requests.post')
