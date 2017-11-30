@@ -8,7 +8,7 @@ env:
     - DB_NAME=fiuberdb-test
     - SECRET_KEY=umpalumpa
     - LOG_LEVEL=ERROR
-    - TOKEN_DURATION=10
+    - TOKEN_DURATION=15
     - MONGODB_VERSION=2.6.10
     - GOOGLE_KEY=fictitousGoogleKey
     - FIREBASE_KEY=fictitousFirebaseKey

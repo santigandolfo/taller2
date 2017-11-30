@@ -238,7 +238,7 @@ REQUESTS_BLUEPRINT.add_url_rule(
 )
 
 REQUESTS_BLUEPRINT.add_url_rule(
-    '/requests/<requestID>',
+    '/requests/<request_id>',
     view_func=REQUEST_CANCELLATION_VIEW,
     methods=['DELETE']
 )

@@ -17,6 +17,6 @@ export DB_NAME=fiuberdb-test
 export DB_URL=mongodb://localhost:27017/fiuberdb-test
 export SECRET_KEY=umpalumpa
 export LOG_LEVEL=ERROR
-export TOKEN_DURATION=1
+export TOKEN_DURATION=15
 export GOOGLE_KEY=fictitousGoogleKey
 export FIREBASE_KEY=fictitousGoogleKey

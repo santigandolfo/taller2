@@ -375,7 +375,19 @@ class TestRequestMatching(BaseTestCase):
                 self.assertEqual(response.status_code, 201)
                 self.assertEqual(data['driver'], 'johny')
 
+                self.client.post(
+                    '/drivers/johny/trip',
+                    data=json.dumps(dict(
+                        request_id=data['id']
+                    )),
+                    headers=dict(
+                        Authorization='Bearer ' + self.users['johny']['token']
+                    ),
+                    content_type='application/json'
+                )
+
                 with patch('requests.post') as mock_post:
+
                     mock_post.return_value = Mock()
                     mock_post.return_value.json.return_value = {'id': "1"}
                     mock_post.return_value.ok = True
@@ -414,6 +426,8 @@ class TestRequestMatching(BaseTestCase):
                 self.assertEqual(response.content_type, 'application/json')
                 self.assertEqual(response.status_code, 201)
                 self.assertEqual(data['driver'], 'johny')
+
+
 
 
 
