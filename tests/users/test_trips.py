@@ -685,9 +685,7 @@ class TestTripFinishing(BaseTestCase):
         with self.client:
             with patch('requests.get') as mock_get:
                 mock_get.return_value = Mock()
-                mock_get.return_value.json.return_value =\
-                    {'trips': mocked_trips
-                }
+                mock_get.return_value.json.return_value = mocked_trips
                 mock_get.return_value.ok = True
                 mock_get.return_value.status_code = 200
                 response = self.client.get(
@@ -709,9 +707,7 @@ class TestTripFinishing(BaseTestCase):
         with self.client:
             with patch('requests.get') as mock_get:
                 mock_get.return_value = Mock()
-                mock_get.return_value.json.return_value =\
-                    {'trips': mocked_trips
-                }
+                mock_get.return_value.json.return_value = mocked_trips
                 mock_get.return_value.ok = True
                 mock_get.return_value.status_code = 200
                 response = self.client.get(
@@ -731,9 +727,7 @@ class TestTripFinishing(BaseTestCase):
         with self.client:
             with patch('requests.get') as mock_get:
                 mock_get.return_value = Mock()
-                mock_get.return_value.json.return_value = \
-                    {'trips': mocked_trips
-                     }
+                mock_get.return_value.json.return_value = mocked_trips
                 mock_get.return_value.ok = True
                 mock_get.return_value.status_code = 200
                 response = self.client.get(
