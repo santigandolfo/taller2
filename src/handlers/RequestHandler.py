@@ -86,11 +86,12 @@ class RequestSubmission(MethodView):
                             directions_passenger_response.json()['routes'][0]['overview_polyline']['points']
                         else:
                             raise Exception('unreachable_destination')
+                        distance = directions_trip_response.json()['routes'][0]['legs'][0]['distance'][
+                                        'value'] / 1000.0
                         cost_data = {
                             "start_location": [data['latitude_initial'], data['longitude_initial']],
                             "end_location": [data['latitude_initial'], data['longitude_initial']],
-                            "distance": directions_trip_response.json()['routes'][0]['legs'][0]['distance'][
-                                            'value'] / 1000.0,
+                            "distance": distance,
                             "pay_method": "credit",
                             "driver_id": User.get_user_by_username(assigned_driver).uid,
                             "passenger_id": User.get_user_by_username(username).uid
@@ -99,7 +100,8 @@ class RequestSubmission(MethodView):
                         if resp.ok:
                             cost = resp.json()['value']
                             result = db.requests.insert_one(
-                                {'rider': username, 'driver': assigned_driver, 'coordinates': data})
+                                {'rider': username, 'driver': assigned_driver, 'coordinates': data,
+                                'cost': cost, 'distance':distance})
                             message = "trip_assigned"
                             data = {
                                 'rider': username,

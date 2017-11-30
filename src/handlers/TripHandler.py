@@ -56,7 +56,6 @@ class TripsAPI(MethodView):
                         location_initial = (result['coordinates']['latitude_initial'],result['coordinates']['longitude_initial'])
                         if TrackingTripsMixin.check_positions_with_location([result['driver'],result['rider']],location_initial):
                             db.requests.delete_one({'_id': ObjectId(requestID)})
-                            result['distance']=0
                             result['start_time']=time.time()
                             result = db.trips.insert_one(result)
                             response = {
@@ -142,14 +141,13 @@ class TripsAPI(MethodView):
                         #TODO: Change hardcoded values
                         #Inform cost to users
                         coordinates = result['coordinates']
-                        cost = 100
                         data = {
                             'start_location': [coordinates['latitude_initial'], coordinates['longitude_initial']],
                             'end_location': [coordinates['latitude_final'], coordinates['longitude_final']],
                             'distance': result['distance'],
                             'pay_method': 'credit',
                             'currency': '$',
-                            'cost': cost,
+                            'cost': result['cost'],
                             'driver_id': User.get_user_by_username(result['driver']).uid,
                             'passenger_id': User.get_user_by_username(result['rider']).uid
                         }
