@@ -97,22 +97,22 @@ directions_return_example = {
 
 mocked_trips = [
     {
-        'rider': 'joe_smith',
-        'driver': 'juan',
+        'passenger_id': 1,
+        'driver_id': 1,
         'date': '23-4-2016',
         'price': 100,
         'currency': 'ARS'
     },
     {
-        'rider': 'joe_smith',
-        'driver': 'pedro',
+        'passenger_id': 1,
+        'driver_id': 1,
         'date': '24-4-2016',
         'price': 20,
         'currency': 'ARS'
     },
     {
-        'rider': 'joe_smith',
-        'driver': 'juan',
+        'passenger_id': 1,
+        'driver_id': 1,
         'date': '25-4-2016',
         'price': 200,
         'currency': 'ARS'
@@ -463,7 +463,7 @@ class TestTripFinishing(BaseTestCase):
         with self.client:
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'id': "1"}
+                mock_post.return_value.json.return_value = {'id': 1}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.post(

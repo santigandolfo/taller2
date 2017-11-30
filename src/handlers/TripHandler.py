@@ -216,6 +216,17 @@ class TripsAPI(MethodView):
                 application.logger.info("User getting  trips: {}".format(token_username))
                 user_id = db.users.find_one({"username": username})['uid']
                 trips = get_trips(user_id)
+                for trip in trips:
+                    user = User.get_user_by_uid(trip['driver_id'])
+                    if user:
+                        trip['driver'] = user.username
+                    else:
+                        raise Exception("Username for trip uid not found")
+                    user = User.get_user_by_uid(trip['passenger_id'])
+                    if user:
+                        trip['passenger'] = user.username
+                    else:
+                        raise Exception("Username for trip uid not found")
                 response = {
                     'status': 'success',
                     'message': 'trips_retrieved',
