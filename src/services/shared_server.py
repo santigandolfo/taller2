@@ -75,4 +75,4 @@ def get_trips(user_id):
                         headers={"AuthToken": SS_TOKEN})
     if not resp.ok:
         raise Exception('Couldnt get trips from shared server')
-    return resp.json()['trips']
+    return resp.json()
