@@ -4,7 +4,6 @@ from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 
 from app import db, application
-from src.exceptions import ExpiredTokenException, InvalidTokenException
 from src.models import User, BlacklistToken
 from src.services.shared_server import validate_user
 from src.mixins.AuthenticationMixin import Authenticator

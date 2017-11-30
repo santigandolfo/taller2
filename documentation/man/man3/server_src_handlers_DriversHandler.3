@@ -1,4 +1,4 @@
-.TH "server.src.handlers.DriversHandler" 3 "Mon Nov 6 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
+.TH "server.src.handlers.DriversHandler" 3 "Thu Nov 30 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,6 +13,12 @@ server.src.handlers.DriversHandler \-
 .RI "class \fBAvailableEndpoint\fP"
 .br
 .ti -1c
+.RI "class \fBCarDeleteEndPoint\fP"
+.br
+.ti -1c
+.RI "class \fBCarRegisterEndPoint\fP"
+.br
+.ti -1c
 .RI "class \fBDriversAPI\fP"
 .br
 .in -1c
@@ -20,13 +26,19 @@ server.src.handlers.DriversHandler \-
 
 .in +1c
 .ti -1c
-.RI "\fBdrivers_blueprint\fP = Blueprint('drivers', __name__)"
+.RI "\fBDRIVERS_BLUEPRINT\fP = Blueprint('drivers', __name__)"
 .br
 .ti -1c
-.RI "\fBdrivers_view\fP = DriversAPI\&.as_view('drivers_api')"
+.RI "\fBDRIVERS_VIEW\fP = DriversAPI\&.as_view('drivers_api')"
 .br
 .ti -1c
-.RI "\fBavailable_view\fP = AvailableEndpoint\&.as_view('available_endpoint')"
+.RI "\fBAVAILABLE_VIEW\fP = AvailableEndpoint\&.as_view('available_endpoint')"
+.br
+.ti -1c
+.RI "\fBCAR_REGISTER_VIEW\fP = CarRegisterEndPoint\&.as_view('car_register_endpoint')"
+.br
+.ti -1c
+.RI "\fBCAR_DELETE_VIEW\fP = CarDeleteEndPoint\&.as_view('car_delete_endpoint')"
 .br
 .ti -1c
 .RI "\fBview_func\fP"
@@ -35,28 +47,45 @@ server.src.handlers.DriversHandler \-
 .RI "\fBmethods\fP"
 .br
 .in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+.nf
+Handlers related with driver's specific functionality
+.fi
+.PP
+ 
 .SH "Variable Documentation"
 .PP 
-.SS "server\&.src\&.handlers\&.DriversHandler\&.available_view = AvailableEndpoint\&.as_view('available_endpoint')"
+.SS "server\&.src\&.handlers\&.DriversHandler\&.AVAILABLE_VIEW = AvailableEndpoint\&.as_view('available_endpoint')"
 
 .PP
-Definition at line 97 of file DriversHandler\&.py\&.
-.SS "server\&.src\&.handlers\&.DriversHandler\&.drivers_blueprint = Blueprint('drivers', __name__)"
+Definition at line 215 of file DriversHandler\&.py\&.
+.SS "server\&.src\&.handlers\&.DriversHandler\&.CAR_DELETE_VIEW = CarDeleteEndPoint\&.as_view('car_delete_endpoint')"
 
 .PP
-Definition at line 9 of file DriversHandler\&.py\&.
-.SS "server\&.src\&.handlers\&.DriversHandler\&.drivers_view = DriversAPI\&.as_view('drivers_api')"
+Definition at line 217 of file DriversHandler\&.py\&.
+.SS "server\&.src\&.handlers\&.DriversHandler\&.CAR_REGISTER_VIEW = CarRegisterEndPoint\&.as_view('car_register_endpoint')"
 
 .PP
-Definition at line 96 of file DriversHandler\&.py\&.
+Definition at line 216 of file DriversHandler\&.py\&.
+.SS "server\&.src\&.handlers\&.DriversHandler\&.DRIVERS_BLUEPRINT = Blueprint('drivers', __name__)"
+
+.PP
+Definition at line 11 of file DriversHandler\&.py\&.
+.SS "server\&.src\&.handlers\&.DriversHandler\&.DRIVERS_VIEW = DriversAPI\&.as_view('drivers_api')"
+
+.PP
+Definition at line 214 of file DriversHandler\&.py\&.
 .SS "server\&.src\&.handlers\&.DriversHandler\&.methods"
 
 .PP
-Definition at line 103 of file DriversHandler\&.py\&.
+Definition at line 223 of file DriversHandler\&.py\&.
 .SS "server\&.src\&.handlers\&.DriversHandler\&.view_func"
 
 .PP
-Definition at line 102 of file DriversHandler\&.py\&.
+Definition at line 222 of file DriversHandler\&.py\&.
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for FIUBER from the source code\&.

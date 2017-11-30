@@ -1,4 +1,4 @@
-.TH "server.src.handlers.RegisterHandler.RegisterAPI" 3 "Mon Nov 6 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
+.TH "server.src.handlers.RegisterHandler.RegisterAPI" 3 "Thu Nov 30 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -8,20 +8,20 @@ server.src.handlers.RegisterHandler.RegisterAPI \-
 .PP
 .PP
 Inherits MethodView\&.
-.SS "Public Member Functions"
+.SS "Static Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "def \fBpost\fP (self)"
+.RI "def \fBpost\fP ()"
 .br
 .ti -1c
-.RI "def \fBdelete\fP (self, username)"
+.RI "def \fBdelete\fP (username)"
 .br
 .ti -1c
-.RI "def \fBput\fP (self, username)"
+.RI "def \fBput\fP (username)"
 .br
 .ti -1c
-.RI "def \fBget\fP (self, username)"
+.RI "def \fBget\fP (username)"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -34,25 +34,49 @@ Handler for registration related API
 .PP
  
 .PP
-Definition at line 11 of file RegisterHandler\&.py\&.
+Definition at line 14 of file RegisterHandler\&.py\&.
 .SH "Member Function Documentation"
 .PP 
-.SS "def server\&.src\&.handlers\&.RegisterHandler\&.RegisterAPI\&.delete ( self,  username)"
+.SS "def server\&.src\&.handlers\&.RegisterHandler\&.RegisterAPI\&.delete ( username)\fC [static]\fP"
 
 .PP
-Definition at line 67 of file RegisterHandler\&.py\&.
-.SS "def server\&.src\&.handlers\&.RegisterHandler\&.RegisterAPI\&.get ( self,  username)"
+.nf
+Endpoint for erasign an user
+.fi
+.PP
+ 
+.PP
+Definition at line 79 of file RegisterHandler\&.py\&.
+.SS "def server\&.src\&.handlers\&.RegisterHandler\&.RegisterAPI\&.get ( username)\fC [static]\fP"
 
 .PP
-Definition at line 205 of file RegisterHandler\&.py\&.
-.SS "def server\&.src\&.handlers\&.RegisterHandler\&.RegisterAPI\&.post ( self)"
+.nf
+Get a user info
+.fi
+.PP
+ 
+.PP
+Definition at line 188 of file RegisterHandler\&.py\&.
+.SS "def server\&.src\&.handlers\&.RegisterHandler\&.RegisterAPI\&.post ()\fC [static]\fP"
 
 .PP
-Definition at line 14 of file RegisterHandler\&.py\&.
-.SS "def server\&.src\&.handlers\&.RegisterHandler\&.RegisterAPI\&.put ( self,  username)"
+.nf
+Endpoint for signing up
+.fi
+.PP
+ 
+.PP
+Definition at line 18 of file RegisterHandler\&.py\&.
+.SS "def server\&.src\&.handlers\&.RegisterHandler\&.RegisterAPI\&.put ( username)\fC [static]\fP"
 
 .PP
-Definition at line 137 of file RegisterHandler\&.py\&.
+.nf
+Endpoint for modifying an user's general info
+.fi
+.PP
+ 
+.PP
+Definition at line 134 of file RegisterHandler\&.py\&.
 
 .SH "Author"
 .PP 

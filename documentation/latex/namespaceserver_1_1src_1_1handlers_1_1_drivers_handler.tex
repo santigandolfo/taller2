@@ -5,16 +5,24 @@
 \item 
 class \hyperlink{classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_available_endpoint}{Available\+Endpoint}
 \item 
+class \hyperlink{classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_car_delete_end_point}{Car\+Delete\+End\+Point}
+\item 
+class \hyperlink{classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_car_register_end_point}{Car\+Register\+End\+Point}
+\item 
 class \hyperlink{classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_drivers_a_p_i}{Drivers\+A\+PI}
 \end{DoxyCompactItemize}
 \subsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-\hyperlink{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_ac15b68f00fb1e08ff9dd46f13f34e82f}{drivers\+\_\+blueprint} = Blueprint(\textquotesingle{}drivers\textquotesingle{}, \+\_\+\+\_\+name\+\_\+\+\_\+)
+\hyperlink{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a2c1d2669f6e617b959332d523f8fbcc7}{D\+R\+I\+V\+E\+R\+S\+\_\+\+B\+L\+U\+E\+P\+R\+I\+NT} = Blueprint(\textquotesingle{}drivers\textquotesingle{}, \+\_\+\+\_\+name\+\_\+\+\_\+)
 \item 
-\hyperlink{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_ac76d8dfea6082ab7b13dd0d276233de9}{drivers\+\_\+view} = Drivers\+A\+P\+I.\+as\+\_\+view(\textquotesingle{}drivers\+\_\+api\textquotesingle{})
+\hyperlink{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a2de23c61550d05c2739cbe8d7e0ceaeb}{D\+R\+I\+V\+E\+R\+S\+\_\+\+V\+I\+EW} = Drivers\+A\+P\+I.\+as\+\_\+view(\textquotesingle{}drivers\+\_\+api\textquotesingle{})
 \item 
-\hyperlink{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a7c1c480eaf0befef25de1afc735af217}{available\+\_\+view} = Available\+Endpoint.\+as\+\_\+view(\textquotesingle{}available\+\_\+endpoint\textquotesingle{})
+\hyperlink{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_ac8aaa47e84a448d1319186a424a08705}{A\+V\+A\+I\+L\+A\+B\+L\+E\+\_\+\+V\+I\+EW} = Available\+Endpoint.\+as\+\_\+view(\textquotesingle{}available\+\_\+endpoint\textquotesingle{})
+\item 
+\hyperlink{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_aef78289c84185700fe7afcde60dfeb34}{C\+A\+R\+\_\+\+R\+E\+G\+I\+S\+T\+E\+R\+\_\+\+V\+I\+EW} = Car\+Register\+End\+Point.\+as\+\_\+view(\textquotesingle{}car\+\_\+register\+\_\+endpoint\textquotesingle{})
+\item 
+\hyperlink{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a8ca29fb02445457afdbe41bbea4b467a}{C\+A\+R\+\_\+\+D\+E\+L\+E\+T\+E\+\_\+\+V\+I\+EW} = Car\+Delete\+End\+Point.\+as\+\_\+view(\textquotesingle{}car\+\_\+delete\+\_\+endpoint\textquotesingle{})
 \item 
 \hyperlink{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_af37c168b94ff719ffb324453c5c1cd06}{view\+\_\+func}
 \item 
@@ -22,39 +30,57 @@ class \hyperlink{classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_drivers_
 \end{DoxyCompactItemize}
 
 
+\subsection{Detailed Description}
+\begin{DoxyVerb}Handlers related with driver's specific functionality\end{DoxyVerb}
+ 
+
 \subsection{Variable Documentation}
-\index{server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}!available\+\_\+view@{available\+\_\+view}}
-\index{available\+\_\+view@{available\+\_\+view}!server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}}
-\subsubsection[{\texorpdfstring{available\+\_\+view}{available_view}}]{\setlength{\rightskip}{0pt plus 5cm}server.\+src.\+handlers.\+Drivers\+Handler.\+available\+\_\+view = Available\+Endpoint.\+as\+\_\+view(\textquotesingle{}available\+\_\+endpoint\textquotesingle{})}\hypertarget{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a7c1c480eaf0befef25de1afc735af217}{}\label{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a7c1c480eaf0befef25de1afc735af217}
+\index{server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}!A\+V\+A\+I\+L\+A\+B\+L\+E\+\_\+\+V\+I\+EW@{A\+V\+A\+I\+L\+A\+B\+L\+E\+\_\+\+V\+I\+EW}}
+\index{A\+V\+A\+I\+L\+A\+B\+L\+E\+\_\+\+V\+I\+EW@{A\+V\+A\+I\+L\+A\+B\+L\+E\+\_\+\+V\+I\+EW}!server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}}
+\subsubsection[{\texorpdfstring{A\+V\+A\+I\+L\+A\+B\+L\+E\+\_\+\+V\+I\+EW}{AVAILABLE_VIEW}}]{\setlength{\rightskip}{0pt plus 5cm}server.\+src.\+handlers.\+Drivers\+Handler.\+A\+V\+A\+I\+L\+A\+B\+L\+E\+\_\+\+V\+I\+EW = Available\+Endpoint.\+as\+\_\+view(\textquotesingle{}available\+\_\+endpoint\textquotesingle{})}\hypertarget{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_ac8aaa47e84a448d1319186a424a08705}{}\label{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_ac8aaa47e84a448d1319186a424a08705}
 
 
-Definition at line 97 of file Drivers\+Handler.\+py.
+Definition at line 215 of file Drivers\+Handler.\+py.
 
-\index{server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}!drivers\+\_\+blueprint@{drivers\+\_\+blueprint}}
-\index{drivers\+\_\+blueprint@{drivers\+\_\+blueprint}!server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}}
-\subsubsection[{\texorpdfstring{drivers\+\_\+blueprint}{drivers_blueprint}}]{\setlength{\rightskip}{0pt plus 5cm}server.\+src.\+handlers.\+Drivers\+Handler.\+drivers\+\_\+blueprint = Blueprint(\textquotesingle{}drivers\textquotesingle{}, \+\_\+\+\_\+name\+\_\+\+\_\+)}\hypertarget{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_ac15b68f00fb1e08ff9dd46f13f34e82f}{}\label{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_ac15b68f00fb1e08ff9dd46f13f34e82f}
-
-
-Definition at line 9 of file Drivers\+Handler.\+py.
-
-\index{server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}!drivers\+\_\+view@{drivers\+\_\+view}}
-\index{drivers\+\_\+view@{drivers\+\_\+view}!server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}}
-\subsubsection[{\texorpdfstring{drivers\+\_\+view}{drivers_view}}]{\setlength{\rightskip}{0pt plus 5cm}server.\+src.\+handlers.\+Drivers\+Handler.\+drivers\+\_\+view = Drivers\+A\+P\+I.\+as\+\_\+view(\textquotesingle{}drivers\+\_\+api\textquotesingle{})}\hypertarget{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_ac76d8dfea6082ab7b13dd0d276233de9}{}\label{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_ac76d8dfea6082ab7b13dd0d276233de9}
+\index{server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}!C\+A\+R\+\_\+\+D\+E\+L\+E\+T\+E\+\_\+\+V\+I\+EW@{C\+A\+R\+\_\+\+D\+E\+L\+E\+T\+E\+\_\+\+V\+I\+EW}}
+\index{C\+A\+R\+\_\+\+D\+E\+L\+E\+T\+E\+\_\+\+V\+I\+EW@{C\+A\+R\+\_\+\+D\+E\+L\+E\+T\+E\+\_\+\+V\+I\+EW}!server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}}
+\subsubsection[{\texorpdfstring{C\+A\+R\+\_\+\+D\+E\+L\+E\+T\+E\+\_\+\+V\+I\+EW}{CAR_DELETE_VIEW}}]{\setlength{\rightskip}{0pt plus 5cm}server.\+src.\+handlers.\+Drivers\+Handler.\+C\+A\+R\+\_\+\+D\+E\+L\+E\+T\+E\+\_\+\+V\+I\+EW = Car\+Delete\+End\+Point.\+as\+\_\+view(\textquotesingle{}car\+\_\+delete\+\_\+endpoint\textquotesingle{})}\hypertarget{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a8ca29fb02445457afdbe41bbea4b467a}{}\label{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a8ca29fb02445457afdbe41bbea4b467a}
 
 
-Definition at line 96 of file Drivers\+Handler.\+py.
+Definition at line 217 of file Drivers\+Handler.\+py.
+
+\index{server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}!C\+A\+R\+\_\+\+R\+E\+G\+I\+S\+T\+E\+R\+\_\+\+V\+I\+EW@{C\+A\+R\+\_\+\+R\+E\+G\+I\+S\+T\+E\+R\+\_\+\+V\+I\+EW}}
+\index{C\+A\+R\+\_\+\+R\+E\+G\+I\+S\+T\+E\+R\+\_\+\+V\+I\+EW@{C\+A\+R\+\_\+\+R\+E\+G\+I\+S\+T\+E\+R\+\_\+\+V\+I\+EW}!server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}}
+\subsubsection[{\texorpdfstring{C\+A\+R\+\_\+\+R\+E\+G\+I\+S\+T\+E\+R\+\_\+\+V\+I\+EW}{CAR_REGISTER_VIEW}}]{\setlength{\rightskip}{0pt plus 5cm}server.\+src.\+handlers.\+Drivers\+Handler.\+C\+A\+R\+\_\+\+R\+E\+G\+I\+S\+T\+E\+R\+\_\+\+V\+I\+EW = Car\+Register\+End\+Point.\+as\+\_\+view(\textquotesingle{}car\+\_\+register\+\_\+endpoint\textquotesingle{})}\hypertarget{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_aef78289c84185700fe7afcde60dfeb34}{}\label{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_aef78289c84185700fe7afcde60dfeb34}
+
+
+Definition at line 216 of file Drivers\+Handler.\+py.
+
+\index{server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}!D\+R\+I\+V\+E\+R\+S\+\_\+\+B\+L\+U\+E\+P\+R\+I\+NT@{D\+R\+I\+V\+E\+R\+S\+\_\+\+B\+L\+U\+E\+P\+R\+I\+NT}}
+\index{D\+R\+I\+V\+E\+R\+S\+\_\+\+B\+L\+U\+E\+P\+R\+I\+NT@{D\+R\+I\+V\+E\+R\+S\+\_\+\+B\+L\+U\+E\+P\+R\+I\+NT}!server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}}
+\subsubsection[{\texorpdfstring{D\+R\+I\+V\+E\+R\+S\+\_\+\+B\+L\+U\+E\+P\+R\+I\+NT}{DRIVERS_BLUEPRINT}}]{\setlength{\rightskip}{0pt plus 5cm}server.\+src.\+handlers.\+Drivers\+Handler.\+D\+R\+I\+V\+E\+R\+S\+\_\+\+B\+L\+U\+E\+P\+R\+I\+NT = Blueprint(\textquotesingle{}drivers\textquotesingle{}, \+\_\+\+\_\+name\+\_\+\+\_\+)}\hypertarget{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a2c1d2669f6e617b959332d523f8fbcc7}{}\label{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a2c1d2669f6e617b959332d523f8fbcc7}
+
+
+Definition at line 11 of file Drivers\+Handler.\+py.
+
+\index{server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}!D\+R\+I\+V\+E\+R\+S\+\_\+\+V\+I\+EW@{D\+R\+I\+V\+E\+R\+S\+\_\+\+V\+I\+EW}}
+\index{D\+R\+I\+V\+E\+R\+S\+\_\+\+V\+I\+EW@{D\+R\+I\+V\+E\+R\+S\+\_\+\+V\+I\+EW}!server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}}
+\subsubsection[{\texorpdfstring{D\+R\+I\+V\+E\+R\+S\+\_\+\+V\+I\+EW}{DRIVERS_VIEW}}]{\setlength{\rightskip}{0pt plus 5cm}server.\+src.\+handlers.\+Drivers\+Handler.\+D\+R\+I\+V\+E\+R\+S\+\_\+\+V\+I\+EW = Drivers\+A\+P\+I.\+as\+\_\+view(\textquotesingle{}drivers\+\_\+api\textquotesingle{})}\hypertarget{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a2de23c61550d05c2739cbe8d7e0ceaeb}{}\label{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a2de23c61550d05c2739cbe8d7e0ceaeb}
+
+
+Definition at line 214 of file Drivers\+Handler.\+py.
 
 \index{server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}!methods@{methods}}
 \index{methods@{methods}!server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}}
 \subsubsection[{\texorpdfstring{methods}{methods}}]{\setlength{\rightskip}{0pt plus 5cm}server.\+src.\+handlers.\+Drivers\+Handler.\+methods}\hypertarget{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a3634d5c3f882ab668da5e543eaec9be9}{}\label{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_a3634d5c3f882ab668da5e543eaec9be9}
 
 
-Definition at line 103 of file Drivers\+Handler.\+py.
+Definition at line 223 of file Drivers\+Handler.\+py.
 
 \index{server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}!view\+\_\+func@{view\+\_\+func}}
 \index{view\+\_\+func@{view\+\_\+func}!server\+::src\+::handlers\+::\+Drivers\+Handler@{server\+::src\+::handlers\+::\+Drivers\+Handler}}
 \subsubsection[{\texorpdfstring{view\+\_\+func}{view_func}}]{\setlength{\rightskip}{0pt plus 5cm}server.\+src.\+handlers.\+Drivers\+Handler.\+view\+\_\+func}\hypertarget{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_af37c168b94ff719ffb324453c5c1cd06}{}\label{namespaceserver_1_1src_1_1handlers_1_1_drivers_handler_af37c168b94ff719ffb324453c5c1cd06}
 
 
-Definition at line 102 of file Drivers\+Handler.\+py.
+Definition at line 222 of file Drivers\+Handler.\+py.
 

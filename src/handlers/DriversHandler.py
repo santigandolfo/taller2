@@ -132,11 +132,12 @@ class CarRegisterEndPoint(MethodView):
             }
             return make_response(jsonify(response)), 500
 
+
 class CarDeleteEndPoint(MethodView):
     """View used for deleting a car from a specific driver"""
 
     @staticmethod
-    def delete(username,car_id):
+    def delete(username, car_id):
         """Delete a car from a driver's info"""
         try:
             application.logger.info("Asked to remove driver's car information for: {}"
@@ -187,6 +188,7 @@ class CarDeleteEndPoint(MethodView):
                 'error_description': exc.message
             }
             return make_response(jsonify(response)), 500
+
 
 class AvailableEndpoint(MethodView):
     """View used for anything related with all drivers availability """

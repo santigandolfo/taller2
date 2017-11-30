@@ -1,4 +1,4 @@
-.TH "src/models.py" 3 "Mon Nov 6 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
+.TH "src/models.py" 3 "Thu Nov 30 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -27,10 +27,7 @@ src/models.py \-
 
 .in +1c
 .ti -1c
-.RI "\fBserver\&.src\&.models\&.BCRYPT_ROUNDS\fP = int(os\&.environ['BCRYPT_ROUNDS'])"
-.br
-.ti -1c
-.RI "\fBserver\&.src\&.models\&.SECRET_KEY\fP = os\&.environ\&.get('SECRET_KEY','key')"
+.RI "\fBserver\&.src\&.models\&.SECRET_KEY\fP = os\&.environ\&.get('SECRET_KEY', 'key')"
 .br
 .in -1c
 .SH "Author"

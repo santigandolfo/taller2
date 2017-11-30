@@ -11,7 +11,7 @@ Collaboration diagram for server.\+src.\+models.\+User\+:
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-def \hyperlink{classserver_1_1src_1_1models_1_1_user_a5ab48c788bcf8c5b9d6c6f562baedbad}{\+\_\+\+\_\+init\+\_\+\+\_\+} (self, \hyperlink{classserver_1_1src_1_1models_1_1_user_acb75051a64b473f00340abd8d8cd379a}{username}, \hyperlink{classserver_1_1src_1_1models_1_1_user_a9a4d7dce0947f4e81278a993244fb3e7}{uid})
+def \hyperlink{classserver_1_1src_1_1models_1_1_user_ae7810ed5869ba91aaece31d8a8a12406}{\+\_\+\+\_\+init\+\_\+\+\_\+} (self, \hyperlink{classserver_1_1src_1_1models_1_1_user_acb75051a64b473f00340abd8d8cd379a}{username}, \hyperlink{classserver_1_1src_1_1models_1_1_user_a9a4d7dce0947f4e81278a993244fb3e7}{uid}, \hyperlink{classserver_1_1src_1_1models_1_1_user_ab6574a566e1351de30f59603fcb5f087}{push\+\_\+token}=\textquotesingle{}\textquotesingle{})
 \item 
 def \hyperlink{classserver_1_1src_1_1models_1_1_user_afe0ff6d68b9cd0018b148105f7eaa670}{encode\+\_\+auth\+\_\+token} (self)
 \item 
@@ -32,6 +32,8 @@ def \hyperlink{classserver_1_1src_1_1models_1_1_user_a2c6b2817ce55a8d86e3dfc26d5
 \hyperlink{classserver_1_1src_1_1models_1_1_user_a8ff12934f8cd0b6ff62cc6fd926f8e65}{username}
 \item 
 \hyperlink{classserver_1_1src_1_1models_1_1_user_a3c77fa137fbf4878442d55a49909fa1b}{uid}
+\item 
+\hyperlink{classserver_1_1src_1_1models_1_1_user_a14d1ac6e4c3bde5bb16d1393b881e907}{push\+\_\+token}
 \end{DoxyCompactItemize}
 \subsection*{Static Public Attributes}
 \begin{DoxyCompactItemize}
@@ -39,6 +41,8 @@ def \hyperlink{classserver_1_1src_1_1models_1_1_user_a2c6b2817ce55a8d86e3dfc26d5
 string \hyperlink{classserver_1_1src_1_1models_1_1_user_acb75051a64b473f00340abd8d8cd379a}{username} = \textquotesingle{}\textquotesingle{}
 \item 
 string \hyperlink{classserver_1_1src_1_1models_1_1_user_a9a4d7dce0947f4e81278a993244fb3e7}{uid} = \textquotesingle{}\textquotesingle{}
+\item 
+string \hyperlink{classserver_1_1src_1_1models_1_1_user_ab6574a566e1351de30f59603fcb5f087}{push\+\_\+token} = \textquotesingle{}\textquotesingle{}
 \end{DoxyCompactItemize}
 
 
@@ -46,23 +50,24 @@ string \hyperlink{classserver_1_1src_1_1models_1_1_user_a9a4d7dce0947f4e81278a99
 \begin{DoxyVerb}Generical User representation \end{DoxyVerb}
  
 
-Definition at line 12 of file models.\+py.
+Definition at line 14 of file models.\+py.
 
 
 
 \subsection{Constructor \& Destructor Documentation}
 \index{server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}!\+\_\+\+\_\+init\+\_\+\+\_\+@{\+\_\+\+\_\+init\+\_\+\+\_\+}}
 \index{\+\_\+\+\_\+init\+\_\+\+\_\+@{\+\_\+\+\_\+init\+\_\+\+\_\+}!server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}}
-\subsubsection[{\texorpdfstring{\+\_\+\+\_\+init\+\_\+\+\_\+(self, username, uid)}{__init__(self, username, uid)}}]{\setlength{\rightskip}{0pt plus 5cm}def server.\+src.\+models.\+User.\+\_\+\+\_\+init\+\_\+\+\_\+ (
+\subsubsection[{\texorpdfstring{\+\_\+\+\_\+init\+\_\+\+\_\+(self, username, uid, push\+\_\+token=\textquotesingle{}\textquotesingle{})}{__init__(self, username, uid, push_token='')}}]{\setlength{\rightskip}{0pt plus 5cm}def server.\+src.\+models.\+User.\+\_\+\+\_\+init\+\_\+\+\_\+ (
 \begin{DoxyParamCaption}
 \item[{}]{self, }
 \item[{}]{username, }
-\item[{}]{uid}
+\item[{}]{uid, }
+\item[{}]{push\+\_\+token = {\ttfamily \textquotesingle{}\textquotesingle{}}}
 \end{DoxyParamCaption}
-)}\hypertarget{classserver_1_1src_1_1models_1_1_user_a5ab48c788bcf8c5b9d6c6f562baedbad}{}\label{classserver_1_1src_1_1models_1_1_user_a5ab48c788bcf8c5b9d6c6f562baedbad}
+)}\hypertarget{classserver_1_1src_1_1models_1_1_user_ae7810ed5869ba91aaece31d8a8a12406}{}\label{classserver_1_1src_1_1models_1_1_user_ae7810ed5869ba91aaece31d8a8a12406}
 
 
-Definition at line 18 of file models.\+py.
+Definition at line 21 of file models.\+py.
 
 
 
@@ -80,7 +85,7 @@ Definition at line 18 of file models.\+py.
 \end{DoxyVerb}
  
 
-Definition at line 58 of file models.\+py.
+Definition at line 68 of file models.\+py.
 
 \index{server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}!encode\+\_\+auth\+\_\+token@{encode\+\_\+auth\+\_\+token}}
 \index{encode\+\_\+auth\+\_\+token@{encode\+\_\+auth\+\_\+token}!server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}}
@@ -94,7 +99,7 @@ Definition at line 58 of file models.\+py.
 \end{DoxyVerb}
  
 
-Definition at line 23 of file models.\+py.
+Definition at line 26 of file models.\+py.
 
 \index{server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}!get\+\_\+user\+\_\+by\+\_\+uid@{get\+\_\+user\+\_\+by\+\_\+uid}}
 \index{get\+\_\+user\+\_\+by\+\_\+uid@{get\+\_\+user\+\_\+by\+\_\+uid}!server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}}
@@ -103,9 +108,10 @@ Definition at line 23 of file models.\+py.
 \item[{}]{uid}
 \end{DoxyParamCaption}
 )\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classserver_1_1src_1_1models_1_1_user_a9dc609228ed203a670fc27853c11e1e9}{}\label{classserver_1_1src_1_1models_1_1_user_a9dc609228ed203a670fc27853c11e1e9}
+\begin{DoxyVerb}Given a user_id return the corresponding user\end{DoxyVerb}
+ 
 
-
-Definition at line 51 of file models.\+py.
+Definition at line 59 of file models.\+py.
 
 \index{server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}!get\+\_\+user\+\_\+by\+\_\+username@{get\+\_\+user\+\_\+by\+\_\+username}}
 \index{get\+\_\+user\+\_\+by\+\_\+username@{get\+\_\+user\+\_\+by\+\_\+username}!server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}}
@@ -114,9 +120,10 @@ Definition at line 51 of file models.\+py.
 \item[{}]{username}
 \end{DoxyParamCaption}
 )\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classserver_1_1src_1_1models_1_1_user_aadaa85113e78dda0f8d043b25a833f4e}{}\label{classserver_1_1src_1_1models_1_1_user_aadaa85113e78dda0f8d043b25a833f4e}
+\begin{DoxyVerb}Given a username return the corresponding user\end{DoxyVerb}
+ 
 
-
-Definition at line 45 of file models.\+py.
+Definition at line 50 of file models.\+py.
 
 \index{server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}!remove\+\_\+from\+\_\+db@{remove\+\_\+from\+\_\+db}}
 \index{remove\+\_\+from\+\_\+db@{remove\+\_\+from\+\_\+db}!server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}}
@@ -129,38 +136,52 @@ Definition at line 45 of file models.\+py.
 \end{DoxyVerb}
  
 
-Definition at line 38 of file models.\+py.
+Definition at line 43 of file models.\+py.
 
 
 
 \subsection{Member Data Documentation}
+\index{server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}!push\+\_\+token@{push\+\_\+token}}
+\index{push\+\_\+token@{push\+\_\+token}!server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}}
+\subsubsection[{\texorpdfstring{push\+\_\+token}{push_token}}]{\setlength{\rightskip}{0pt plus 5cm}string server.\+src.\+models.\+User.\+push\+\_\+token = \textquotesingle{}\textquotesingle{}\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classserver_1_1src_1_1models_1_1_user_ab6574a566e1351de30f59603fcb5f087}{}\label{classserver_1_1src_1_1models_1_1_user_ab6574a566e1351de30f59603fcb5f087}
+
+
+Definition at line 19 of file models.\+py.
+
+\index{server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}!push\+\_\+token@{push\+\_\+token}}
+\index{push\+\_\+token@{push\+\_\+token}!server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}}
+\subsubsection[{\texorpdfstring{push\+\_\+token}{push_token}}]{\setlength{\rightskip}{0pt plus 5cm}server.\+src.\+models.\+User.\+push\+\_\+token}\hypertarget{classserver_1_1src_1_1models_1_1_user_a14d1ac6e4c3bde5bb16d1393b881e907}{}\label{classserver_1_1src_1_1models_1_1_user_a14d1ac6e4c3bde5bb16d1393b881e907}
+
+
+Definition at line 24 of file models.\+py.
+
 \index{server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}!uid@{uid}}
 \index{uid@{uid}!server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}}
 \subsubsection[{\texorpdfstring{uid}{uid}}]{\setlength{\rightskip}{0pt plus 5cm}string server.\+src.\+models.\+User.\+uid = \textquotesingle{}\textquotesingle{}\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classserver_1_1src_1_1models_1_1_user_a9a4d7dce0947f4e81278a993244fb3e7}{}\label{classserver_1_1src_1_1models_1_1_user_a9a4d7dce0947f4e81278a993244fb3e7}
 
 
-Definition at line 16 of file models.\+py.
+Definition at line 18 of file models.\+py.
 
 \index{server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}!uid@{uid}}
 \index{uid@{uid}!server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}}
 \subsubsection[{\texorpdfstring{uid}{uid}}]{\setlength{\rightskip}{0pt plus 5cm}server.\+src.\+models.\+User.\+uid}\hypertarget{classserver_1_1src_1_1models_1_1_user_a3c77fa137fbf4878442d55a49909fa1b}{}\label{classserver_1_1src_1_1models_1_1_user_a3c77fa137fbf4878442d55a49909fa1b}
 
 
-Definition at line 20 of file models.\+py.
+Definition at line 23 of file models.\+py.
 
 \index{server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}!username@{username}}
 \index{username@{username}!server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}}
 \subsubsection[{\texorpdfstring{username}{username}}]{\setlength{\rightskip}{0pt plus 5cm}string server.\+src.\+models.\+User.\+username = \textquotesingle{}\textquotesingle{}\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classserver_1_1src_1_1models_1_1_user_acb75051a64b473f00340abd8d8cd379a}{}\label{classserver_1_1src_1_1models_1_1_user_acb75051a64b473f00340abd8d8cd379a}
 
 
-Definition at line 15 of file models.\+py.
+Definition at line 17 of file models.\+py.
 
 \index{server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}!username@{username}}
 \index{username@{username}!server\+::src\+::models\+::\+User@{server\+::src\+::models\+::\+User}}
 \subsubsection[{\texorpdfstring{username}{username}}]{\setlength{\rightskip}{0pt plus 5cm}server.\+src.\+models.\+User.\+username}\hypertarget{classserver_1_1src_1_1models_1_1_user_a8ff12934f8cd0b6ff62cc6fd926f8e65}{}\label{classserver_1_1src_1_1models_1_1_user_a8ff12934f8cd0b6ff62cc6fd926f8e65}
 
 
-Definition at line 19 of file models.\+py.
+Definition at line 22 of file models.\+py.
 
 
 

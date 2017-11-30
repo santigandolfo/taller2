@@ -1,10 +1,5 @@
 var searchData=
 [
-  ['register_5fuser',['register_user',['../namespaceserver_1_1src_1_1services_1_1shared__server.html#ad046220c1ee3d44e032e949a627fe9f8',1,'server::src::services::shared_server']]],
-  ['registerapi',['RegisterAPI',['../classserver_1_1src_1_1handlers_1_1_register_handler_1_1_register_a_p_i.html',1,'server::src::handlers::RegisterHandler']]],
-  ['registerhandler_2epy',['RegisterHandler.py',['../_register_handler_8py.html',1,'']]],
-  ['registration_5fblueprint',['registration_blueprint',['../namespaceserver_1_1src_1_1handlers_1_1_register_handler.html#afce21eacbe2ae16cdf4637aed324a93b',1,'server::src::handlers::RegisterHandler']]],
-  ['registration_5fview',['registration_view',['../namespaceserver_1_1src_1_1handlers_1_1_register_handler.html#aaf26ae647614acc866fbb90882f4e3c8',1,'server::src::handlers::RegisterHandler']]],
-  ['remove_5ffrom_5fdb',['remove_from_db',['../classserver_1_1src_1_1models_1_1_user.html#a4f935c1ffff6886e4fed9a007550420d',1,'server::src::models::User']]],
-  ['remove_5fuser',['remove_user',['../namespaceserver_1_1src_1_1services_1_1shared__server.html#a190f8fa17a9c97c5db8b9d737acc89c8',1,'server::src::services::shared_server']]]
+  ['methods',['methods',['../namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html#a3634d5c3f882ab668da5e543eaec9be9',1,'server.src.handlers.DriversHandler.methods()'],['../namespaceserver_1_1src_1_1handlers_1_1_position_handler.html#a4ef9b677a2f5dbe64fdde90cebed0fd0',1,'server.src.handlers.PositionHandler.methods()'],['../namespaceserver_1_1src_1_1handlers_1_1_register_handler.html#a1ef2f67e4e22f57354c300ef05faa2d2',1,'server.src.handlers.RegisterHandler.methods()'],['../namespaceserver_1_1src_1_1handlers_1_1_request_handler.html#aadc72d59d483d61efdb8c69b2e226e3c',1,'server.src.handlers.RequestHandler.methods()'],['../namespaceserver_1_1src_1_1handlers_1_1_security_handler.html#ad2b2d768d34647c0b3356732a078c933',1,'server.src.handlers.SecurityHandler.methods()'],['../namespaceserver_1_1src_1_1handlers_1_1_token_registration_handler.html#a3891da98e217b7250037122389acb2cf',1,'server.src.handlers.TokenRegistrationHandler.methods()'],['../namespaceserver_1_1src_1_1handlers_1_1_trip_handler.html#afc7d4f1f42d23429183324dde99b2179',1,'server.src.handlers.TripHandler.methods()']]],
+  ['models_2epy',['models.py',['../models_8py.html',1,'']]]
 ];

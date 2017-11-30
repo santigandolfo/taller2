@@ -94,6 +94,30 @@ directions_return_example = {
     "status": "OK"
 }
 
+
+mocked_trips = [
+    {
+        'rider': 'joe_smith',
+        'driver': 'juan',
+        'date': '23-4-2016',
+        'price': 100,
+        'currency': 'ARS'
+    },
+    {
+        'rider': 'joe_smith',
+        'driver': 'pedro',
+        'date': '24-4-2016',
+        'price': 20,
+        'currency': 'ARS'
+    },
+    {
+        'rider': 'joe_smith',
+        'driver': 'juan',
+        'date': '25-4-2016',
+        'price': 200,
+        'currency': 'ARS'
+    }
+]
 class TestTripStarting(BaseTestCase):
 
     rider_joe_auth_token = ''
@@ -692,3 +716,72 @@ class TestTripFinishing(BaseTestCase):
                 self.assertEqual(data['status'], 'fail')
                 self.assertEqual(response.content_type, 'application/json')
                 self.assertEqual(response.status_code, 404)
+
+    def test_get_all_trips(self):
+
+        with self.client:
+            with patch('requests.get') as mock_get:
+                mock_get.return_value = Mock()
+                mock_get.return_value.json.return_value =\
+                    {'trips': mocked_trips
+                }
+                mock_get.return_value.ok = True
+                mock_get.return_value.status_code = 200
+                response = self.client.get(
+                    '/users/joe_smith/trip',
+                    headers=dict(
+                        Authorization='Bearer '+self.rider_joe_auth_token
+                    ),
+                    content_type='application/json'
+                )
+                data = json.loads(response.data.decode())
+                self.assertEqual(data['message'], 'trips_retrieved')
+                self.assertEqual(data['status'], 'success')
+                self.assertEqual(response.content_type, 'application/json')
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(data['trips'], mocked_trips)
+
+    def test_unauthorized_get_all_trips(self):
+
+        with self.client:
+            with patch('requests.get') as mock_get:
+                mock_get.return_value = Mock()
+                mock_get.return_value.json.return_value =\
+                    {'trips': mocked_trips
+                }
+                mock_get.return_value.ok = True
+                mock_get.return_value.status_code = 200
+                response = self.client.get(
+                    '/users/william_dafoe/trip',
+                    headers=dict(
+                        Authorization='Bearer '+self.rider_joe_auth_token
+                    ),
+                    content_type='application/json'
+                )
+                data = json.loads(response.data.decode())
+                self.assertEqual(data['message'], 'unauthorized_action')
+                self.assertEqual(data['status'], 'fail')
+                self.assertEqual(response.content_type, 'application/json')
+                self.assertEqual(response.status_code, 401)
+
+    def test_invalid_token_get_all_trips(self):
+        with self.client:
+            with patch('requests.get') as mock_get:
+                mock_get.return_value = Mock()
+                mock_get.return_value.json.return_value = \
+                    {'trips': mocked_trips
+                     }
+                mock_get.return_value.ok = True
+                mock_get.return_value.status_code = 200
+                response = self.client.get(
+                    '/users/william_dafoe/trip',
+                    headers=dict(
+                        Authorization='Bearer jkflsdjaf'
+                    ),
+                    content_type='application/json'
+                )
+                data = json.loads(response.data.decode())
+                self.assertEqual(data['message'], 'invalid_token')
+                self.assertEqual(data['status'], 'fail')
+                self.assertEqual(response.content_type, 'application/json')
+                self.assertEqual(response.status_code, 401)

@@ -7,9 +7,23 @@ digraph "Graphical Class Hierarchy"
   Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
   Node2 [label="server.src.handlers.Drivers\lHandler.AvailableEndpoint",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_available_endpoint.html"];
   Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node3 [label="server.src.handlers.Drivers\lHandler.DriversAPI",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_drivers_a_p_i.html"];
+  Node3 [label="server.src.handlers.Drivers\lHandler.CarDeleteEndPoint",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_car_delete_end_point.html"];
   Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node4 [label="server.src.handlers.Register\lHandler.RegisterAPI",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_register_handler_1_1_register_a_p_i.html"];
+  Node4 [label="server.src.handlers.Drivers\lHandler.CarRegisterEndPoint",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_car_register_end_point.html"];
   Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node5 [label="server.src.handlers.Security\lHandler.SecurityAPI",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_security_handler_1_1_security_a_p_i.html"];
+  Node5 [label="server.src.handlers.Drivers\lHandler.DriversAPI",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_drivers_a_p_i.html"];
+  Node1 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="server.src.handlers.Position\lHandler.PositionAPI",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_position_handler_1_1_position_a_p_i.html"];
+  Node1 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="server.src.handlers.Register\lHandler.RegisterAPI",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_register_handler_1_1_register_a_p_i.html"];
+  Node1 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="server.src.handlers.Request\lHandler.RequestCancellation",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_request_handler_1_1_request_cancellation.html"];
+  Node1 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="server.src.handlers.Request\lHandler.RequestSubmission",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_request_handler_1_1_request_submission.html"];
+  Node1 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="server.src.handlers.Security\lHandler.SecurityAPI",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_security_handler_1_1_security_a_p_i.html"];
+  Node1 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="server.src.handlers.Token\lRegistrationHandler.PushNotificationAPI",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_token_registration_handler_1_1_push_notification_a_p_i.html"];
+  Node1 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="server.src.handlers.Trip\lHandler.TripsAPI",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classserver_1_1src_1_1handlers_1_1_trip_handler_1_1_trips_a_p_i.html"];
 }

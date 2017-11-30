@@ -57,44 +57,49 @@ class RequestSubmission(MethodView):
 
                 if db.requests.count({'rider': username}) == 0 and db.trips.count({'rider': username}) == 0:
 
-                    assigned_driver = DriversMixin.get_closer_driver((data['latitude_initial'],data['longitude_initial']))
+                    assigned_driver = DriversMixin.get_closer_driver(
+                        (data['latitude_initial'], data['longitude_initial']))
 
                     if assigned_driver:
                         db.drivers.update_one({'username': assigned_driver}, {'$set': {'trip': True}})
                         application.logger.info("driver assigned")
-                        driver_position = db.positions.find_one({'username':assigned_driver})
+                        driver_position = db.positions.find_one({'username': assigned_driver})
                         if not driver_position:
                             raise Exception('driver_position_unknown')
                         coordinates_to_passenger = {
-                            'latitude_initial':driver_position['latitude'],
-                            'longitude_initial':driver_position['longitude'],
-                            'latitude_final':data['latitude_initial'],
-                            'longitude_final':data['longitude_initial']
+                            'latitude_initial': driver_position['latitude'],
+                            'longitude_initial': driver_position['longitude'],
+                            'latitude_final': data['latitude_initial'],
+                            'longitude_final': data['longitude_initial']
                         }
                         directions_trip_response = get_directions(data)
                         directions_passenger_response = get_directions(coordinates_to_passenger)
-                        if (not directions_trip_response.ok or not directions_passenger_response.ok):
+                        if not directions_trip_response.ok or not directions_passenger_response.ok:
                             raise Exception('failed_to_get_directions')
                         application.logger.debug("google directions responses:")
                         application.logger.debug(directions_trip_response)
                         application.logger.debug(directions_passenger_response)
-                        if directions_trip_response.json()['routes'] and directions_passenger_response.json()['routes'] :
-                            directions_trip = directions_trip_response.json()['routes'][0]['overview_polyline']['points']
-                            directions_to_passenger = directions_passenger_response.json()['routes'][0]['overview_polyline']['points']
+                        if directions_trip_response.json()['routes'] and directions_passenger_response.json()['routes']:
+                            directions_trip = directions_trip_response.json()['routes'][0]['overview_polyline'][
+                                'points']
+                            directions_to_passenger = \
+                            directions_passenger_response.json()['routes'][0]['overview_polyline']['points']
                         else:
                             raise Exception('unreachable_destination')
                         cost_data = {
-                            "start_location":[data['latitude_initial'], data['longitude_initial']],
-                            "end_location":[data['latitude_initial'], data['longitude_initial']],
-                            "distance": directions_trip_response.json()['routes'][0]['legs'][0]['distance']['value']/1000.0,
-                            "pay_method":"credit",
+                            "start_location": [data['latitude_initial'], data['longitude_initial']],
+                            "end_location": [data['latitude_initial'], data['longitude_initial']],
+                            "distance": directions_trip_response.json()['routes'][0]['legs'][0]['distance'][
+                                            'value'] / 1000.0,
+                            "pay_method": "credit",
                             "driver_id": User.get_user_by_username(assigned_driver).uid,
                             "passenger_id": User.get_user_by_username(username).uid
                         }
                         resp = estimate_trip_cost(cost_data)
                         if resp.ok:
                             cost = resp.json()['value']
-                            result = db.requests.insert_one({'rider': username, 'driver': assigned_driver, 'coordinates': data})
+                            result = db.requests.insert_one(
+                                {'rider': username, 'driver': assigned_driver, 'coordinates': data})
                             message = "trip_assigned"
                             data = {
                                 'rider': username,
@@ -120,7 +125,7 @@ class RequestSubmission(MethodView):
                             'status': 'fail',
                             'message': 'no_driver_available'
                         }
-                        status_code = 404
+                        status_code = 200
                 else:
                     response = {
                         'status': 'fail',
@@ -151,11 +156,12 @@ class RequestSubmission(MethodView):
             }
             return make_response(jsonify(response)), 500
 
+
 class RequestCancellation(MethodView):
     """Handler for request cancellation"""
 
     @staticmethod
-    def delete(requestID):
+    def delete(request_id):
         """Endpoint for cancelling an unstarted trip a.k.a a request made that was matched"""
 
         try:
@@ -169,25 +175,25 @@ class RequestCancellation(MethodView):
                 return make_response(jsonify(response)), 401
             application.logger.info("Verifying token: {}".format(auth_header))
             application.logger.info("Cancellation was requested by: {}".format(token_username))
-            result = db.requests.find_one({'_id': ObjectId(requestID)})
+            result = db.requests.find_one({'_id': ObjectId(request_id)})
             if result:
                 application.logger.info("Request found")
                 driver_username = result['driver']
                 application.logger.info("Request driver username: {}".format(driver_username))
                 rider_username = result['rider']
                 application.logger.info("Request rider username: {}".format(rider_username))
-                if (token_username == driver_username or token_username == rider_username):
+                if token_username == driver_username or token_username == rider_username:
                     application.logger.info("Permission granted")
                     application.logger.info("User cancelling request: {}".format(token_username))
-                    db.requests.delete_one({'_id': ObjectId(requestID)})
+                    db.requests.delete_one({'_id': ObjectId(request_id)})
                     db.drivers.update_one({'username': driver_username}, {'$set': {'trip': False}})
                     message = "trip_cancelled"
-                    if (token_username == driver_username):
+                    if token_username == driver_username:
                         receiver = rider_username
                     else:
                         receiver = driver_username
                     data = {
-                        'id': requestID,
+                        'id': request_id,
                         'by': token_username
                     }
                     send_push_notifications(receiver, message, data)
@@ -220,7 +226,6 @@ class RequestCancellation(MethodView):
             return make_response(jsonify(response)), 500
 
 
-
 # define the API resources
 REQUESTS_SUBMISSION_VIEW = RequestSubmission.as_view('request_submission')
 REQUEST_CANCELLATION_VIEW = RequestCancellation.as_view('request_cancellation')
@@ -233,7 +238,7 @@ REQUESTS_BLUEPRINT.add_url_rule(
 )
 
 REQUESTS_BLUEPRINT.add_url_rule(
-    '/requests/<requestID>',
+    '/requests/<request_id>',
     view_func=REQUEST_CANCELLATION_VIEW,
     methods=['DELETE']
 )

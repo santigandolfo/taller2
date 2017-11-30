@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['uid',['uid',['../classserver_1_1src_1_1models_1_1_user.html#a9a4d7dce0947f4e81278a993244fb3e7',1,'server.src.models.User.uid()'],['../classserver_1_1src_1_1models_1_1_user.html#a3c77fa137fbf4878442d55a49909fa1b',1,'server.src.models.User.uid()']]],
-  ['username',['username',['../classserver_1_1src_1_1models_1_1_user.html#acb75051a64b473f00340abd8d8cd379a',1,'server.src.models.User.username()'],['../classserver_1_1src_1_1models_1_1_user.html#a8ff12934f8cd0b6ff62cc6fd926f8e65',1,'server.src.models.User.username()']]]
+  ['position_5fblueprint',['POSITION_BLUEPRINT',['../namespaceserver_1_1src_1_1handlers_1_1_position_handler.html#af32524e2038716670566b3c521694b2d',1,'server::src::handlers::PositionHandler']]],
+  ['position_5fview',['POSITION_VIEW',['../namespaceserver_1_1src_1_1handlers_1_1_position_handler.html#acacbb3f690b46e8115e7b0bd92ea2929',1,'server::src::handlers::PositionHandler']]],
+  ['push_5ftoken',['push_token',['../classserver_1_1src_1_1models_1_1_user.html#ab6574a566e1351de30f59603fcb5f087',1,'server.src.models.User.push_token()'],['../classserver_1_1src_1_1models_1_1_user.html#a14d1ac6e4c3bde5bb16d1393b881e907',1,'server.src.models.User.push_token()']]]
 ];

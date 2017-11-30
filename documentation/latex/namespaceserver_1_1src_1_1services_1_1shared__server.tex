@@ -9,13 +9,50 @@ def \hyperlink{namespaceserver_1_1src_1_1services_1_1shared__server_a190f8fa17a9
 \item 
 def \hyperlink{namespaceserver_1_1src_1_1services_1_1shared__server_a6c6ee2dbe6c5c9dd02720250ffb9f740}{update\+\_\+user\+\_\+data} (user\+\_\+id, data)
 \item 
+def \hyperlink{namespaceserver_1_1src_1_1services_1_1shared__server_aa72ddb5c3d008c64e08bea3eccce0d27}{register\+\_\+car} (user\+\_\+id, data)
+\item 
+def \hyperlink{namespaceserver_1_1src_1_1services_1_1shared__server_a2fd59695eb0b75fa5d0f6c311ea4d71c}{delete\+\_\+car} (user\+\_\+id, car\+\_\+id)
+\item 
 def \hyperlink{namespaceserver_1_1src_1_1services_1_1shared__server_a8c32ea7706df14abd6fb772d2dd8ccec}{validate\+\_\+user} (username, password)
+\item 
+def \hyperlink{namespaceserver_1_1src_1_1services_1_1shared__server_ac161e4dbfe6124a8dcb84411527c03c9}{register\+\_\+trip} (data)
+\item 
+def \hyperlink{namespaceserver_1_1src_1_1services_1_1shared__server_a8a2f31e713bb03bf1cb42fe7ebdd7bc2}{estimate\+\_\+trip\+\_\+cost} (data)
 \item 
 def \hyperlink{namespaceserver_1_1src_1_1services_1_1shared__server_af10e171335b969947879c4ed45dc011d}{get\+\_\+data} (user\+\_\+id)
 \end{DoxyCompactItemize}
 
 
+\subsection{Detailed Description}
+\begin{DoxyVerb}Services used from the shared server\end{DoxyVerb}
+ 
+
 \subsection{Function Documentation}
+\index{server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}!delete\+\_\+car@{delete\+\_\+car}}
+\index{delete\+\_\+car@{delete\+\_\+car}!server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}}
+\subsubsection[{\texorpdfstring{delete\+\_\+car(user\+\_\+id, car\+\_\+id)}{delete_car(user_id, car_id)}}]{\setlength{\rightskip}{0pt plus 5cm}def server.\+src.\+services.\+shared\+\_\+server.\+delete\+\_\+car (
+\begin{DoxyParamCaption}
+\item[{}]{user\+\_\+id, }
+\item[{}]{car\+\_\+id}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceserver_1_1src_1_1services_1_1shared__server_a2fd59695eb0b75fa5d0f6c311ea4d71c}{}\label{namespaceserver_1_1src_1_1services_1_1shared__server_a2fd59695eb0b75fa5d0f6c311ea4d71c}
+\begin{DoxyVerb}Delete driver's car info in the shared server\end{DoxyVerb}
+ 
+
+Definition at line 35 of file shared\+\_\+server.\+py.
+
+\index{server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}!estimate\+\_\+trip\+\_\+cost@{estimate\+\_\+trip\+\_\+cost}}
+\index{estimate\+\_\+trip\+\_\+cost@{estimate\+\_\+trip\+\_\+cost}!server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}}
+\subsubsection[{\texorpdfstring{estimate\+\_\+trip\+\_\+cost(data)}{estimate_trip_cost(data)}}]{\setlength{\rightskip}{0pt plus 5cm}def server.\+src.\+services.\+shared\+\_\+server.\+estimate\+\_\+trip\+\_\+cost (
+\begin{DoxyParamCaption}
+\item[{}]{data}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceserver_1_1src_1_1services_1_1shared__server_a8a2f31e713bb03bf1cb42fe7ebdd7bc2}{}\label{namespaceserver_1_1src_1_1services_1_1shared__server_a8a2f31e713bb03bf1cb42fe7ebdd7bc2}
+\begin{DoxyVerb}Obtain an estimation of the cost of a trip to be made\end{DoxyVerb}
+ 
+
+Definition at line 54 of file shared\+\_\+server.\+py.
+
 \index{server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}!get\+\_\+data@{get\+\_\+data}}
 \index{get\+\_\+data@{get\+\_\+data}!server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}}
 \subsubsection[{\texorpdfstring{get\+\_\+data(user\+\_\+id)}{get_data(user_id)}}]{\setlength{\rightskip}{0pt plus 5cm}def server.\+src.\+services.\+shared\+\_\+server.\+get\+\_\+data (
@@ -23,9 +60,35 @@ def \hyperlink{namespaceserver_1_1src_1_1services_1_1shared__server_af10e171335b
 \item[{}]{user\+\_\+id}
 \end{DoxyParamCaption}
 )}\hypertarget{namespaceserver_1_1src_1_1services_1_1shared__server_af10e171335b969947879c4ed45dc011d}{}\label{namespaceserver_1_1src_1_1services_1_1shared__server_af10e171335b969947879c4ed45dc011d}
+\begin{DoxyVerb}Get user's data from the shared server\end{DoxyVerb}
+ 
 
+Definition at line 61 of file shared\+\_\+server.\+py.
 
-Definition at line 19 of file shared\+\_\+server.\+py.
+\index{server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}!register\+\_\+car@{register\+\_\+car}}
+\index{register\+\_\+car@{register\+\_\+car}!server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}}
+\subsubsection[{\texorpdfstring{register\+\_\+car(user\+\_\+id, data)}{register_car(user_id, data)}}]{\setlength{\rightskip}{0pt plus 5cm}def server.\+src.\+services.\+shared\+\_\+server.\+register\+\_\+car (
+\begin{DoxyParamCaption}
+\item[{}]{user\+\_\+id, }
+\item[{}]{data}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceserver_1_1src_1_1services_1_1shared__server_aa72ddb5c3d008c64e08bea3eccce0d27}{}\label{namespaceserver_1_1src_1_1services_1_1shared__server_aa72ddb5c3d008c64e08bea3eccce0d27}
+\begin{DoxyVerb}Register driver's car info in the shared server\end{DoxyVerb}
+ 
+
+Definition at line 30 of file shared\+\_\+server.\+py.
+
+\index{server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}!register\+\_\+trip@{register\+\_\+trip}}
+\index{register\+\_\+trip@{register\+\_\+trip}!server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}}
+\subsubsection[{\texorpdfstring{register\+\_\+trip(data)}{register_trip(data)}}]{\setlength{\rightskip}{0pt plus 5cm}def server.\+src.\+services.\+shared\+\_\+server.\+register\+\_\+trip (
+\begin{DoxyParamCaption}
+\item[{}]{data}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceserver_1_1src_1_1services_1_1shared__server_ac161e4dbfe6124a8dcb84411527c03c9}{}\label{namespaceserver_1_1src_1_1services_1_1shared__server_ac161e4dbfe6124a8dcb84411527c03c9}
+\begin{DoxyVerb}Register a trip in the shared server that has already finished\end{DoxyVerb}
+ 
+
+Definition at line 47 of file shared\+\_\+server.\+py.
 
 \index{server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}!register\+\_\+user@{register\+\_\+user}}
 \index{register\+\_\+user@{register\+\_\+user}!server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}}
@@ -34,7 +97,8 @@ Definition at line 19 of file shared\+\_\+server.\+py.
 \item[{}]{userdata}
 \end{DoxyParamCaption}
 )}\hypertarget{namespaceserver_1_1src_1_1services_1_1shared__server_ad046220c1ee3d44e032e949a627fe9f8}{}\label{namespaceserver_1_1src_1_1services_1_1shared__server_ad046220c1ee3d44e032e949a627fe9f8}
-
+\begin{DoxyVerb}Registers a user in the shared server\end{DoxyVerb}
+ 
 
 Definition at line 7 of file shared\+\_\+server.\+py.
 
@@ -45,9 +109,10 @@ Definition at line 7 of file shared\+\_\+server.\+py.
 \item[{}]{user\+\_\+id}
 \end{DoxyParamCaption}
 )}\hypertarget{namespaceserver_1_1src_1_1services_1_1shared__server_a190f8fa17a9c97c5db8b9d737acc89c8}{}\label{namespaceserver_1_1src_1_1services_1_1shared__server_a190f8fa17a9c97c5db8b9d737acc89c8}
+\begin{DoxyVerb}Erases a user's account in the shared server\end{DoxyVerb}
+ 
 
-
-Definition at line 10 of file shared\+\_\+server.\+py.
+Definition at line 13 of file shared\+\_\+server.\+py.
 
 \index{server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}!update\+\_\+user\+\_\+data@{update\+\_\+user\+\_\+data}}
 \index{update\+\_\+user\+\_\+data@{update\+\_\+user\+\_\+data}!server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}}
@@ -57,9 +122,10 @@ Definition at line 10 of file shared\+\_\+server.\+py.
 \item[{}]{data}
 \end{DoxyParamCaption}
 )}\hypertarget{namespaceserver_1_1src_1_1services_1_1shared__server_a6c6ee2dbe6c5c9dd02720250ffb9f740}{}\label{namespaceserver_1_1src_1_1services_1_1shared__server_a6c6ee2dbe6c5c9dd02720250ffb9f740}
+\begin{DoxyVerb}Update user's info in the shared server\end{DoxyVerb}
+ 
 
-
-Definition at line 13 of file shared\+\_\+server.\+py.
+Definition at line 20 of file shared\+\_\+server.\+py.
 
 \index{server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}!validate\+\_\+user@{validate\+\_\+user}}
 \index{validate\+\_\+user@{validate\+\_\+user}!server\+::src\+::services\+::shared\+\_\+server@{server\+::src\+::services\+::shared\+\_\+server}}
@@ -69,7 +135,8 @@ Definition at line 13 of file shared\+\_\+server.\+py.
 \item[{}]{password}
 \end{DoxyParamCaption}
 )}\hypertarget{namespaceserver_1_1src_1_1services_1_1shared__server_a8c32ea7706df14abd6fb772d2dd8ccec}{}\label{namespaceserver_1_1src_1_1services_1_1shared__server_a8c32ea7706df14abd6fb772d2dd8ccec}
+\begin{DoxyVerb}Validate user's credentials in the shared server\end{DoxyVerb}
+ 
 
-
-Definition at line 16 of file shared\+\_\+server.\+py.
+Definition at line 40 of file shared\+\_\+server.\+py.
 

@@ -1,4 +1,4 @@
-.TH "server.src.handlers.SecurityHandler" 3 "Mon Nov 6 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
+.TH "server.src.handlers.SecurityHandler" 3 "Thu Nov 30 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,10 +17,10 @@ server.src.handlers.SecurityHandler \-
 
 .in +1c
 .ti -1c
-.RI "\fBsecurity_blueprint\fP = Blueprint('security', __name__)"
+.RI "\fBSECURITY_BLUEPRINT\fP = Blueprint('security', __name__)"
 .br
 .ti -1c
-.RI "\fBsecurity_view\fP = SecurityAPI\&.as_view('security_api')"
+.RI "\fBSECURITY_VIEW\fP = SecurityAPI\&.as_view('security_api')"
 .br
 .ti -1c
 .RI "\fBview_func\fP"
@@ -29,24 +29,33 @@ server.src.handlers.SecurityHandler \-
 .RI "\fBmethods\fP"
 .br
 .in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+.nf
+Handlers related with loging in and out an user
+.fi
+.PP
+ 
 .SH "Variable Documentation"
 .PP 
 .SS "server\&.src\&.handlers\&.SecurityHandler\&.methods"
 
 .PP
-Definition at line 127 of file SecurityHandler\&.py\&.
-.SS "server\&.src\&.handlers\&.SecurityHandler\&.security_blueprint = Blueprint('security', __name__)"
+Definition at line 122 of file SecurityHandler\&.py\&.
+.SS "server\&.src\&.handlers\&.SecurityHandler\&.SECURITY_BLUEPRINT = Blueprint('security', __name__)"
 
 .PP
-Definition at line 10 of file SecurityHandler\&.py\&.
-.SS "server\&.src\&.handlers\&.SecurityHandler\&.security_view = SecurityAPI\&.as_view('security_api')"
+Definition at line 12 of file SecurityHandler\&.py\&.
+.SS "server\&.src\&.handlers\&.SecurityHandler\&.SECURITY_VIEW = SecurityAPI\&.as_view('security_api')"
 
 .PP
-Definition at line 121 of file SecurityHandler\&.py\&.
+Definition at line 116 of file SecurityHandler\&.py\&.
 .SS "server\&.src\&.handlers\&.SecurityHandler\&.view_func"
 
 .PP
-Definition at line 126 of file SecurityHandler\&.py\&.
+Definition at line 121 of file SecurityHandler\&.py\&.
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for FIUBER from the source code\&.
