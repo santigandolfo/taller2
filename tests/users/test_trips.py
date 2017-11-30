@@ -145,6 +145,18 @@ class TestTripStarting(BaseTestCase):
                 data = json.loads(response.data.decode())
                 self.rider_joe_auth_token = data['auth_token']
 
+                self.client.put(
+                    '/users/joe_smith/coordinates',
+                    data=json.dumps(dict(
+                        latitude=30.000004,
+                        longitude=42.000002
+                    )),
+                    headers=dict(
+                        Authorization='Bearer ' + self.rider_joe_auth_token
+                    ),
+                    content_type='application/json'
+                )
+
                 mock_post.return_value.json.return_value = {'id': "2"}
                 response = self.client.post(
                     '/users',
@@ -174,8 +186,8 @@ class TestTripStarting(BaseTestCase):
                 self.client.put(
                     '/users/johny/coordinates',
                     data=json.dumps(dict(
-                        latitude=30.12,
-                        longitude=42.03
+                        latitude=30.000004,
+                        longitude=42.000002
                     )),
                     headers=dict(
                         Authorization='Bearer ' + self.driver_auth_token
@@ -224,6 +236,7 @@ class TestTripStarting(BaseTestCase):
                         )
                         data = json.loads(response.data.decode())
                     self.request_id = data['id']
+
 
     def test_start_trip_without_token(self):
 
@@ -465,18 +478,17 @@ class TestTripFinishing(BaseTestCase):
                 data = json.loads(response.data.decode())
                 self.rider_joe_auth_token = data['auth_token']
 
-                mock_post.return_value.json.return_value = {'id': "2"}
-                response = self.client.post(
-                    '/users',
+                self.client.put(
+                    '/users/joe_smith/coordinates',
                     data=json.dumps(dict(
-                        username='william_dafoe',
-                        password='123456',
-                        type='rider'
+                        latitude=30.000004,
+                        longitude=42.000002
                     )),
+                    headers=dict(
+                        Authorization='Bearer ' + self.rider_joe_auth_token
+                    ),
                     content_type='application/json'
                 )
-                data = json.loads(response.data.decode())
-                self.rider_will_auth_token = data['auth_token']
 
                 mock_post.return_value.json.return_value = {'id': "3"}
                 response = self.client.post(
@@ -494,8 +506,8 @@ class TestTripFinishing(BaseTestCase):
                 self.client.put(
                     '/users/johny/coordinates',
                     data=json.dumps(dict(
-                        latitude=30.12,
-                        longitude=42.03
+                        latitude=30.000004,
+                        longitude=42.000002
                     )),
                     headers=dict(
                         Authorization='Bearer ' + self.driver_auth_token
@@ -554,6 +566,31 @@ class TestTripFinishing(BaseTestCase):
                 ),
                 content_type='application/json'
             )
+            self.client.put(
+                '/users/joe_smith/coordinates',
+                data=json.dumps(dict(
+                    latitude=31.320004,
+                    longitude=43.210002
+                )),
+                headers=dict(
+                    Authorization='Bearer ' + self.rider_joe_auth_token
+                ),
+                content_type='application/json'
+            )
+            self.client.put(
+                '/users/johny/coordinates',
+                data=json.dumps(dict(
+                    latitude=31.320004,
+                    longitude=43.210002
+                )),
+                headers=dict(
+                    Authorization='Bearer ' + self.driver_auth_token
+                ),
+                content_type='application/json'
+            )
+
+
+
 
     def test_finish_trip_without_token(self):
 
