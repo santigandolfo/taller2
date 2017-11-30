@@ -1,4 +1,4 @@
-.TH "server.src.handlers.DriversHandler.DriversAPI" 3 "Mon Nov 6 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
+.TH "server.src.handlers.DriversHandler.DriversAPI" 3 "Thu Nov 30 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -8,11 +8,11 @@ server.src.handlers.DriversHandler.DriversAPI \-
 .PP
 .PP
 Inherits MethodView\&.
-.SS "Public Member Functions"
+.SS "Static Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "def \fBpatch\fP (self)"
+.RI "def \fBpatch\fP (username)"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -25,13 +25,19 @@ Handler for drivers manipulation related API
 .PP
  
 .PP
-Definition at line 11 of file DriversHandler\&.py\&.
+Definition at line 14 of file DriversHandler\&.py\&.
 .SH "Member Function Documentation"
 .PP 
-.SS "def server\&.src\&.handlers\&.DriversHandler\&.DriversAPI\&.patch ( self)"
+.SS "def server\&.src\&.handlers\&.DriversHandler\&.DriversAPI\&.patch ( username)\fC [static]\fP"
 
 .PP
-Definition at line 14 of file DriversHandler\&.py\&.
+.nf
+Endpoint made for modifying the driver's duty status
+.fi
+.PP
+ 
+.PP
+Definition at line 18 of file DriversHandler\&.py\&.
 
 .SH "Author"
 .PP 

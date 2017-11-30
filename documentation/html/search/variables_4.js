@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['registration_5fblueprint',['registration_blueprint',['../namespaceserver_1_1src_1_1handlers_1_1_register_handler.html#afce21eacbe2ae16cdf4637aed324a93b',1,'server::src::handlers::RegisterHandler']]],
-  ['registration_5fview',['registration_view',['../namespaceserver_1_1src_1_1handlers_1_1_register_handler.html#aaf26ae647614acc866fbb90882f4e3c8',1,'server::src::handlers::RegisterHandler']]]
+  ['firebase_5fkey',['FIREBASE_KEY',['../namespaceserver_1_1src_1_1services_1_1push__notifications.html#a7af6f0b0439ce1e2f0e702d4bcda26c3',1,'server::src::services::push_notifications']]]
 ];

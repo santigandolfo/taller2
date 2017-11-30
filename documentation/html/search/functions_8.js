@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['validate_5fuser',['validate_user',['../namespaceserver_1_1src_1_1services_1_1shared__server.html#a8c32ea7706df14abd6fb772d2dd8ccec',1,'server::src::services::shared_server']]]
+  ['send_5fpush_5fnotifications',['send_push_notifications',['../namespaceserver_1_1src_1_1services_1_1push__notifications.html#afb0633f7fd2ed384996c56852cb646f0',1,'server::src::services::push_notifications']]]
 ];
