@@ -10,6 +10,9 @@ class TrackingTripsMixin(object):
     def check_positions_with_location(usernames,location):
         """Checks if all the users specified in usernames are near enough the desired location"""
         positions = DriversMixin.get_positions(usernames)
+        if positions.count() < len(usernames):
+            application.logger.info("There is an unknown position")
+            return False
         for position in positions:
             distance = DriversMixin.distance((position['latitude'],position['longitude']),location)
             application.logger.info("Distance between user and location is: {}".format(distance))
