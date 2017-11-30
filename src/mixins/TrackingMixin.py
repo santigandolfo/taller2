@@ -1,5 +1,5 @@
 from src.mixins.DriversMixin import DriversMixin
-
+from app import application
 
 MAX_DISTANCE = 0.1
 
@@ -11,6 +11,8 @@ class TrackingTripsMixin(object):
         """Checks if all the users specified in usernames are near enough the desired location"""
         positions = DriversMixin.get_positions(usernames)
         for position in positions:
-            if DriversMixin.distance((position['latitude'],position['longitude']),location) > MAX_DISTANCE:
+            distance = DriversMixin.distance((position['latitude'],position['longitude']),location)
+            application.logger.info("Distance between user and location is: {}".format(distance))
+            if  distance > MAX_DISTANCE:
                 return False
         return True
