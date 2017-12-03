@@ -1,0 +1,22 @@
+
+#PROD
+export PORT=5000
+export LOG_LEVEL=INFO
+export TOKEN_DURATION=60
+
+#DEV
+export PORT=5000
+export LOG_LEVEL=DEBUG
+export TOKEN_DURATION=2
+
+#TEST
+export PORT=5000
+export DB_USER=team-apgb
+export DB_PWD=1234
+export DB_NAME=fiuberdb-test
+export DB_URL=mongodb://localhost:27017/fiuberdb-test
+export SECRET_KEY=umpalumpa
+export LOG_LEVEL=ERROR
+export TOKEN_DURATION=15
+export GOOGLE_KEY=fictitousGoogleKey
+export FIREBASE_KEY=fictitousGoogleKey

@@ -194,36 +194,8 @@ paths:
           description: Unauthorized
         '404':
           description: User not found
-  '/riders/{riderID}/card':
-    put:
-      tags:
-        - rider
-      summary: Update rider's Credit/Debit card information
-      description: ''
-      operationId: updateRidersCard
-      security:
-        - Authorization: []
-      parameters:
-        - name: riderID
-          in: path
-          description: ID of the rider/user
-          required: true
-          type: string
-        - in: body
-          name: body
-          description: card object that needs to be updated
-          required: true
-          schema:
-            $ref: '#/definitions/Card'
-      responses:
-        '204':
-          description: User's card information updated
-        '403':
-          description: Unauthorized
-        '404':
-          description: Rider not found
   '/riders/{riderID}/request':
-    put:
+    post:
       tags:
         - rider
         - request
@@ -251,35 +223,13 @@ paths:
           description: Unauthorized
         '404':
           description: Rider not found
-    delete:
-      tags:
-        - request
-        - rider
-      summary: Cancel a rider's request
-      description: ''
-      operationId: deleteRequest
-      security:
-        - Authorization: []
-      parameters:
-        - name: riderID
-          in: path
-          description: ID of the rider/user
-          required: true
-          type: string
-      responses:
-        '204':
-          description: Request deleted
-        '403':
-          description: Unauthorized
-        '404':
-          description: Rider not found
-  '/drivers/{driverID}/car':
-    put:
+  '/drivers/{driverID}/cars':
+    post:
       tags:
         - driver
-      summary: Update driver's car information
+      summary: Register driver's car information
       description: ''
-      operationId: updateDriversCar
+      operationId: RegisterDriversCar
       security:
         - Authorization: []
       parameters:
@@ -301,6 +251,33 @@ paths:
           description: Unauthorized
         '404':
           description: Driver not found
+  '/drivers/{driverID}/cars/{carID}':
+    delete:
+      tags:
+        - driver
+      summary: Delete driver's car information
+      description: ''
+      operationId: DeleteDriversCar
+      security:
+        - Authorization: []
+      parameters:
+        - name: driverID
+          in: path
+          description: ID of the driver/user
+          required: true
+          type: string
+        - name: carID
+          in: path
+          description: ID of the car
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Driver's car information deleted
+        '401':
+          description: Unauthorized
+        '404':
+          description: Driver/car not found
   '/drivers/{driverID}/trip':
     put:
       tags:
@@ -397,30 +374,13 @@ paths:
             type: array
             items:
               $ref: '#/definitions/User'
-  /requests/available:
-    get:
+  '/requests/{requestID}':
+    delete:
       tags:
         - request
-      summary: Return available requests
+      summary: Cancel a request on a trip that has not started yet (but was assigned)
       description: ''
-      operationId: getRequests
-      security:
-        - Authorization: []
-      parameters: []
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Request'
-  '/requests/{requestID}/routes':
-    get:
-      tags:
-        - request
-      summary: Return possible ways to make it to destination
-      description: ''
-      operationId: getRoutes
+      operationId: cancelRequest
       parameters:
         - in: path
           name: requestID
@@ -428,10 +388,8 @@ paths:
           required: true
           type: string
       responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/Route'
+        '203':
+          description: successful operation
         '404':
           description: Request not found
   '/requests/{requestID}/costEstimate':
@@ -547,6 +505,8 @@ definitions:
   Car:
     type: object
     properties:
+      brand:
+        type: string
       model:
         type: string
       color:
@@ -556,35 +516,6 @@ definitions:
       year:
         type: integer
         format: int32
-      ac:
-        type: boolean
-      status:
-        type: string
-        enum:
-          - very good
-          - good
-          - regular
-          - bad
-          - terrible
-  Card:
-    type: object
-    properties:
-      name:
-        type: string
-      number:
-        type: integer
-        format: int64
-      expiration:
-        type: string
-        format: date
-      secNumber:
-        type: integer
-        format: int32
-      type:
-        type: string
-        enum:
-          - credit
-          - debit
   Coordinates:
     type: object
     properties:
@@ -615,8 +546,6 @@ definitions:
       requestID:
         type: integer
         format: int32
-      rider:
-        type: string
   Route:
     type: object
 externalDocs:

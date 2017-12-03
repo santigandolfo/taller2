@@ -59,7 +59,14 @@ def test_requests():
         return 0
     return 1
 
-
+@manager.command
+def test_trips():
+    """Runs the trips unit tests without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_trips.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
 
 @manager.command
 def test_user_manipulation():
@@ -80,6 +87,15 @@ def test_driver_manipulation():
     return 1
 
 @manager.command
+def test_car_manipulation():
+    """Runs the car manipulation unit tests without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_car_manipulation.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
+@manager.command
 def test_positions():
     """Runs the position unit tests without test coverage."""
     tests = unittest.TestLoader().discover('tests', pattern='test_positions.py')
@@ -88,6 +104,41 @@ def test_positions():
         return 0
     return 1
 
+@manager.command
+def test_notifiactions_token():
+    """Runs the notifications token tests without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_push_notification_manipulation.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
+@manager.command
+def test_request_matching():
+    """Runs the matching without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_request_matching.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
+@manager.command
+def test_request_cancellation():
+    """Runs the matching without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_request_cancellation.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
+@manager.command
+def test_integration():
+    """Runs the matching without test coverage."""
+    tests = unittest.TestLoader().discover('tests', pattern='test_integration.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
 
 @manager.command
 def cov():
@@ -101,8 +152,6 @@ def cov():
         COV.report()
         return 0
     return 1
-
-
 
 
 if __name__ == '__main__':

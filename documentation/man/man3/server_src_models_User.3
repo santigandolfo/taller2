@@ -1,4 +1,4 @@
-.TH "server.src.models.User" 3 "Mon Nov 6 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
+.TH "server.src.models.User" 3 "Thu Nov 30 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,7 +12,7 @@ Inherits object\&.
 
 .in +1c
 .ti -1c
-.RI "def \fB__init__\fP (self, \fBusername\fP, \fBuid\fP)"
+.RI "def \fB__init__\fP (self, \fBusername\fP, \fBuid\fP, \fBpush_token\fP='')"
 .br
 .ti -1c
 .RI "def \fBencode_auth_token\fP (self)"
@@ -43,6 +43,9 @@ Inherits object\&.
 .ti -1c
 .RI "\fBuid\fP"
 .br
+.ti -1c
+.RI "\fBpush_token\fP"
+.br
 .in -1c
 .SS "Static Public Attributes"
 
@@ -52,6 +55,9 @@ Inherits object\&.
 .br
 .ti -1c
 .RI "string \fBuid\fP = ''"
+.br
+.ti -1c
+.RI "string \fBpush_token\fP = ''"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -64,13 +70,13 @@ Generical User representation
 .PP
  
 .PP
-Definition at line 12 of file models\&.py\&.
+Definition at line 14 of file models\&.py\&.
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "def server\&.src\&.models\&.User\&.__init__ ( self,  username,  uid)"
+.SS "def server\&.src\&.models\&.User\&.__init__ ( self,  username,  uid,  push_token = \fC''\fP)"
 
 .PP
-Definition at line 18 of file models\&.py\&.
+Definition at line 21 of file models\&.py\&.
 .SH "Member Function Documentation"
 .PP 
 .SS "def server\&.src\&.models\&.User\&.decode_auth_token ( auth_token)\fC [static]\fP"
@@ -85,7 +91,7 @@ Decodes the auth token
 .PP
  
 .PP
-Definition at line 58 of file models\&.py\&.
+Definition at line 68 of file models\&.py\&.
 .SS "def server\&.src\&.models\&.User\&.encode_auth_token ( self)"
 
 .PP
@@ -97,15 +103,27 @@ Generates the Auth Token
 .PP
  
 .PP
-Definition at line 23 of file models\&.py\&.
+Definition at line 26 of file models\&.py\&.
 .SS "def server\&.src\&.models\&.User\&.get_user_by_uid ( uid)\fC [static]\fP"
 
 .PP
-Definition at line 51 of file models\&.py\&.
+.nf
+Given a user_id return the corresponding user
+.fi
+.PP
+ 
+.PP
+Definition at line 59 of file models\&.py\&.
 .SS "def server\&.src\&.models\&.User\&.get_user_by_username ( username)\fC [static]\fP"
 
 .PP
-Definition at line 45 of file models\&.py\&.
+.nf
+Given a username return the corresponding user
+.fi
+.PP
+ 
+.PP
+Definition at line 50 of file models\&.py\&.
 .SS "def server\&.src\&.models\&.User\&.remove_from_db ( self)"
 
 .PP
@@ -116,25 +134,33 @@ Removes itself from the db
 .PP
  
 .PP
-Definition at line 38 of file models\&.py\&.
+Definition at line 43 of file models\&.py\&.
 .SH "Member Data Documentation"
 .PP 
-.SS "string server\&.src\&.models\&.User\&.uid = ''\fC [static]\fP"
-
-.PP
-Definition at line 16 of file models\&.py\&.
-.SS "server\&.src\&.models\&.User\&.uid"
-
-.PP
-Definition at line 20 of file models\&.py\&.
-.SS "string server\&.src\&.models\&.User\&.username = ''\fC [static]\fP"
-
-.PP
-Definition at line 15 of file models\&.py\&.
-.SS "server\&.src\&.models\&.User\&.username"
+.SS "string server\&.src\&.models\&.User\&.push_token = ''\fC [static]\fP"
 
 .PP
 Definition at line 19 of file models\&.py\&.
+.SS "server\&.src\&.models\&.User\&.push_token"
+
+.PP
+Definition at line 24 of file models\&.py\&.
+.SS "string server\&.src\&.models\&.User\&.uid = ''\fC [static]\fP"
+
+.PP
+Definition at line 18 of file models\&.py\&.
+.SS "server\&.src\&.models\&.User\&.uid"
+
+.PP
+Definition at line 23 of file models\&.py\&.
+.SS "string server\&.src\&.models\&.User\&.username = ''\fC [static]\fP"
+
+.PP
+Definition at line 17 of file models\&.py\&.
+.SS "server\&.src\&.models\&.User\&.username"
+
+.PP
+Definition at line 22 of file models\&.py\&.
 
 .SH "Author"
 .PP 

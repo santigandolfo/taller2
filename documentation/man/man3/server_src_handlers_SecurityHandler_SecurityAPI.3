@@ -1,4 +1,4 @@
-.TH "server.src.handlers.SecurityHandler.SecurityAPI" 3 "Mon Nov 6 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
+.TH "server.src.handlers.SecurityHandler.SecurityAPI" 3 "Thu Nov 30 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -8,14 +8,14 @@ server.src.handlers.SecurityHandler.SecurityAPI \-
 .PP
 .PP
 Inherits MethodView\&.
-.SS "Public Member Functions"
+.SS "Static Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "def \fBpost\fP (self)"
+.RI "def \fBpost\fP ()"
 .br
 .ti -1c
-.RI "def \fBdelete\fP (self)"
+.RI "def \fBdelete\fP ()"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -28,17 +28,29 @@ Handler for login/logout related API
 .PP
  
 .PP
-Definition at line 12 of file SecurityHandler\&.py\&.
+Definition at line 15 of file SecurityHandler\&.py\&.
 .SH "Member Function Documentation"
 .PP 
-.SS "def server\&.src\&.handlers\&.SecurityHandler\&.SecurityAPI\&.delete ( self)"
+.SS "def server\&.src\&.handlers\&.SecurityHandler\&.SecurityAPI\&.delete ()\fC [static]\fP"
 
 .PP
-Definition at line 72 of file SecurityHandler\&.py\&.
-.SS "def server\&.src\&.handlers\&.SecurityHandler\&.SecurityAPI\&.post ( self)"
+.nf
+Endpoint for loging out a user, blacklists authentication token
+.fi
+.PP
+ 
+.PP
+Definition at line 81 of file SecurityHandler\&.py\&.
+.SS "def server\&.src\&.handlers\&.SecurityHandler\&.SecurityAPI\&.post ()\fC [static]\fP"
 
 .PP
-Definition at line 15 of file SecurityHandler\&.py\&.
+.nf
+Endpoint for loging in a user, returns authentication token
+.fi
+.PP
+ 
+.PP
+Definition at line 20 of file SecurityHandler\&.py\&.
 
 .SH "Author"
 .PP 

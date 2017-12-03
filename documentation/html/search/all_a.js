@@ -1,20 +1,13 @@
 var searchData=
 [
-  ['drivershandler',['DriversHandler',['../namespaceserver_1_1src_1_1handlers_1_1_drivers_handler.html',1,'server::src::handlers']]],
-  ['exceptions',['exceptions',['../namespaceserver_1_1src_1_1exceptions.html',1,'server::src']]],
-  ['handlers',['handlers',['../namespaceserver_1_1src_1_1handlers.html',1,'server::src']]],
-  ['models',['models',['../namespaceserver_1_1src_1_1models.html',1,'server::src']]],
-  ['registerhandler',['RegisterHandler',['../namespaceserver_1_1src_1_1handlers_1_1_register_handler.html',1,'server::src::handlers']]],
-  ['secret_5fkey',['SECRET_KEY',['../namespaceserver_1_1src_1_1models.html#aab444ae0b57d9be125bb8e6868a65c75',1,'server::src::models']]],
-  ['security_5fblueprint',['security_blueprint',['../namespaceserver_1_1src_1_1handlers_1_1_security_handler.html#a6ee884f09597e3ae1848a96c670c59a6',1,'server::src::handlers::SecurityHandler']]],
-  ['security_5fview',['security_view',['../namespaceserver_1_1src_1_1handlers_1_1_security_handler.html#a37d2ba45f3ea55adaf1dd7ba128a7127',1,'server::src::handlers::SecurityHandler']]],
-  ['securityapi',['SecurityAPI',['../classserver_1_1src_1_1handlers_1_1_security_handler_1_1_security_a_p_i.html',1,'server::src::handlers::SecurityHandler']]],
-  ['securityhandler',['SecurityHandler',['../namespaceserver_1_1src_1_1handlers_1_1_security_handler.html',1,'server::src::handlers']]],
-  ['securityhandler_2epy',['SecurityHandler.py',['../_security_handler_8py.html',1,'']]],
-  ['server',['server',['../namespaceserver.html',1,'']]],
-  ['services',['services',['../namespaceserver_1_1src_1_1services.html',1,'server::src']]],
-  ['shared_5fserver',['shared_server',['../namespaceserver_1_1src_1_1services_1_1shared__server.html',1,'server::src::services']]],
-  ['shared_5fserver_2epy',['shared_server.py',['../shared__server_8py.html',1,'']]],
-  ['signatureexception',['SignatureException',['../classserver_1_1src_1_1exceptions_1_1_signature_exception.html',1,'server::src::exceptions']]],
-  ['src',['src',['../namespaceserver_1_1src.html',1,'server']]]
+  ['patch',['patch',['../classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_drivers_a_p_i.html#a847cee8154f1d5445e25b7070194d65a',1,'server::src::handlers::DriversHandler::DriversAPI']]],
+  ['position_5fblueprint',['POSITION_BLUEPRINT',['../namespaceserver_1_1src_1_1handlers_1_1_position_handler.html#af32524e2038716670566b3c521694b2d',1,'server::src::handlers::PositionHandler']]],
+  ['position_5fview',['POSITION_VIEW',['../namespaceserver_1_1src_1_1handlers_1_1_position_handler.html#acacbb3f690b46e8115e7b0bd92ea2929',1,'server::src::handlers::PositionHandler']]],
+  ['positionapi',['PositionAPI',['../classserver_1_1src_1_1handlers_1_1_position_handler_1_1_position_a_p_i.html',1,'server::src::handlers::PositionHandler']]],
+  ['positionhandler_2epy',['PositionHandler.py',['../_position_handler_8py.html',1,'']]],
+  ['post',['post',['../classserver_1_1src_1_1handlers_1_1_drivers_handler_1_1_car_register_end_point.html#affed6ad1120741bf2ca57294c7b4beab',1,'server.src.handlers.DriversHandler.CarRegisterEndPoint.post()'],['../classserver_1_1src_1_1handlers_1_1_register_handler_1_1_register_a_p_i.html#a78f7bb962fb1c8be72fb92fd5fdaa934',1,'server.src.handlers.RegisterHandler.RegisterAPI.post()'],['../classserver_1_1src_1_1handlers_1_1_request_handler_1_1_request_submission.html#abb569d498e2535b9b8d1b747ddff4747',1,'server.src.handlers.RequestHandler.RequestSubmission.post()'],['../classserver_1_1src_1_1handlers_1_1_security_handler_1_1_security_a_p_i.html#a54e89643d6b5afad1ccd436ed784898b',1,'server.src.handlers.SecurityHandler.SecurityAPI.post()'],['../classserver_1_1src_1_1handlers_1_1_trip_handler_1_1_trips_a_p_i.html#a92475d28eeac271284ee783e201938ee',1,'server.src.handlers.TripHandler.TripsAPI.post()']]],
+  ['push_5fnotifications_2epy',['push_notifications.py',['../push__notifications_8py.html',1,'']]],
+  ['push_5ftoken',['push_token',['../classserver_1_1src_1_1models_1_1_user.html#ab6574a566e1351de30f59603fcb5f087',1,'server.src.models.User.push_token()'],['../classserver_1_1src_1_1models_1_1_user.html#a14d1ac6e4c3bde5bb16d1393b881e907',1,'server.src.models.User.push_token()']]],
+  ['pushnotificationapi',['PushNotificationAPI',['../classserver_1_1src_1_1handlers_1_1_token_registration_handler_1_1_push_notification_a_p_i.html',1,'server::src::handlers::TokenRegistrationHandler']]],
+  ['put',['put',['../classserver_1_1src_1_1handlers_1_1_position_handler_1_1_position_a_p_i.html#ac4096c2002ea87bf622b41eb5fae7e8a',1,'server.src.handlers.PositionHandler.PositionAPI.put()'],['../classserver_1_1src_1_1handlers_1_1_register_handler_1_1_register_a_p_i.html#a767126e94996ed7cab3365499d35ae39',1,'server.src.handlers.RegisterHandler.RegisterAPI.put()'],['../classserver_1_1src_1_1handlers_1_1_token_registration_handler_1_1_push_notification_a_p_i.html#a256fe9064ed11ca24305c7009dcea8ee',1,'server.src.handlers.TokenRegistrationHandler.PushNotificationAPI.put()']]]
 ];

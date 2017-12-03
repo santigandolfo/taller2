@@ -1,4 +1,4 @@
-.TH "server.src.models.BlacklistToken" 3 "Mon Nov 6 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
+.TH "server.src.models.BlacklistToken" 3 "Thu Nov 30 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -46,33 +46,39 @@ Token Model for storing invalid JWT
 .PP
  
 .PP
-Definition at line 79 of file models\&.py\&.
+Definition at line 89 of file models\&.py\&.
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "def server\&.src\&.models\&.BlacklistToken\&.__init__ ( self,  token)"
 
 .PP
-Definition at line 85 of file models\&.py\&.
+Definition at line 94 of file models\&.py\&.
 .SH "Member Function Documentation"
 .PP 
 .SS "def server\&.src\&.models\&.BlacklistToken\&.__repr__ ( self)"
 
 .PP
-Definition at line 89 of file models\&.py\&.
+Definition at line 98 of file models\&.py\&.
 .SS "def server\&.src\&.models\&.BlacklistToken\&.is_blacklisted ( token)\fC [static]\fP"
 
 .PP
-Definition at line 93 of file models\&.py\&.
+.nf
+Returns true if a user has logged out using this token
+.fi
+.PP
+ 
+.PP
+Definition at line 102 of file models\&.py\&.
 .SH "Member Data Documentation"
 .PP 
 .SS "server\&.src\&.models\&.BlacklistToken\&.blacklisted_on"
 
 .PP
-Definition at line 87 of file models\&.py\&.
+Definition at line 96 of file models\&.py\&.
 .SS "server\&.src\&.models\&.BlacklistToken\&.token"
 
 .PP
-Definition at line 86 of file models\&.py\&.
+Definition at line 95 of file models\&.py\&.
 
 .SH "Author"
 .PP 

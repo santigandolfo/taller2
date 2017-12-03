@@ -1,85 +1,244 @@
-import python_jwt as jwt
+"""Handlers related with rider's specific functionality"""
+
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
+from schema import Schema, And, Use, SchemaError
+from bson.objectid import ObjectId
+
 from app import db, application
-from src.models import  User
-from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, InvalidTokenException
-from src.services.shared_server import get_data
-from schema import Schema, And, Use, Optional, SchemaError
+from src.models import User
+from src.mixins.AuthenticationMixin import Authenticator
+from src.services.google_maps import get_directions
+from src.services.push_notifications import send_push_notifications
+from src.services.shared_server import estimate_trip_cost
+from src.mixins.DriversMixin import DriversMixin
 
-requests_blueprint = Blueprint('requests', __name__)
+REQUESTS_BLUEPRINT = Blueprint('requests', __name__)
 
-class RequestsAvailable(MethodView):
-    """Handler for requests available service"""
-    def get(self):
+
+class RequestSubmission(MethodView):
+    """Handler for request submission"""
+
+    @staticmethod
+    def post(username):
+        """Endpoint for requesting a ride"""
+
         try:
-            application.logger.info("asked to see all the requests available")
+            data = request.get_json()
+            schema = Schema([{'latitude_initial': And(Use(float), lambda x: -90 < x < 90),
+                              'latitude_final': And(Use(float), lambda x: -90 < x < 90),
+                              'longitude_initial': And(Use(float), lambda x: -180 < x < 180),
+                              'longitude_final': And(Use(float), lambda x: -180 < x < 180)}])
+
+            # IMPORTANTE: el 0 es para que devuelva el diccionario dentro y no una lista
+            data = schema \
+                .validate([data])[0]
+            application.logger.info("{} asked to submit a request for a trip".format(username))
+            if db.riders.count({'username': username}) == 0:
+                response = {
+                    'status': 'fail',
+                    'message': 'rider_not_found'
+                }
+                return make_response(jsonify(response)), 404
+            application.logger.info("rider {} exists".format(username))
             auth_header = request.headers.get('Authorization')
-            if auth_header:
-                auth_token = auth_header.split(" ")[1]
-            else:
-                auth_token = ''
-            if auth_token:
-                application.logger.info("Token: {}".format(auth_token))
-                username_user = User.decode_auth_token(auth_token)
-                application.logger.info("Token decoded: {}".format(username_user))
-                if db.drivers.count({'username':username_user}) > 0:
-                    application.logger.info("Permission granted")
-                    pipeline = [
-                        {"$match": {"pending":True}},
-                        {"$project":{"username":"$username","coordinates":"$coordinates"}}
-                    ]
-                    results=[]
-                    for doc in db.requests.aggregate(pipeline):
-                        result={}
-                        userId = db.users.find_one({"username":doc['username']})['uid']
-                        result['userData'] = get_data(userId).json()
-                        result['coordinates'] = doc['coordinates']
-                        results.append(result)
-                    return make_response(jsonify(results)),200
+            token_username, error_message = Authenticator.authenticate(auth_header)
+            if error_message:
+                response = {
+                    'status': 'fail',
+                    'message': error_message
+                }
+                return make_response(jsonify(response)), 401
+            application.logger.info("Submitting trip request w/ Auth: {}".format(token_username))
+            application.logger.info("Token decoded: {}".format(token_username))
+            if token_username == username:
+                application.logger.info("Permission granted")
+                application.logger.info("Rider submitting request: {}".format(token_username))
+
+                if db.requests.count({'rider': username}) == 0 and db.trips.count({'rider': username}) == 0:
+
+                    assigned_driver = DriversMixin.get_closer_driver(
+                        (data['latitude_initial'], data['longitude_initial']))
+
+                    if assigned_driver:
+                        db.drivers.update_one({'username': assigned_driver}, {'$set': {'trip': True}})
+                        application.logger.info("driver assigned")
+                        driver_position = db.positions.find_one({'username': assigned_driver})
+                        if not driver_position:
+                            raise Exception('driver_position_unknown')
+                        coordinates_to_passenger = {
+                            'latitude_initial': driver_position['latitude'],
+                            'longitude_initial': driver_position['longitude'],
+                            'latitude_final': data['latitude_initial'],
+                            'longitude_final': data['longitude_initial']
+                        }
+                        directions_trip_response = get_directions(data)
+                        directions_passenger_response = get_directions(coordinates_to_passenger)
+                        if not directions_trip_response.ok or not directions_passenger_response.ok:
+                            raise Exception('failed_to_get_directions')
+                        application.logger.debug("google directions responses:")
+                        application.logger.debug(directions_trip_response)
+                        application.logger.debug(directions_passenger_response)
+                        if directions_trip_response.json()['routes'] and directions_passenger_response.json()['routes']:
+                            directions_trip = directions_trip_response.json()['routes'][0]['overview_polyline'][
+                                'points']
+                            directions_to_passenger = \
+                            directions_passenger_response.json()['routes'][0]['overview_polyline']['points']
+                        else:
+                            raise Exception('unreachable_destination')
+                        cost_data = {
+                            "start_location": [data['latitude_initial'], data['longitude_initial']],
+                            "end_location": [data['latitude_initial'], data['longitude_initial']],
+                            "distance": directions_trip_response.json()['routes'][0]['legs'][0]['distance'][
+                                            'value'] / 1000.0,
+                            "pay_method": "credit",
+                            "driver_id": User.get_user_by_username(assigned_driver).uid,
+                            "passenger_id": User.get_user_by_username(username).uid
+                        }
+                        resp = estimate_trip_cost(cost_data)
+                        if resp.ok:
+                            cost = resp.json()['value']
+                            result = db.requests.insert_one(
+                                {'rider': username, 'driver': assigned_driver, 'coordinates': data})
+                            message = "trip_assigned"
+                            data = {
+                                'rider': username,
+                                'directions_to_passenger': directions_to_passenger,
+                                'directions_trip': directions_trip,
+                                'trip_coordinates': data,
+                                'id': str(result.inserted_id)
+                            }
+                            send_push_notifications(assigned_driver, message, data)
+                            response = {
+                                'status': 'success',
+                                'message': 'request_submitted',
+                                'id': str(result.inserted_id),
+                                'directions': directions_trip,
+                                'driver': assigned_driver,
+                                'estimated_cost': cost
+                            }
+                            status_code = 201
+                        else:
+                            raise Exception('failed_to_get_cost_estimation')
+                    else:
+                        response = {
+                            'status': 'fail',
+                            'message': 'no_driver_available'
+                        }
+                        status_code = 200
                 else:
                     response = {
                         'status': 'fail',
-                        'message': 'unauthorized_request'
+                        'message': 'request_or_trip_ongoing'
                     }
-                    return make_response(jsonify(response)), 401
+                    status_code = 409
+            else:
+                response = {
+                    'status': 'fail',
+                    'message': 'unauthorized_request'
+                }
+                status_code = 401
+            return make_response(jsonify(response)), status_code
+        except SchemaError:
+            application.logger.error("Request data error")
             response = {
                 'status': 'fail',
-                'message': 'missing_token'
+                'message': 'bad_request_data'
             }
-            return make_response(jsonify(response)), 401
-        except ExpiredTokenException as exc:
-            application.logger.error("Expired token")
-            response = {
-                'status': 'fail',
-                'message': 'expired_token'
-            }
-            return make_response(jsonify(response)), 401
-        except InvalidTokenException as exc:
-            application.logger.error("Invalid token")
-            response = {
-                'status': 'fail',
-                'message': 'invalid_token'
-            }
-            return make_response(jsonify(response)), 401
-        except Exception as exc: #pragma: no cover
-            application.logger.error('Error msg: {0}. Error doc: {1}'.format(exc.message,exc.__doc__))
+            return make_response(jsonify(response)), 400
+        except Exception as exc:  # pragma: no cover
+            application.logger.error('Error msg: {0}. Error doc: {1}'
+                                     .format(exc.message, exc.__doc__))
             response = {
                 'status': 'fail',
                 'message': 'internal_error',
                 'error_description': exc.message
             }
-            return make_response(jsonify(response)),500
+            return make_response(jsonify(response)), 500
 
 
+class RequestCancellation(MethodView):
+    """Handler for request cancellation"""
 
-#define the API resources
-requests_available_view = RequestsAvailable.as_view('requests_available')
+    @staticmethod
+    def delete(request_id):
+        """Endpoint for cancelling an unstarted trip a.k.a a request made that was matched"""
+
+        try:
+            auth_header = request.headers.get('Authorization')
+            token_username, error_message = Authenticator.authenticate(auth_header)
+            if error_message:
+                response = {
+                    'status': 'fail',
+                    'message': error_message
+                }
+                return make_response(jsonify(response)), 401
+            application.logger.info("Verifying token: {}".format(auth_header))
+            application.logger.info("Cancellation was requested by: {}".format(token_username))
+            result = db.requests.find_one({'_id': ObjectId(request_id)})
+            if result:
+                application.logger.info("Request found")
+                driver_username = result['driver']
+                application.logger.info("Request driver username: {}".format(driver_username))
+                rider_username = result['rider']
+                application.logger.info("Request rider username: {}".format(rider_username))
+                if token_username == driver_username or token_username == rider_username:
+                    application.logger.info("Permission granted")
+                    application.logger.info("User cancelling request: {}".format(token_username))
+                    db.requests.delete_one({'_id': ObjectId(request_id)})
+                    db.drivers.update_one({'username': driver_username}, {'$set': {'trip': False}})
+                    message = "trip_cancelled"
+                    if token_username == driver_username:
+                        receiver = rider_username
+                    else:
+                        receiver = driver_username
+                    data = {
+                        'id': request_id,
+                        'by': token_username
+                    }
+                    send_push_notifications(receiver, message, data)
+                    response = {
+                        'status': 'success',
+                        'message': 'request_cancelled'
+                    }
+                    status_code = 203
+                else:
+                    response = {
+                        'status': 'fail',
+                        'message': 'unauthorized_action'
+                    }
+                    status_code = 401
+            else:
+                response = {
+                    'status': 'fail',
+                    'message': 'no_request_found'
+                }
+                status_code = 404
+            return make_response(jsonify(response)), status_code
+        except Exception as exc:  # pragma: no cover
+            application.logger.error('Error msg: {0}. Error doc: {1}'
+                                     .format(exc.message, exc.__doc__))
+            response = {
+                'status': 'fail',
+                'message': 'internal_error',
+                'error_description': exc.message
+            }
+            return make_response(jsonify(response)), 500
 
 
-#add Rules for API Endpoints
-requests_blueprint.add_url_rule(
-    '/requests/available',
-    view_func=requests_available_view,
-    methods=['GET']
+# define the API resources
+REQUESTS_SUBMISSION_VIEW = RequestSubmission.as_view('request_submission')
+REQUEST_CANCELLATION_VIEW = RequestCancellation.as_view('request_cancellation')
+
+# add Rules for API Endpoints
+REQUESTS_BLUEPRINT.add_url_rule(
+    '/riders/<username>/request',
+    view_func=REQUESTS_SUBMISSION_VIEW,
+    methods=['POST']
+)
+
+REQUESTS_BLUEPRINT.add_url_rule(
+    '/requests/<request_id>',
+    view_func=REQUEST_CANCELLATION_VIEW,
+    methods=['DELETE']
 )

@@ -1,12 +1,14 @@
+"""Entitys saved in the db"""
 import datetime
 import os
-from app import db, bcrypt, application, TOKEN_DURATION
-import python_jwt as jwt
-import json
-from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, InvalidTokenException
 
-BCRYPT_ROUNDS = int(os.environ["BCRYPT_ROUNDS"])
-SECRET_KEY = os.environ.get("SECRET_KEY","key")
+import python_jwt as jwt
+
+from app import db, application, TOKEN_DURATION
+from src.exceptions import BlacklistedTokenException, SignatureException, ExpiredTokenException, \
+    InvalidTokenException
+
+SECRET_KEY = os.environ.get("SECRET_KEY", "key")
 
 
 class User(object):
@@ -14,11 +16,12 @@ class User(object):
 
     username = ''
     uid = ''
+    push_token = ''
 
-    def __init__(self, username, uid):
+    def __init__(self, username, uid, push_token=''):
         self.username = username
         self.uid = uid
-
+        self.push_token = push_token
 
     def encode_auth_token(self):
         """
@@ -29,30 +32,37 @@ class User(object):
             payload = {
                 'sub': self.username
             }
-            g = jwt.generate_jwt(payload,SECRET_KEY,algorithm='HS256',lifetime=datetime.timedelta(days=0, seconds=TOKEN_DURATION))
-            application.logger.info(isinstance(g,unicode))
-            return g
-        except Exception as e: #pragma: no cover
-            return e
+            auth_token = jwt.generate_jwt(payload, SECRET_KEY, algorithm='HS256',
+                                          lifetime=datetime
+                                          .timedelta(days=0, seconds=TOKEN_DURATION))
+            application.logger.info(isinstance(auth_token, unicode))
+            return auth_token
+        except Exception as exc:  # pragma: no cover
+            return exc
 
     def remove_from_db(self):
         """
         Removes itself from the db
         """
-        db.users.delete_one({'uid':self.uid})
+        db.users.delete_one({'uid': self.uid})
 
     @staticmethod
     def get_user_by_username(username):
-        user_dict = db.users.find_one({'username':username})
+        """Given a username return the corresponding user"""
+        user_dict = db.users.find_one({'username': username})
         if not user_dict:
             return None
-        return User(username=user_dict['username'],uid=user_dict['uid'])
+        return User(username=user_dict['username'], uid=user_dict['uid'],
+                    push_token=user_dict['push_token'])
+
     @staticmethod
     def get_user_by_uid(uid):
-        user_dict = db.users.find_one({'uid':uid})
+        """Given a user_id return the corresponding user"""
+        user_dict = db.users.find_one({'uid': uid})
         if not user_dict:
             return None
-        return User(username=user_dict['username'],uid=user_dict['uid'])
+        return User(username=user_dict['username'], uid=user_dict['uid'],
+                    push_token=user_dict['push_token'])
 
     @staticmethod
     def decode_auth_token(auth_token):
@@ -62,14 +72,14 @@ class User(object):
         :return: integer|string
         """
         try:
-            header, payload = jwt.verify_jwt(auth_token, SECRET_KEY,allowed_algs=['HS256'])
-        except jwt.jws.exceptions.SignatureError as exc:
+            _, payload = jwt.verify_jwt(auth_token, SECRET_KEY, allowed_algs=['HS256'])
+        except jwt.jws.exceptions.SignatureError:
             raise SignatureException(auth_token)
         except Exception as exc:
-            if (exc.message == 'expired'):
+            if exc.message == 'expired':
                 raise ExpiredTokenException(auth_token)
             raise InvalidTokenException(auth_token)
-        if (BlacklistToken.is_blacklisted(auth_token)):
+        if BlacklistToken.is_blacklisted(auth_token):
             raise BlacklistedTokenException(auth_token)
 
         application.logger.debug('Verified token .Info: {}'.format(payload['sub']))
@@ -81,7 +91,6 @@ class BlacklistToken(object):
     Token Model for storing invalid JWT
     """
 
-
     def __init__(self, token):
         self.token = token
         self.blacklisted_on = datetime.datetime.now()
@@ -91,4 +100,5 @@ class BlacklistToken(object):
 
     @staticmethod
     def is_blacklisted(token):
+        """Returns true if a user has logged out using this token"""
         return db.blacklistedTokens.count({'token': token}) > 0

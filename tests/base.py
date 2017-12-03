@@ -1,9 +1,6 @@
-# project/server/tests/base.py
-
-
 from flask_testing import TestCase
-
 from app import application, db
+
 
 class BaseTestCase(TestCase):
     """ Base Tests """
@@ -38,6 +35,11 @@ class BaseTestCase(TestCase):
             pass
         db.create_collection('positions')
         try:
+            db.trips.drop()
+        except Exception:
+            pass
+        db.create_collection('trips')
+        try:
             db.requests.drop()
         except Exception:
             pass
@@ -49,4 +51,5 @@ class BaseTestCase(TestCase):
         db.drop_collection('drivers')
         db.drop_collection('riders')
         db.drop_collection('positions')
+        db.drop_collection('trips')
         db.drop_collection('requests')

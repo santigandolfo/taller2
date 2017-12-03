@@ -1,4 +1,4 @@
-.TH "server.src.handlers.RegisterHandler" 3 "Mon Nov 6 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
+.TH "server.src.handlers.RegisterHandler" 3 "Thu Nov 30 2017" "Version 1.0.0" "FIUBER" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,10 +17,10 @@ server.src.handlers.RegisterHandler \-
 
 .in +1c
 .ti -1c
-.RI "\fBregistration_blueprint\fP = Blueprint('users', __name__)"
+.RI "\fBREGISTRATION_BLUEPRINT\fP = Blueprint('users', __name__)"
 .br
 .ti -1c
-.RI "\fBregistration_view\fP = RegisterAPI\&.as_view('registration_api')"
+.RI "\fBREGISTRATION_VIEW\fP = RegisterAPI\&.as_view('registration_api')"
 .br
 .ti -1c
 .RI "\fBview_func\fP"
@@ -29,24 +29,33 @@ server.src.handlers.RegisterHandler \-
 .RI "\fBmethods\fP"
 .br
 .in -1c
+.SH "Detailed Description"
+.PP 
+
+.PP
+.nf
+Handlers related with user registration
+.fi
+.PP
+ 
 .SH "Variable Documentation"
 .PP 
 .SS "server\&.src\&.handlers\&.RegisterHandler\&.methods"
 
 .PP
-Definition at line 240 of file RegisterHandler\&.py\&.
-.SS "server\&.src\&.handlers\&.RegisterHandler\&.registration_blueprint = Blueprint('users', __name__)"
+Definition at line 226 of file RegisterHandler\&.py\&.
+.SS "server\&.src\&.handlers\&.RegisterHandler\&.REGISTRATION_BLUEPRINT = Blueprint('users', __name__)"
 
 .PP
-Definition at line 9 of file RegisterHandler\&.py\&.
-.SS "server\&.src\&.handlers\&.RegisterHandler\&.registration_view = RegisterAPI\&.as_view('registration_api')"
+Definition at line 11 of file RegisterHandler\&.py\&.
+.SS "server\&.src\&.handlers\&.RegisterHandler\&.REGISTRATION_VIEW = RegisterAPI\&.as_view('registration_api')"
 
 .PP
-Definition at line 234 of file RegisterHandler\&.py\&.
+Definition at line 220 of file RegisterHandler\&.py\&.
 .SS "server\&.src\&.handlers\&.RegisterHandler\&.view_func"
 
 .PP
-Definition at line 239 of file RegisterHandler\&.py\&.
+Definition at line 225 of file RegisterHandler\&.py\&.
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for FIUBER from the source code\&.
