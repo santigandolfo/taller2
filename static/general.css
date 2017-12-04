@@ -1,0 +1,77 @@
+.page {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0;
+}
+
+h1, h2, h3, h4, .footer {
+    align-self: center;
+}
+
+
+.body, body {
+    display:flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin:0;
+}
+
+.login-body form {
+    display: flex;
+    justify-content: center;
+    flex-direction:column;
+    align-items: center;
+    width: 30%;
+    padding: 10%;
+    margin: 30px 0;
+}
+
+.login-body form label{
+    display: flex;
+    justify-content: center;
+    flex-direction:column;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.login-body form label input{
+    border: 0;
+    border-bottom: 1px solid black;
+}
+.navigation-bar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #222222;
+    height: 8%;
+    min-height: 50px;
+    align-items: center;
+}
+
+.navigation-bar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-left: 2px solid white;
+    border-right: 2px solid white;
+    padding: 0 5%;
+    height: 95%;
+    width: 10%;
+    justify-content: space-evenly;
+    text-transform: uppercase;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.message {
+background-color: #ffbb00;
+width: 30%;
+padding: 3px;
+text-align: center;
+border-radius: 3px;
+}

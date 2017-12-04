@@ -1,0 +1,26 @@
+<!doctype html>
+<title>{% block title %}Welcome{% endblock %} | Fiuber</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='general.css') }}">
+<div class="page">
+  <h1>FIUBER</h1>
+
+  {% if session.get('admin', '') %}
+    <div class="navigation-bar">
+        <a href="{{ url_for('website.logout') }}"><span>Logout</span></a>
+    </div>
+  {% endif %}
+  </div>
+  {% with flashes = get_flashed_messages() %}
+    {% if flashes %}
+      {% for message in flashes %}
+        <div class="message">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  {% block body %}{% endblock %}
+  <div class="footer">
+    FiUber &mdash; A Flask Application
+  </div>
+</div>
