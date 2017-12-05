@@ -10,7 +10,7 @@ from src.models import User
 from src.mixins.AuthenticationMixin import Authenticator
 from src.mixins.TrackingMixin import TrackingTripsMixin
 from src.services.push_notifications import send_push_notifications
-from src.services.shared_server import register_trip, get_trips
+from src.services.shared_server import register_trip, get_trips, estimate_trip_cost
 import time
 
 TRIPS_BLUEPRINT = Blueprint('trips', __name__)

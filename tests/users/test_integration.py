@@ -324,7 +324,7 @@ class TestRequestMatching(BaseTestCase):
                 with patch('requests.post') as mock_post:
 
                     mock_post.return_value = Mock()
-                    mock_post.return_value.json.return_value = {'id': "1"}
+                    mock_post.return_value.json.return_value = {'id': "1",'value':20}
                     mock_post.return_value.ok = True
                     mock_post.return_value.status_code = 201
                     response = self.client.delete(
