@@ -109,7 +109,7 @@ class RequestSubmission(MethodView):
                             cost = resp.json()['value']
                             result = db.requests.insert_one(
                                 {'rider': username, 'driver': assigned_driver, 'coordinates': data,
-                                'cost': cost, 'distance':distance, 'request_time': time.time()})
+                                'request_time': time.time()})
                             message = "trip_assigned"
                             data = {
                                 'rider': username,

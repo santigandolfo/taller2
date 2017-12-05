@@ -56,7 +56,8 @@ class TripsAPI(MethodView):
                         location_initial = (result['coordinates']['latitude_initial'],result['coordinates']['longitude_initial'])
                         if TrackingTripsMixin.check_positions_with_location([result['driver'],result['rider']],location_initial):
                             db.requests.delete_one({'_id': ObjectId(requestID)})
-                            result['start_time']=time.time()
+                            result['start_time'] = time.time()
+                            result['distance'] = 0.0
                             result_insertion = db.trips.insert_one(result)
                             message = "trip_started"
                             data = {}
@@ -144,29 +145,50 @@ class TripsAPI(MethodView):
                         #TODO: Change hardcoded values
                         #Inform cost to users
                         coordinates = result['coordinates']
-                        data = {
-                            'start_location': [coordinates['latitude_initial'], coordinates['longitude_initial']],
+                        finish_time = time.time()
+                        time_pickup = ( result['start_time'] - result['request_time'] ) / 60.0
+                        time_travel = ( finish_time - result['start_time'] ) / 60.0
+                        cost_data = {
+                            "start_location": [coordinates['latitude_initial'], coordinates['longitude_initial']],
                             'end_location': [coordinates['latitude_final'], coordinates['longitude_final']],
-                            'distance': result['distance'],
-                            'pay_method': 'credit',
-                            'currency': '$',
-                            'cost': result['cost'],
-                            'driver_id': User.get_user_by_username(result['driver']).uid,
-                            'passenger_id': User.get_user_by_username(result['rider']).uid
+                            "distance_in_km": result['distance'],
+                            "time_pickup_in_min": time_pickup,
+                            "time_travel_in_min": time_travel,
+                            "pay_method": "credit",
+                            "driver_id": User.get_user_by_username(username).uid,
+                            "passenger_id": User.get_user_by_username(result['rider']).uid
                         }
-                        resp = register_trip(data)
+                        resp = estimate_trip_cost(cost_data)
                         if resp.ok:
-                            message = "trip_finished"
+                            cost = resp.json()['value']
                             data = {
-                                'trip_ss_id': resp.json()['id']
+                                'start_location': [coordinates['latitude_initial'], coordinates['longitude_initial']],
+                                'end_location': [coordinates['latitude_final'], coordinates['longitude_final']],
+                                'distance': result['distance'],
+                                'pay_method': 'credit',
+                                'currency': '$',
+                                'cost': cost,
+                                'driver_id': User.get_user_by_username(username).uid,
+                                'passenger_id': User.get_user_by_username(result['rider']).uid
                             }
-                            send_push_notifications(result['rider'], message, data)
-                            response = {
-                                'status': 'success',
-                                'message': 'trip_finished',
-                                'trip_ss_id': resp.json()['id']
-                            }
-                            status_code = 203
+                            resp = register_trip(data)
+                            if resp.ok:
+                                message = "trip_finished"
+                                data = {
+                                    'trip_ss_id': resp.json()['id'],
+                                    'cost': cost
+                                }
+                                send_push_notifications(result['rider'], message, data)
+                                response = {
+                                    'status': 'success',
+                                    'message': 'trip_finished',
+                                    'trip_ss_id': resp.json()['id'],
+                                    'cost': cost
+                                }
+                                status_code = 203
+                            else:
+                                response = resp.json()
+                                status_code = resp.status_code
                         else:
                             response = resp.json()
                             status_code = resp.status_code
