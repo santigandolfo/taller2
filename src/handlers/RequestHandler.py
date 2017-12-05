@@ -4,6 +4,7 @@ from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from schema import Schema, And, Use, SchemaError
 from bson.objectid import ObjectId
+import time
 
 from app import db, application
 from src.models import User
@@ -82,26 +83,33 @@ class RequestSubmission(MethodView):
                         if directions_trip_response.json()['routes'] and directions_passenger_response.json()['routes']:
                             directions_trip = directions_trip_response.json()['routes'][0]['overview_polyline'][
                                 'points']
-                            directions_to_passenger = \
-                            directions_passenger_response.json()['routes'][0]['overview_polyline']['points']
+                            directions_to_passenger = directions_passenger_response.json()['routes'][0][
+                                'overview_polyline']['points']
+                            distance = directions_trip_response.json()['routes'][0]['legs'][0]['distance'][
+                                'value'] / 1000.0
+                            time_travel = directions_trip_response.json()['routes'][0]['legs'][0]['duration'][
+                                'value'] / 60.0
+                            time_pickup = directions_passenger_response.json()['routes'][0]['legs'][0]['duration'][
+                                'value'] / 60.0
                         else:
                             raise Exception('unreachable_destination')
-                        distance = directions_trip_response.json()['routes'][0]['legs'][0]['distance'][
-                                        'value'] / 1000.0
-                        cost_data = {
+
+                        cost_estimation_data = {
                             "start_location": [data['latitude_initial'], data['longitude_initial']],
                             "end_location": [data['latitude_initial'], data['longitude_initial']],
-                            "distance": distance,
+                            "distance_in_km": distance,
+                            "time_pickup_in_min": time_pickup,
+                            "time_travel_in_min": time_travel,
                             "pay_method": "credit",
                             "driver_id": User.get_user_by_username(assigned_driver).uid,
                             "passenger_id": User.get_user_by_username(username).uid
                         }
-                        resp = estimate_trip_cost(cost_data)
+                        resp = estimate_trip_cost(cost_estimation_data)
                         if resp.ok:
                             cost = resp.json()['value']
                             result = db.requests.insert_one(
                                 {'rider': username, 'driver': assigned_driver, 'coordinates': data,
-                                'cost': cost, 'distance':distance})
+                                'cost': cost, 'distance':distance, 'request_time': time.time()})
                             message = "trip_assigned"
                             data = {
                                 'rider': username,
@@ -117,7 +125,9 @@ class RequestSubmission(MethodView):
                                 'id': str(result.inserted_id),
                                 'directions': directions_trip,
                                 'driver': assigned_driver,
-                                'estimated_cost': cost
+                                'estimated_cost': cost,
+                                'estimated_time_wait': time_pickup,
+                                'estimated_time_travel': time_travel
                             }
                             status_code = 201
                         else:

@@ -3,6 +3,30 @@ from tests.base import BaseTestCase
 from mock import patch, Mock
 
 
+directions_return_example = {
+    'routes': [
+        {
+            'overview_polyline': {
+                'points': "fe}qEbtwcJsBhBmBsD}BkEcBkDc@cAYa@jC{E`@}@"
+                          "jBwDl@wBh@yBHQNa@r@_B|@eBZi@d@kAfBmFXuA^q"
+                          "B^qBd@{Cl@_GDu@L}BCQKc@V{BL}@\\aBZmAt@qBx"
+                          "GwMbC{E|BwE~A"
+            },
+            'legs': [
+                {
+                    'distance': {
+                        'value': 5
+                    },
+                    'duration': {
+                        'value': 156
+                    }
+                }
+            ]
+
+        }
+    ]
+}
+
 class TestRequestMatching(BaseTestCase):
     users = {}
 
@@ -85,26 +109,7 @@ class TestRequestMatching(BaseTestCase):
 
                 mock_directions.return_value = Mock()
                 mock_directions.return_value.ok = True
-                mock_directions.return_value.json.return_value = {
-                    'routes': [
-                        {
-                            'overview_polyline': {
-                                'points': "fe}qEbtwcJsBhBmBsD}BkEcBkDc@cAYa@jC{E`@}@"
-                                          "jBwDl@wBh@yBHQNa@r@_B|@eBZi@d@kAfBmFXuA^q"
-                                          "B^qBd@{Cl@_GDu@L}BCQKc@V{BL}@\\aBZmAt@qBx"
-                                          "GwMbC{E|BwE~A"
-                            },
-                            'legs': [
-                                {
-                                    'distance': {
-                                        'value': 5
-                                    }
-                                }
-                            ]
-
-                        }
-                    ]
-                }
+                mock_directions.return_value.json.return_value = directions_return_example
                 response = self.client.post(
                     '/riders/joe_smith/request',
                     data=json.dumps(dict(
@@ -172,26 +177,7 @@ class TestRequestMatching(BaseTestCase):
 
                 mock_directions.return_value = Mock()
                 mock_directions.return_value.ok = True
-                mock_directions.return_value.json.return_value = {
-                    'routes': [
-                        {
-                            'overview_polyline': {
-                                'points': "fe}qEbtwcJsBhBmBsD}BkEcBkDc@cAYa@jC{E`@}@"
-                                          "jBwDl@wBh@yBHQNa@r@_B|@eBZi@d@kAfBmFXuA^q"
-                                          "B^qBd@{Cl@_GDu@L}BCQKc@V{BL}@\\aBZmAt@qBx"
-                                          "GwMbC{E|BwE~A"
-                            },
-                            'legs': [
-                                {
-                                    'distance': {
-                                        'value': 5
-                                    }
-                                }
-                            ]
-
-                        }
-                    ]
-                }
+                mock_directions.return_value.json.return_value = directions_return_example
                 response = self.client.post(
                     '/riders/joe_smith/request',
                     data=json.dumps(dict(
@@ -255,26 +241,7 @@ class TestRequestMatching(BaseTestCase):
 
                 mock_directions.return_value = Mock()
                 mock_directions.return_value.ok = True
-                mock_directions.return_value.json.return_value = {
-                    'routes': [
-                        {
-                            'overview_polyline': {
-                                'points': "fe}qEbtwcJsBhBmBsD}BkEcBkDc@cAYa@jC{E`@}@"
-                                          "jBwDl@wBh@yBHQNa@r@_B|@eBZi@d@kAfBmFXuA^q"
-                                          "B^qBd@{Cl@_GDu@L}BCQKc@V{BL}@\\aBZmAt@qBx"
-                                          "GwMbC{E|BwE~A"
-                            },
-                            'legs': [
-                                {
-                                    'distance': {
-                                        'value': 5
-                                    }
-                                }
-                            ]
-
-                        }
-                    ]
-                }
+                mock_directions.return_value.json.return_value = directions_return_example
                 response = self.client.post(
                     '/riders/joe_smith/request',
                     data=json.dumps(dict(
