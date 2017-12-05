@@ -57,11 +57,14 @@ class TripsAPI(MethodView):
                         if TrackingTripsMixin.check_positions_with_location([result['driver'],result['rider']],location_initial):
                             db.requests.delete_one({'_id': ObjectId(requestID)})
                             result['start_time']=time.time()
-                            result = db.trips.insert_one(result)
+                            result_insertion = db.trips.insert_one(result)
+                            message = "trip_started"
+                            data = {}
+                            send_push_notifications(result['rider'], message, data)
                             response = {
                                 'status': 'success',
                                 'message': 'trip_started',
-                                'id': str(result.inserted_id)
+                                'id': str(result_insertion.inserted_id)
                             }
                             status_code = 201
                         else:
