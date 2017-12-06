@@ -62,8 +62,6 @@ class RequestSubmission(MethodView):
                         (data['latitude_initial'], data['longitude_initial']))
 
                     if assigned_driver:
-                        db.drivers.update_one({'username': assigned_driver}, {'$set': {'trip': True}})
-                        application.logger.info("driver assigned")
                         driver_position = db.positions.find_one({'username': assigned_driver})
                         if not driver_position:
                             raise Exception('driver_position_unknown')
@@ -107,6 +105,8 @@ class RequestSubmission(MethodView):
                         resp = estimate_trip_cost(cost_estimation_data)
                         if resp.ok:
                             cost = resp.json()['value']
+                            db.drivers.update_one({'username': assigned_driver}, {'$set': {'trip': True}})
+                            application.logger.info("driver assigned")
                             result = db.requests.insert_one(
                                 {'rider': username, 'driver': assigned_driver, 'coordinates': data,
                                 'request_time': time.time()})

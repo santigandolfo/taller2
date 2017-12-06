@@ -140,10 +140,6 @@ class TripsAPI(MethodView):
                 if result:
                     location_final = (result['coordinates']['latitude_final'],result['coordinates']['longitude_final'])
                     if TrackingTripsMixin.check_positions_with_location([result['driver'],result['rider']],location_final):
-                        db.trips.delete_one({'driver': username})
-                        db.drivers.update_one({'username': username}, {'$set': {'trip': False}})
-                        #TODO: Change hardcoded values
-                        #Inform cost to users
                         coordinates = result['coordinates']
                         finish_time = time.time()
                         time_pickup = ( result['start_time'] - result['request_time'] ) / 60.0
@@ -173,6 +169,8 @@ class TripsAPI(MethodView):
                             }
                             resp = register_trip(data)
                             if resp.ok:
+                                db.trips.delete_one({'driver': username})
+                                db.drivers.update_one({'username': username}, {'$set': {'trip': False}})
                                 message = "trip_finished"
                                 data = {
                                     'trip_ss_id': resp.json()['id'],
