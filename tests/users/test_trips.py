@@ -97,25 +97,55 @@ directions_return_example = {
 
 mocked_trips = [
     {
-        'rider': 'joe_smith',
-        'driver': 'juan',
+        'passenger_id': '1',
+        'driver_id': '3',
         'date': '23-4-2016',
         'price': 100,
         'currency': 'ARS'
     },
     {
-        'rider': 'joe_smith',
-        'driver': 'pedro',
+        'passenger_id': '1',
+        'driver_id': '3',
         'date': '24-4-2016',
         'price': 20,
         'currency': 'ARS'
     },
     {
-        'rider': 'joe_smith',
-        'driver': 'juan',
+        'passenger_id': '2',
+        'driver_id': '3',
         'date': '25-4-2016',
         'price': 200,
         'currency': 'ARS'
+    }
+]
+
+expected_trips = [
+    {
+        u'passenger_id': u'1',
+        u'driver_id': u'3',
+        u'date': u'23-4-2016',
+        u'price': 100,
+        u'currency': u'ARS',
+        u'passenger_username': u'joe_smith',
+        u'driver_username': u'johny'
+    },
+    {
+        u'passenger_id': u'1',
+        u'driver_id': u'3',
+        u'date': u'24-4-2016',
+        u'price': 20,
+        u'currency': u'ARS',
+        u'passenger_username': u'joe_smith',
+        u'driver_username': u'johny'
+    },
+    {
+        u'passenger_id': u'2',
+        u'driver_id': u'3',
+        u'date': u'25-4-2016',
+        u'price': 200,
+        u'currency': u'ARS',
+        u'passenger_username': u'william_dafoe',
+        u'driver_username': u'johny'
     }
 ]
 class TestTripStarting(BaseTestCase):
@@ -490,6 +520,20 @@ class TestTripFinishing(BaseTestCase):
                     content_type='application/json'
                 )
 
+
+                mock_post.return_value.json.return_value = {'id': "2"}
+                response = self.client.post(
+                    '/users',
+                    data=json.dumps(dict(
+                        username='william_dafoe',
+                        password='123456',
+                        type='rider'
+                    )),
+                    content_type='application/json'
+                )
+                data = json.loads(response.data.decode())
+                self.rider_will_auth_token = data['auth_token']
+
                 mock_post.return_value.json.return_value = {'id': "3"}
                 response = self.client.post(
                     '/users',
@@ -737,7 +781,7 @@ class TestTripFinishing(BaseTestCase):
                 self.assertEqual(data['status'], 'success')
                 self.assertEqual(response.content_type, 'application/json')
                 self.assertEqual(response.status_code, 200)
-                self.assertEqual(data['trips'], mocked_trips)
+                self.assertEqual(data['trips'], expected_trips)
 
     def test_unauthorized_get_all_trips(self):
 
