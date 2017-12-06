@@ -106,131 +106,138 @@ class TestRequestMatching(BaseTestCase):
     def test_two_trips_assigned_correctly_one_missing_driver(self):
         with self.client:
             with patch('src.handlers.RequestHandler.get_directions') as mock_directions:
+                with patch('src.handlers.RequestHandler.estimate_trip_cost') as mock_cost:
+                    mock_cost.return_value = Mock()
+                    mock_cost.return_value.ok = True
+                    mock_cost.return_value.json.return_value = {'value': 20}
+                    mock_directions.return_value = Mock()
+                    mock_directions.return_value.ok = True
+                    mock_directions.return_value.json.return_value = directions_return_example
+                    response = self.client.post(
+                        '/riders/joe_smith/request',
+                        data=json.dumps(dict(
+                            latitude_initial=30.00,
+                            latitude_final=40,
+                            longitude_initial=50,
+                            longitude_final=60
+                        )),
+                        headers=dict(
+                            Authorization='Bearer ' + self.users['joe_smith']['token']
+                        ),
+                        content_type='application/json'
+                    )
+                    data = json.loads(response.data.decode())
+                    self.assertEqual(data['message'], 'request_submitted')
+                    self.assertEqual(data['status'], 'success')
+                    self.assertEqual(response.content_type, 'application/json')
+                    self.assertEqual(response.status_code, 201)
+                    self.assertEqual(data['driver'], 'johny')
 
-                mock_directions.return_value = Mock()
-                mock_directions.return_value.ok = True
-                mock_directions.return_value.json.return_value = directions_return_example
-                response = self.client.post(
-                    '/riders/joe_smith/request',
-                    data=json.dumps(dict(
-                        latitude_initial=30.00,
-                        latitude_final=40,
-                        longitude_initial=50,
-                        longitude_final=60
-                    )),
-                    headers=dict(
-                        Authorization='Bearer ' + self.users['joe_smith']['token']
-                    ),
-                    content_type='application/json'
-                )
-                data = json.loads(response.data.decode())
-                self.assertEqual(data['message'], 'request_submitted')
-                self.assertEqual(data['status'], 'success')
-                self.assertEqual(response.content_type, 'application/json')
-                self.assertEqual(response.status_code, 201)
-                self.assertEqual(data['driver'], 'johny')
+                    response = self.client.post(
+                        '/riders/william_dafoe/request',
+                        data=json.dumps(dict(
+                            latitude_initial=30.00,
+                            latitude_final=40,
+                            longitude_initial=50,
+                            longitude_final=60
+                        )),
+                        headers=dict(
+                            Authorization='Bearer ' + self.users['william_dafoe']['token']
+                        ),
+                        content_type='application/json'
+                    )
+                    data = json.loads(response.data.decode())
+                    self.assertEqual(data['message'], 'request_submitted')
+                    self.assertEqual(data['status'], 'success')
+                    self.assertEqual(response.content_type, 'application/json')
+                    self.assertEqual(response.status_code, 201)
+                    self.assertEqual(data['driver'], 'el_transportador')
 
-                response = self.client.post(
-                    '/riders/william_dafoe/request',
-                    data=json.dumps(dict(
-                        latitude_initial=30.00,
-                        latitude_final=40,
-                        longitude_initial=50,
-                        longitude_final=60
-                    )),
-                    headers=dict(
-                        Authorization='Bearer ' + self.users['william_dafoe']['token']
-                    ),
-                    content_type='application/json'
-                )
-                data = json.loads(response.data.decode())
-                self.assertEqual(data['message'], 'request_submitted')
-                self.assertEqual(data['status'], 'success')
-                self.assertEqual(response.content_type, 'application/json')
-                self.assertEqual(response.status_code, 201)
-                self.assertEqual(data['driver'], 'el_transportador')
-
-                response = self.client.post(
-                    '/riders/billy/request',
-                    data=json.dumps(dict(
-                        latitude_initial=30.00,
-                        latitude_final=40,
-                        longitude_initial=50,
-                        longitude_final=60
-                    )),
-                    headers=dict(
-                        Authorization='Bearer ' + self.users['billy']['token']
-                    ),
-                    content_type='application/json'
-                )
-                data = json.loads(response.data.decode())
-                self.assertEqual(data['message'], 'no_driver_available')
-                self.assertEqual(data['status'], 'fail')
-                self.assertEqual(response.content_type, 'application/json')
-                self.assertEqual(response.status_code, 200)
-                self.assertTrue('driver' not in data)
+                    response = self.client.post(
+                        '/riders/billy/request',
+                        data=json.dumps(dict(
+                            latitude_initial=30.00,
+                            latitude_final=40,
+                            longitude_initial=50,
+                            longitude_final=60
+                        )),
+                        headers=dict(
+                            Authorization='Bearer ' + self.users['billy']['token']
+                        ),
+                        content_type='application/json'
+                    )
+                    data = json.loads(response.data.decode())
+                    self.assertEqual(data['message'], 'no_driver_available')
+                    self.assertEqual(data['status'], 'fail')
+                    self.assertEqual(response.content_type, 'application/json')
+                    self.assertEqual(response.status_code, 200)
+                    self.assertTrue('driver' not in data)
 
     def test_driver_assigned_two_times(self):
         """One driver is assigned to a trip, the trip is cancelled, that driver is assigned again"""
         with self.client:
             with patch('src.handlers.RequestHandler.get_directions') as mock_directions:
+                with patch('src.handlers.RequestHandler.estimate_trip_cost') as mock_cost:
+                    mock_cost.return_value = Mock()
+                    mock_cost.return_value.ok = True
+                    mock_cost.return_value.json.return_value = {'value': 20}
 
-                mock_directions.return_value = Mock()
-                mock_directions.return_value.ok = True
-                mock_directions.return_value.json.return_value = directions_return_example
-                response = self.client.post(
-                    '/riders/joe_smith/request',
-                    data=json.dumps(dict(
-                        latitude_initial=30.00,
-                        latitude_final=40,
-                        longitude_initial=50,
-                        longitude_final=60
-                    )),
-                    headers=dict(
-                        Authorization='Bearer ' + self.users['joe_smith']['token']
-                    ),
-                    content_type='application/json'
-                )
-                data = json.loads(response.data.decode())
-                self.assertEqual(data['message'], 'request_submitted')
-                self.assertEqual(data['status'], 'success')
-                self.assertEqual(response.content_type, 'application/json')
-                self.assertEqual(response.status_code, 201)
-                self.assertEqual(data['driver'], 'johny')
+                    mock_directions.return_value = Mock()
+                    mock_directions.return_value.ok = True
+                    mock_directions.return_value.json.return_value = directions_return_example
+                    response = self.client.post(
+                        '/riders/joe_smith/request',
+                        data=json.dumps(dict(
+                            latitude_initial=30.00,
+                            latitude_final=40,
+                            longitude_initial=50,
+                            longitude_final=60
+                        )),
+                        headers=dict(
+                            Authorization='Bearer ' + self.users['joe_smith']['token']
+                        ),
+                        content_type='application/json'
+                    )
+                    data = json.loads(response.data.decode())
+                    self.assertEqual(data['message'], 'request_submitted')
+                    self.assertEqual(data['status'], 'success')
+                    self.assertEqual(response.content_type, 'application/json')
+                    self.assertEqual(response.status_code, 201)
+                    self.assertEqual(data['driver'], 'johny')
 
-                response = self.client.delete(
-                    '/requests/{}'.format(data['id']),
-                    headers=dict(
-                        Authorization='Bearer ' + self.users['joe_smith']['token']
-                    ),
-                    content_type='application/json'
-                )
-                data = json.loads(response.data.decode())
-                self.assertEqual(data['message'], 'request_cancelled')
+                    response = self.client.delete(
+                        '/requests/{}'.format(data['id']),
+                        headers=dict(
+                            Authorization='Bearer ' + self.users['joe_smith']['token']
+                        ),
+                        content_type='application/json'
+                    )
+                    data = json.loads(response.data.decode())
+                    self.assertEqual(data['message'], 'request_cancelled')
 
-                self.assertEqual(data['status'], 'success')
-                self.assertEqual(response.content_type, 'application/json')
-                self.assertEqual(response.status_code, 203)
+                    self.assertEqual(data['status'], 'success')
+                    self.assertEqual(response.content_type, 'application/json')
+                    self.assertEqual(response.status_code, 203)
 
-                response = self.client.post(
-                    '/riders/william_dafoe/request',
-                    data=json.dumps(dict(
-                        latitude_initial=30.00,
-                        latitude_final=40,
-                        longitude_initial=50,
-                        longitude_final=60
-                    )),
-                    headers=dict(
-                        Authorization='Bearer ' + self.users['william_dafoe']['token']
-                    ),
-                    content_type='application/json'
-                )
-                data = json.loads(response.data.decode())
-                self.assertEqual(data['message'], 'request_submitted')
-                self.assertEqual(data['status'], 'success')
-                self.assertEqual(response.content_type, 'application/json')
-                self.assertEqual(response.status_code, 201)
-                self.assertEqual(data['driver'], 'johny')
+                    response = self.client.post(
+                        '/riders/william_dafoe/request',
+                        data=json.dumps(dict(
+                            latitude_initial=30.00,
+                            latitude_final=40,
+                            longitude_initial=50,
+                            longitude_final=60
+                        )),
+                        headers=dict(
+                            Authorization='Bearer ' + self.users['william_dafoe']['token']
+                        ),
+                        content_type='application/json'
+                    )
+                    data = json.loads(response.data.decode())
+                    self.assertEqual(data['message'], 'request_submitted')
+                    self.assertEqual(data['status'], 'success')
+                    self.assertEqual(response.content_type, 'application/json')
+                    self.assertEqual(response.status_code, 201)
+                    self.assertEqual(data['driver'], 'johny')
 
 
     def test_driver_assigned_two_times_in_succesful_trips(self):
@@ -238,126 +245,130 @@ class TestRequestMatching(BaseTestCase):
         the trip is closed, the driver is available again"""
         with self.client:
             with patch('src.handlers.RequestHandler.get_directions') as mock_directions:
+                with patch('src.handlers.RequestHandler.estimate_trip_cost') as mock_cost:
+                    mock_cost.return_value = Mock()
+                    mock_cost.return_value.ok = True
+                    mock_cost.return_value.json.return_value = {'value': 20}
 
-                mock_directions.return_value = Mock()
-                mock_directions.return_value.ok = True
-                mock_directions.return_value.json.return_value = directions_return_example
-                response = self.client.post(
-                    '/riders/joe_smith/request',
-                    data=json.dumps(dict(
-                        latitude_initial=30.00,
-                        latitude_final=40,
-                        longitude_initial=50,
-                        longitude_final=60
-                    )),
-                    headers=dict(
-                        Authorization='Bearer ' + self.users['joe_smith']['token']
-                    ),
-                    content_type='application/json'
-                )
-                data = json.loads(response.data.decode())
-                self.assertEqual(data['message'], 'request_submitted')
-                self.assertEqual(data['status'], 'success')
-                self.assertEqual(response.content_type, 'application/json')
-                self.assertEqual(response.status_code, 201)
-                self.assertEqual(data['driver'], 'johny')
+                    mock_directions.return_value = Mock()
+                    mock_directions.return_value.ok = True
+                    mock_directions.return_value.json.return_value = directions_return_example
+                    response = self.client.post(
+                        '/riders/joe_smith/request',
+                        data=json.dumps(dict(
+                            latitude_initial=30.00,
+                            latitude_final=40,
+                            longitude_initial=50,
+                            longitude_final=60
+                        )),
+                        headers=dict(
+                            Authorization='Bearer ' + self.users['joe_smith']['token']
+                        ),
+                        content_type='application/json'
+                    )
+                    data = json.loads(response.data.decode())
+                    self.assertEqual(data['message'], 'request_submitted')
+                    self.assertEqual(data['status'], 'success')
+                    self.assertEqual(response.content_type, 'application/json')
+                    self.assertEqual(response.status_code, 201)
+                    self.assertEqual(data['driver'], 'johny')
 
-                self.client.put(
-                    '/users/joe_smith/coordinates',
-                    data=json.dumps(dict(
-                        latitude=30.000004,
-                        longitude=50.000002
-                    )),
-                    headers=dict(
-                        Authorization='Bearer ' + self.users['joe_smith']['token']
-                    ),
-                    content_type='application/json'
-                )
+                    self.client.put(
+                        '/users/joe_smith/coordinates',
+                        data=json.dumps(dict(
+                            latitude=30.000004,
+                            longitude=50.000002
+                        )),
+                        headers=dict(
+                            Authorization='Bearer ' + self.users['joe_smith']['token']
+                        ),
+                        content_type='application/json'
+                    )
 
-                self.client.put(
-                    '/users/johny/coordinates',
-                    data=json.dumps(dict(
-                        latitude=30.000014,
-                        longitude=50.000009
-                    )),
-                    headers=dict(
-                        Authorization='Bearer ' + self.users['johny']['token']
-                    ),
-                    content_type='application/json'
-                )
-
-                self.client.post(
-                    '/drivers/johny/trip',
-                    data=json.dumps(dict(
-                        request_id=data['id']
-                    )),
-                    headers=dict(
-                        Authorization='Bearer ' + self.users['johny']['token']
-                    ),
-                    content_type='application/json'
-                )
-
-                self.client.put(
-                    '/users/joe_smith/coordinates',
-                    data=json.dumps(dict(
-                        latitude=40.000004,
-                        longitude=60.000002
-                    )),
-                    headers=dict(
-                        Authorization='Bearer ' + self.users['joe_smith']['token']
-                    ),
-                    content_type='application/json'
-                )
-
-                self.client.put(
-                    '/users/johny/coordinates',
-                    data=json.dumps(dict(
-                        latitude=40.000014,
-                        longitude=60.000009
-                    )),
-                    headers=dict(
-                        Authorization='Bearer ' + self.users['johny']['token']
-                    ),
-                    content_type='application/json'
-                )
-
-                with patch('requests.post') as mock_post:
-
-                    mock_post.return_value = Mock()
-                    mock_post.return_value.json.return_value = {'id': "1",'value':20}
-                    mock_post.return_value.ok = True
-                    mock_post.return_value.status_code = 201
-                    response = self.client.delete(
-                        '/drivers/johny/trip',
+                    self.client.put(
+                        '/users/johny/coordinates',
+                        data=json.dumps(dict(
+                            latitude=30.000014,
+                            longitude=50.000009
+                        )),
                         headers=dict(
                             Authorization='Bearer ' + self.users['johny']['token']
                         ),
                         content_type='application/json'
                     )
+
+                    self.client.post(
+                        '/drivers/johny/trip',
+                        data=json.dumps(dict(
+                            request_id=data['id']
+                        )),
+                        headers=dict(
+                            Authorization='Bearer ' + self.users['johny']['token']
+                        ),
+                        content_type='application/json'
+                    )
+
+                    self.client.put(
+                        '/users/joe_smith/coordinates',
+                        data=json.dumps(dict(
+                            latitude=40.000004,
+                            longitude=60.000002
+                        )),
+                        headers=dict(
+                            Authorization='Bearer ' + self.users['joe_smith']['token']
+                        ),
+                        content_type='application/json'
+                    )
+
+                    self.client.put(
+                        '/users/johny/coordinates',
+                        data=json.dumps(dict(
+                            latitude=40.000014,
+                            longitude=60.000009
+                        )),
+                        headers=dict(
+                            Authorization='Bearer ' + self.users['johny']['token']
+                        ),
+                        content_type='application/json'
+                    )
+
+                    with patch('requests.post') as mock_post:
+
+                        mock_post.return_value = Mock()
+                        mock_post.return_value.json.return_value = {'id': "1",'value':20}
+                        mock_post.return_value.ok = True
+                        mock_post.return_value.status_code = 201
+                        response = self.client.delete(
+                            '/drivers/johny/trip',
+                            headers=dict(
+                                Authorization='Bearer ' + self.users['johny']['token']
+                            ),
+                            content_type='application/json'
+                        )
+                        data = json.loads(response.data.decode())
+                        self.assertEqual(data['message'], 'trip_finished')
+                        self.assertEqual(data['status'], 'success')
+                        self.assertEqual(response.content_type, 'application/json')
+                        self.assertEqual(response.status_code, 203)
+
+                        #mock_post.assert_called_once()
+
+                    response = self.client.post(
+                        '/riders/william_dafoe/request',
+                        data=json.dumps(dict(
+                            latitude_initial=30.00,
+                            latitude_final=40,
+                            longitude_initial=50,
+                            longitude_final=60
+                        )),
+                        headers=dict(
+                            Authorization='Bearer ' + self.users['william_dafoe']['token']
+                        ),
+                        content_type='application/json'
+                    )
                     data = json.loads(response.data.decode())
-                    self.assertEqual(data['message'], 'trip_finished')
+                    self.assertEqual(data['message'], 'request_submitted')
                     self.assertEqual(data['status'], 'success')
                     self.assertEqual(response.content_type, 'application/json')
-                    self.assertEqual(response.status_code, 203)
-
-                    #mock_post.assert_called_once()
-
-                response = self.client.post(
-                    '/riders/william_dafoe/request',
-                    data=json.dumps(dict(
-                        latitude_initial=30.00,
-                        latitude_final=40,
-                        longitude_initial=50,
-                        longitude_final=60
-                    )),
-                    headers=dict(
-                        Authorization='Bearer ' + self.users['william_dafoe']['token']
-                    ),
-                    content_type='application/json'
-                )
-                data = json.loads(response.data.decode())
-                self.assertEqual(data['message'], 'request_submitted')
-                self.assertEqual(data['status'], 'success')
-                self.assertEqual(response.content_type, 'application/json')
-                self.assertEqual(response.status_code, 201)
-                self.assertEqual(data['driver'], 'johny')
+                    self.assertEqual(response.status_code, 201)
+                    self.assertEqual(data['driver'], 'johny')
