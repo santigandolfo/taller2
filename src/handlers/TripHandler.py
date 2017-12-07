@@ -9,6 +9,7 @@ from app import db, application
 from src.models import User
 from src.mixins.AuthenticationMixin import Authenticator
 from src.mixins.TrackingMixin import TrackingTripsMixin
+from src.mixins.TripsMixin import add_usernames_to_trip
 from src.services.push_notifications import send_push_notifications
 from src.services.shared_server import register_trip, get_trips, estimate_trip_cost
 import time
@@ -239,6 +240,7 @@ class TripsAPI(MethodView):
                 application.logger.info("User getting  trips: {}".format(token_username))
                 user_id = db.users.find_one({"username": username})['uid']
                 trips = get_trips(user_id)
+                trips = [add_usernames_to_trip(trip) for trip in trips]
                 response = {
                     'status': 'success',
                     'message': 'trips_retrieved',
