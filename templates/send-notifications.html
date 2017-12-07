@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block body %}
+<div class="body login-body">
+
+  <h2>Send notifications to all of your users</h2>
+  <form action="" method="post">
+        <label>
+        Title:
+            <input type="text" name="title" size="30" value="{{ request.form.username }}">
+
+        </label>
+
+        <label>
+        Message:
+            <input type="password" name="message" size="30">
+        </label>
+
+        <div class="actions"><input type="submit" value="Send"></div>
+    </form>
+</div>
+{% endblock %}
