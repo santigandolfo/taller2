@@ -71,8 +71,8 @@ def get_data(user_id):
 
 
 def get_trips(user_id):
-    resp = requests.get(urljoin(SHARED_SERVER_URL, '/users/{}/trips'.format(user_id)),
+    resp = requests.get(urljoin(SHARED_SERVER_URL, 'users/{}/trips'.format(user_id)),
                         headers={"AuthToken": SS_TOKEN})
     if not resp.ok:
         raise Exception('Couldnt get trips from shared server')
-    return resp.json()['trips']
+    return resp.json()

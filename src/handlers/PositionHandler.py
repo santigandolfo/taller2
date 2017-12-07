@@ -6,6 +6,7 @@ from schema import Schema, And, Use, SchemaError
 
 from app import db, application
 from src.mixins.AuthenticationMixin import Authenticator
+from src.mixins.DriversMixin import DriversMixin
 from src.models import User
 
 POSITION_BLUEPRINT = Blueprint('position', __name__)
@@ -52,6 +53,12 @@ class PositionAPI(MethodView):
                     db.positions.insert_one({'username': username, 'latitude': latitude,
                                              'longitude': longitude})
                 else:
+                    if (db.drivers.count({'username': username}) > 0 and db.trips.count({'username': username}) > 0 ):
+                    #Si es un driver y esta en un trip
+                        result = db.positions.find_one({'username': username})
+                        distance = DriversMixin.distance((result['latitude'],result['longitude']),(latitude,longitude))
+                        db.trips.find_one_and_update({'username': username},
+                                                         {'$inc': {'distance': distance}})
                     db.positions.find_one_and_update({'username': username},
                                                      {'$set': {'latitude': latitude,
                                                                'longitude': longitude}})

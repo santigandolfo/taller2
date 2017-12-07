@@ -97,25 +97,55 @@ directions_return_example = {
 
 mocked_trips = [
     {
-        'rider': 'joe_smith',
-        'driver': 'juan',
+        'passenger_id': '1',
+        'driver_id': '3',
         'date': '23-4-2016',
         'price': 100,
         'currency': 'ARS'
     },
     {
-        'rider': 'joe_smith',
-        'driver': 'pedro',
+        'passenger_id': '1',
+        'driver_id': '3',
         'date': '24-4-2016',
         'price': 20,
         'currency': 'ARS'
     },
     {
-        'rider': 'joe_smith',
-        'driver': 'juan',
+        'passenger_id': '2',
+        'driver_id': '3',
         'date': '25-4-2016',
         'price': 200,
         'currency': 'ARS'
+    }
+]
+
+expected_trips = [
+    {
+        u'passenger_id': u'1',
+        u'driver_id': u'3',
+        u'date': u'23-4-2016',
+        u'price': 100,
+        u'currency': u'ARS',
+        u'passenger_username': u'joe_smith',
+        u'driver_username': u'johny'
+    },
+    {
+        u'passenger_id': u'1',
+        u'driver_id': u'3',
+        u'date': u'24-4-2016',
+        u'price': 20,
+        u'currency': u'ARS',
+        u'passenger_username': u'joe_smith',
+        u'driver_username': u'johny'
+    },
+    {
+        u'passenger_id': u'2',
+        u'driver_id': u'3',
+        u'date': u'25-4-2016',
+        u'price': 200,
+        u'currency': u'ARS',
+        u'passenger_username': u'william_dafoe',
+        u'driver_username': u'johny'
     }
 ]
 class TestTripStarting(BaseTestCase):
@@ -144,6 +174,18 @@ class TestTripStarting(BaseTestCase):
                 )
                 data = json.loads(response.data.decode())
                 self.rider_joe_auth_token = data['auth_token']
+
+                self.client.put(
+                    '/users/joe_smith/coordinates',
+                    data=json.dumps(dict(
+                        latitude=30.000004,
+                        longitude=42.000002
+                    )),
+                    headers=dict(
+                        Authorization='Bearer ' + self.rider_joe_auth_token
+                    ),
+                    content_type='application/json'
+                )
 
                 mock_post.return_value.json.return_value = {'id': "2"}
                 response = self.client.post(
@@ -174,8 +216,8 @@ class TestTripStarting(BaseTestCase):
                 self.client.put(
                     '/users/johny/coordinates',
                     data=json.dumps(dict(
-                        latitude=30.12,
-                        longitude=42.03
+                        latitude=30.000004,
+                        longitude=42.000002
                     )),
                     headers=dict(
                         Authorization='Bearer ' + self.driver_auth_token
@@ -224,6 +266,7 @@ class TestTripStarting(BaseTestCase):
                         )
                         data = json.loads(response.data.decode())
                     self.request_id = data['id']
+
 
     def test_start_trip_without_token(self):
 
@@ -465,6 +508,19 @@ class TestTripFinishing(BaseTestCase):
                 data = json.loads(response.data.decode())
                 self.rider_joe_auth_token = data['auth_token']
 
+                self.client.put(
+                    '/users/joe_smith/coordinates',
+                    data=json.dumps(dict(
+                        latitude=30.000004,
+                        longitude=42.000002
+                    )),
+                    headers=dict(
+                        Authorization='Bearer ' + self.rider_joe_auth_token
+                    ),
+                    content_type='application/json'
+                )
+
+
                 mock_post.return_value.json.return_value = {'id': "2"}
                 response = self.client.post(
                     '/users',
@@ -494,8 +550,8 @@ class TestTripFinishing(BaseTestCase):
                 self.client.put(
                     '/users/johny/coordinates',
                     data=json.dumps(dict(
-                        latitude=30.12,
-                        longitude=42.03
+                        latitude=30.000004,
+                        longitude=42.000002
                     )),
                     headers=dict(
                         Authorization='Bearer ' + self.driver_auth_token
@@ -554,6 +610,31 @@ class TestTripFinishing(BaseTestCase):
                 ),
                 content_type='application/json'
             )
+            self.client.put(
+                '/users/joe_smith/coordinates',
+                data=json.dumps(dict(
+                    latitude=31.320004,
+                    longitude=43.210002
+                )),
+                headers=dict(
+                    Authorization='Bearer ' + self.rider_joe_auth_token
+                ),
+                content_type='application/json'
+            )
+            self.client.put(
+                '/users/johny/coordinates',
+                data=json.dumps(dict(
+                    latitude=31.320004,
+                    longitude=43.210002
+                )),
+                headers=dict(
+                    Authorization='Bearer ' + self.driver_auth_token
+                ),
+                content_type='application/json'
+            )
+
+
+
 
     def test_finish_trip_without_token(self):
 
@@ -637,7 +718,7 @@ class TestTripFinishing(BaseTestCase):
         with self.client:
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'id': "1"}
+                mock_post.return_value.json.return_value = {'id': "1",'value':20} #IMPORTANTE: Para que funcione en ambos post al SS
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.delete(
@@ -657,7 +738,7 @@ class TestTripFinishing(BaseTestCase):
         with self.client:
             with patch('requests.post') as mock_post:
                 mock_post.return_value = Mock()
-                mock_post.return_value.json.return_value = {'id': "1"}
+                mock_post.return_value.json.return_value = {'id': "1",'value':20}
                 mock_post.return_value.ok = True
                 mock_post.return_value.status_code = 201
                 response = self.client.delete(
@@ -685,9 +766,7 @@ class TestTripFinishing(BaseTestCase):
         with self.client:
             with patch('requests.get') as mock_get:
                 mock_get.return_value = Mock()
-                mock_get.return_value.json.return_value =\
-                    {'trips': mocked_trips
-                }
+                mock_get.return_value.json.return_value = mocked_trips
                 mock_get.return_value.ok = True
                 mock_get.return_value.status_code = 200
                 response = self.client.get(
@@ -702,16 +781,14 @@ class TestTripFinishing(BaseTestCase):
                 self.assertEqual(data['status'], 'success')
                 self.assertEqual(response.content_type, 'application/json')
                 self.assertEqual(response.status_code, 200)
-                self.assertEqual(data['trips'], mocked_trips)
+                self.assertEqual(data['trips'], expected_trips)
 
     def test_unauthorized_get_all_trips(self):
 
         with self.client:
             with patch('requests.get') as mock_get:
                 mock_get.return_value = Mock()
-                mock_get.return_value.json.return_value =\
-                    {'trips': mocked_trips
-                }
+                mock_get.return_value.json.return_value = mocked_trips
                 mock_get.return_value.ok = True
                 mock_get.return_value.status_code = 200
                 response = self.client.get(
@@ -731,9 +808,7 @@ class TestTripFinishing(BaseTestCase):
         with self.client:
             with patch('requests.get') as mock_get:
                 mock_get.return_value = Mock()
-                mock_get.return_value.json.return_value = \
-                    {'trips': mocked_trips
-                     }
+                mock_get.return_value.json.return_value = mocked_trips
                 mock_get.return_value.ok = True
                 mock_get.return_value.status_code = 200
                 response = self.client.get(
