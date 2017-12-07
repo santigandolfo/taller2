@@ -17,6 +17,8 @@ TOKEN_DURATION = int(os.environ["TOKEN_DURATION"])
 SHARED_SERVER_URL = os.environ.get('SS_URL','https://taller2-fiuber-shared-server.herokuapp.com/api/')
 SS_TOKEN = requests.post(urljoin(SHARED_SERVER_URL, 'auth/token'), json={'username': "appserver",
                                                                          'password': "appserver"}).json()['token']
+ADMIN_USER = 'admin'
+ADMIN_PWD = '1234'
 
 
 def get_log_level(log_level):
@@ -87,6 +89,14 @@ application.register_blueprint(REQUESTS_BLUEPRINT)
 application.register_blueprint(TOKEN_MANIPULATION_BLUEPRINT)
 application.register_blueprint(TRIPS_BLUEPRINT)
 
-if __name__ == "__main__":
+from website.website import WEBSITE_BLUEPRINT
+application.register_blueprint(WEBSITE_BLUEPRINT)
 
+
+DATABASE = '/tmp/session.db'
+SECRET_KEY = b'_5#y2L"F4Q8z\n\xec]/'
+
+application.config.from_object(__name__)
+
+if __name__ == "__main__":
     application.run(debug=True, host='0.0.0.0')

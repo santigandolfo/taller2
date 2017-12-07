@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block body %}
+  <h2>{{title}}</h2>
+  <div class="map-container">
+    {{googlemap("users_map", lat=-34.6131500, lng=-58.3772300, markers=markers, style={position:static})}}
+  </div>
+
+{% endblock %}
